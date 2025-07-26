@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("TkAgg")
 import json
 import os
 import matplotlib.pyplot as plt
@@ -16,7 +18,7 @@ def afficher_graphique(mot_cle):
         values = [entry[mot_cle] for entry in data]
 
         plt.figure(figsize=(12, 6))
-        plt.plot(dates, values, marker="o", linestyle="--", color="blue", label=mot_cle)
+        plt.plot(dates, values, marker="o", linestyle="-", color="blue", label=mot_cle)
         plt.title(f"Intérêt pour '{mot_cle}' sur Google Trends", fontsize=14)
         plt.xlabel("Date et heure", fontsize=12)
         plt.ylabel("Intensité de recherche (de 0 à 100)", fontsize=14)
@@ -26,5 +28,7 @@ def afficher_graphique(mot_cle):
         plt.tight_layout()
         plt.show()
         
+    else:
+        print(f"Le fichier {my_file} n'existe pas. Veuillez importer les données d'abord.")
         #Fin du if os    
     
