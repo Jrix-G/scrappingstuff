@@ -1,0 +1,10 @@
+drop
+hello
+roman
+formule 1
+merce
+tiktok
+youtube
+musique
+beethoven
+mozart

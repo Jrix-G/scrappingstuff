@@ -82,4 +82,4 @@ if __name__ == "__main__":
     vpn_thread = threading.Thread(target=vpn_loop, daemon=True)
     vpn_thread.start()
     readWords()
-    input("Appuyez sur Entrée pour quitter...\n")
+    input("Appuyez sur Entrée pour quitter\n")

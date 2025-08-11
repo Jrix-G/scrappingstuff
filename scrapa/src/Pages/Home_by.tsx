@@ -21,7 +21,7 @@ const Home = () => {
               const res = await fetch(`http://localhost:3001/graphs/${file}`);
               const rawData = await res.json();
 
-              console.log('🧪 Fichier:', file, 'Données:', rawData);
+              console.log('Fichier:', file, 'Données:', rawData);
 
               if (!rawData || rawData.length === 0) return null;
               const valueKey = Object.keys(rawData[0]).find((k) => k !== 'date');
@@ -35,7 +35,7 @@ const Home = () => {
 
               return { title, data, valueKey: 'value' };
             } catch (err) {
-              console.error(`❌ Erreur dans le fichier ${file} :`, err);
+              console.error(`Erreur dans le fichier ${file} :`, err);
               return null;
             }
           })
@@ -47,7 +47,7 @@ const Home = () => {
   }, []);
 
   if (loading) return <div style={{ textAlign: 'center' }}>Chargement des données…</div>;
-
+  
   return (
     <div style={{ padding: 20 }}>
       <h1 style={{ textAlign: 'center' }}>Graphiques dynamiques</h1>

@@ -31,4 +31,5 @@ def afficher_graphique(mot_cle):
     else:
         print(f"Le fichier {my_file} n'existe pas. Veuillez importer les données d'abord.")
         #Fin du if os    
-    
+
+afficher_graphique("3D")
