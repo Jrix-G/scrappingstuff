@@ -1,207 +1,40 @@
 [
     {
-        "name": "Points de retrait Amazon Hub",
-        "length": 5,
-        "url": "https://www.amazon.fr/s?k=Points%20de%20retrait%20Amazon%20Hub"
+        "product_name": "LISEN A608",
+        "category": "High-Tech",
+        "value": 78,
+        "region": "Chine"
     },
     {
-        "name": "TOCOL Coque Magnétique pour iPhone 16 Pro 6,3 Pouces, Compatible avec MagSafe, Protection de l'objectif améliorée, Coque Mat Translucide Fine Antichoc, Noir",
-        "length": 22,
-        "url": "https://www.amazon.fr/s?k=TOCOL%20Coque%20Magn%C3%A9tique%20pour%20iPhone%2016%20Pro%206%2C3%20Pouces%2C%20Compatible%20avec%20MagSafe%2C%20Protection%20de%20l%27objectif%20am%C3%A9lior%C3%A9e%2C%20Coque%20Mat%20Translucide%20Fine%20Antichoc%2C%20Noir"
+        "product_name": "LISEN A608",
+        "category": "High-Tech",
+        "value": 78,
+        "region": "Chine"
+    }
+][
+    {
+        "product_name": "LISEN A608",
+        "category": "High-Tech",
+        "classement": 78,
+        "region": "Chine"
     },
     {
-        "name": "Imou 2K(3MP) Caméra Surveillance WiFi Intérieure Caméra 360° Connectée Smartphone avec Détection Humaine AI Suivi Intelligent Sirène Audio Bidirectionnel Compatible Alexa pour Bébé/Animaux",
-        "length": 23,
-        "url": "https://www.amazon.fr/s?k=Imou%202K%283MP%29%20Cam%C3%A9ra%20Surveillance%20WiFi%20Int%C3%A9rieure%20Cam%C3%A9ra%20360%C2%B0%20Connect%C3%A9e%20Smartphone%20avec%20D%C3%A9tection%20Humaine%20AI%20Suivi%20Intelligent%20Sir%C3%A8ne%20Audio%20Bidirectionnel%20Compatible%20Alexa%20pour%20B%C3%A9b%C3%A9/Animaux"
+        "product_name": "LISEN A608",
+        "category": "High-Tech",
+        "classement": 78,
+        "region": "Chine"
+    }
+][][][][][][][][][][][][][][][][][][][][][][][
+    {
+        "product_name": "LISEN A608",
+        "category": "High-Tech",
+        "classement": 78,
+        "region": "Chine"
     },
     {
-        "name": "Amazon Fire TV Stick HD (Nouvelle génération) | TV gratuite et en direct, télécommande vocale Alexa, contrôle de la maison connectée, streaming HD",
-        "length": 23,
-        "url": "https://www.amazon.fr/s?k=Amazon%20Fire%20TV%20Stick%20HD%20%28Nouvelle%20g%C3%A9n%C3%A9ration%29%20%7C%20TV%20gratuite%20et%20en%20direct%2C%20t%C3%A9l%C3%A9commande%20vocale%20Alexa%2C%20contr%C3%B4le%20de%20la%20maison%20connect%C3%A9e%2C%20streaming%20HD"
-    },
-    {
-        "name": "INIU Batterie Externe, 22.5W 10000mAh Power Bank, Batterie Portable USB C Input & Output PD3.0 QC4.0 Charge Rapide Powerbank Compatible avec iPhone 16 15 14 13 12 Pro Max Plus Samsung iPad Pro etc",
-        "length": 34,
-        "url": "https://www.amazon.fr/s?k=INIU%20Batterie%20Externe%2C%2022.5W%2010000mAh%20Power%20Bank%2C%20Batterie%20Portable%20USB%20C%20Input%20%26%20Output%20PD3.0%20QC4.0%20Charge%20Rapide%20Powerbank%20Compatible%20avec%20iPhone%2016%2015%2014%2013%2012%20Pro%20Max%20Plus%20Samsung%20iPad%20Pro%20etc"
-    },
-    {
-        "name": "Aioneus Chargeur USB C, 40W 4 Port Prise USBC Chargeur Rapide iPhone, Multi Secteur PD+QC 3.1A Type C Adaptateur pour iPhone 16 15 14 13 12 11 Pro Max X XS XR 8 7 6S Plus Mini SE, iPad,Samsung Galaxy",
-        "length": 40,
-        "url": "https://www.amazon.fr/s?k=Aioneus%20Chargeur%20USB%20C%2C%2040W%204%20Port%20Prise%20USBC%20Chargeur%20Rapide%20iPhone%2C%20Multi%20Secteur%20PD%2BQC%203.1A%20Type%20C%20Adaptateur%20pour%20iPhone%2016%2015%2014%2013%2012%2011%20Pro%20Max%20X%20XS%20XR%208%207%206S%20Plus%20Mini%20SE%2C%20iPad%2CSamsung%20Galaxy"
-    },
-    {
-        "name": "Collagène Marin + Acide Hyaluronique, Peau Hydratée et Articulations Fortes, Cure de 2 mois, 120 Gélules, Collagene Hydrolysé Type 1 Naticol®, Avec Vitamine C, Fabriqué en France, by Novoma",
-        "length": 29,
-        "url": "https://www.amazon.fr/s?k=Collag%C3%A8ne%20Marin%20%2B%20Acide%20Hyaluronique%2C%20Peau%20Hydrat%C3%A9e%20et%20Articulations%20Fortes%2C%20Cure%20de%202%20mois%2C%20120%20G%C3%A9lules%2C%20Collagene%20Hydrolys%C3%A9%20Type%201%20Naticol%C2%AE%2C%20Avec%20Vitamine%20C%2C%20Fabriqu%C3%A9%20en%20France%2C%20by%20Novoma"
-    },
-    {
-        "name": "Masque de Nuit Innovant 2025 pour Hommes et Femmes, Conception Masque de Sommeil qui Bloque la Lumière pour Dormir, les Siestes, la Méditation, les Voyages (Noir)",
-        "length": 26,
-        "url": "https://www.amazon.fr/s?k=Masque%20de%20Nuit%20Innovant%202025%20pour%20Hommes%20et%20Femmes%2C%20Conception%20Masque%20de%20Sommeil%20qui%20Bloque%20la%20Lumi%C3%A8re%20pour%20Dormir%2C%20les%20Siestes%2C%20la%20M%C3%A9ditation%2C%20les%20Voyages%20%28Noir%29"
-    },
-    {
-        "name": "Oral-B Vitality Pro Brosse A Dents Electrique Noire, Pour Adultes, Modes De Nettoyage Avec Sensibilité Plus, 1 Brossette De Rechange, 1 Chargeur",
-        "length": 22,
-        "url": "https://www.amazon.fr/s?k=Oral-B%20Vitality%20Pro%20Brosse%20A%20Dents%20Electrique%20Noire%2C%20Pour%20Adultes%2C%20Modes%20De%20Nettoyage%20Avec%20Sensibilit%C3%A9%20Plus%2C%201%20Brossette%20De%20Rechange%2C%201%20Chargeur"
-    },
-    {
-        "name": "Magnésium Bisglycinate + Vitamine B6 - Sommeil, Stress, Fatigue - Absorption Maximale & Assimilation Facilitée - 90 Gélules Vegan - Nutrimea - Fabriqué en France",
-        "length": 25,
-        "url": "https://www.amazon.fr/s?k=Magn%C3%A9sium%20Bisglycinate%20%2B%20Vitamine%20B6%20-%20Sommeil%2C%20Stress%2C%20Fatigue%20-%20Absorption%20Maximale%20%26%20Assimilation%20Facilit%C3%A9e%20-%2090%20G%C3%A9lules%20Vegan%20-%20Nutrimea%20-%20Fabriqu%C3%A9%20en%20France"
-    },
-    {
-        "name": "Bulk Protéine Whey en Poudre, Chocolat, 1 kg",
-        "length": 8,
-        "url": "https://www.amazon.fr/s?k=Bulk%20Prot%C3%A9ine%20Whey%20en%20Poudre%2C%20Chocolat%2C%201%20kg"
-    },
-    {
-        "name": "RENPHO Balance Pese Personne Électronique, Pese Personnes de Haute Précision avec Affichage par LED, Design Fin, poids Max. 180 kg, Précision de 50 g, Noir",
-        "length": 25,
-        "url": "https://www.amazon.fr/s?k=RENPHO%20Balance%20Pese%20Personne%20%C3%89lectronique%2C%20Pese%20Personnes%20de%20Haute%20Pr%C3%A9cision%20avec%20Affichage%20par%20LED%2C%20Design%20Fin%2C%20poids%20Max.%20180%20kg%2C%20Pr%C3%A9cision%20de%2050%20g%2C%20Noir"
-    },
-    {
-        "name": "EASTPAK Padded PAK'R Sac à Dos, 24 L - Black (Noir)",
-        "length": 11,
-        "url": "https://www.amazon.fr/s?k=EASTPAK%20Padded%20PAK%27R%20Sac%20%C3%A0%20Dos%2C%2024%20L%20-%20Black%20%28Noir%29"
-    },
-    {
-        "name": "Eastpak OUT OF OFFICE Sac à Dos, 27 L",
-        "length": 9,
-        "url": "https://www.amazon.fr/s?k=Eastpak%20OUT%20OF%20OFFICE%20Sac%20%C3%A0%20Dos%2C%2027%20L"
-    },
-    {
-        "name": "FM London Lot de 3/5 t-Shirts pour Hommes - T-Shirts de qualité supérieure avec Design légèrement ajusté",
-        "length": 17,
-        "url": "https://www.amazon.fr/s?k=FM%20London%20Lot%20de%203/5%20t-Shirts%20pour%20Hommes%20-%20T-Shirts%20de%20qualit%C3%A9%20sup%C3%A9rieure%20avec%20Design%20l%C3%A9g%C3%A8rement%20ajust%C3%A9"
-    },
-    {
-        "name": "Akusoli Semelles Chaussures Confort | Semelles Chaussures Homme, Femmes. Semelle Japonaise Magnétique de Soutien Voûte, Semelles Pieds Plats EU36-41.5",
-        "length": 19,
-        "url": "https://www.amazon.fr/s?k=Akusoli%20Semelles%20Chaussures%20Confort%20%7C%20Semelles%20Chaussures%20Homme%2C%20Femmes.%20Semelle%20Japonaise%20Magn%C3%A9tique%20de%20Soutien%20Vo%C3%BBte%2C%20Semelles%20Pieds%20Plats%20EU36-41.5"
-    },
-    {
-        "name": "ANTONIO ROSSI (lot de 12) boxers ajustés pour hommes - Boxers pour hommes avec ceinture élastique",
-        "length": 16,
-        "url": "https://www.amazon.fr/s?k=ANTONIO%20ROSSI%20%28lot%20de%2012%29%20boxers%20ajust%C3%A9s%20pour%20hommes%20-%20Boxers%20pour%20hommes%20avec%20ceinture%20%C3%A9lastique"
-    },
-    {
-        "name": "Blendura Pese Bagages de Voyage Pese Numérique pour Bagages, Balance Portable Pese Valise de Voyage, Balance Valise Tare Fonction, Balance Bagage MAX 50 kg/ 110lb pour Voyage",
-        "length": 27,
-        "url": "https://www.amazon.fr/s?k=Blendura%20Pese%20Bagages%20de%20Voyage%20Pese%20Num%C3%A9rique%20pour%20Bagages%2C%20Balance%20Portable%20Pese%20Valise%20de%20Voyage%2C%20Balance%20Valise%20Tare%20Fonction%2C%20Balance%20Bagage%20MAX%2050%20kg/%20110lb%20pour%20Voyage"
-    },
-    {
-        "name": "Maybelline New York - Mascara Volume Intense et Longueur Illimitée - Formule Enrichie en Extraits de Bambous et de Fibres - Sky High - Teinte : Very Black - 7,2 ml",
-        "length": 31,
-        "url": "https://www.amazon.fr/s?k=Maybelline%20New%20York%20-%20Mascara%20Volume%20Intense%20et%20Longueur%20Illimit%C3%A9e%20-%20Formule%20Enrichie%20en%20Extraits%20de%20Bambous%20et%20de%20Fibres%20-%20Sky%20High%20-%20Teinte%20%3A%20Very%20Black%20-%207%2C2%20ml"
-    },
-    {
-        "name": "Erborian - CC Crème à la Centella Asiatica - Maquillage et Soin Illuminateur de Teint Haute Définition pour Visage - Protection Solaire SPF 25 - Soin Cosmétique Coréen - Doré 45 ml",
-        "length": 32,
-        "url": "https://www.amazon.fr/s?k=Erborian%20-%20CC%20Cr%C3%A8me%20%C3%A0%20la%20Centella%20Asiatica%20-%20Maquillage%20et%20Soin%20Illuminateur%20de%20Teint%20Haute%20D%C3%A9finition%20pour%20Visage%20-%20Protection%20Solaire%20SPF%2025%20-%20Soin%20Cosm%C3%A9tique%20Cor%C3%A9en%20-%20Dor%C3%A9%2045%20ml"
-    },
-    {
-        "name": "CeraVe - Gel Moussant Anti-Imperfections - Purifie la Peau en douceur et Réduit les Imperfections - Acide Salicylique, Argile Blanche, Céramides et Niacinamide - Peau à Tendance Acnéique",
-        "length": 28,
-        "url": "https://www.amazon.fr/s?k=CeraVe%20-%20Gel%20Moussant%20Anti-Imperfections%20-%20Purifie%20la%20Peau%20en%20douceur%20et%20R%C3%A9duit%20les%20Imperfections%20-%20Acide%20Salicylique%2C%20Argile%20Blanche%2C%20C%C3%A9ramides%20et%20Niacinamide%20-%20Peau%20%C3%A0%20Tendance%20Acn%C3%A9ique"
-    },
-    {
-        "name": "Luxéol - Pousse Croissance & Fortification - Complément Alimentaire - Roquette, Prêle Des Champs, Zinc, Cuivre, Sélénium, Vitamine B8 & B6 - H/F - Fabriqué En France - Programme 3 Mois - 90 Gélules",
-        "length": 34,
-        "url": "https://www.amazon.fr/s?k=Lux%C3%A9ol%20-%20Pousse%20Croissance%20%26%20Fortification%20-%20Compl%C3%A9ment%20Alimentaire%20-%20Roquette%2C%20Pr%C3%AAle%20Des%20Champs%2C%20Zinc%2C%20Cuivre%2C%20S%C3%A9l%C3%A9nium%2C%20Vitamine%20B8%20%26%20B6%20-%20H/F%20-%20Fabriqu%C3%A9%20En%20France%20-%20Programme%203%20Mois%20-%2090%20G%C3%A9lules"
-    },
-    {
-        "name": "REXONA - Déodorant Femme Clean Scent - Stick Anti-transpirant - 3x plus efficace contre la transpiration - Protection 96h - 45ml",
-        "length": 21,
-        "url": "https://www.amazon.fr/s?k=REXONA%20-%20D%C3%A9odorant%20Femme%20Clean%20Scent%20-%20Stick%20Anti-transpirant%20-%203x%20plus%20efficace%20contre%20la%20transpiration%20-%20Protection%2096h%20-%2045ml"
-    },
-    {
-        "name": "Scholl Masque Pieds Nourrissant à l'Huile de Noix de Coco: Sans parfum ni colorants pour peaux sèches. Chaussettes hydratantes non grasses, faciles à utiliser. Emballage et masque recyclables, 1 paire",
-        "length": 30,
-        "url": "https://www.amazon.fr/s?k=Scholl%20Masque%20Pieds%20Nourrissant%20%C3%A0%20l%27Huile%20de%20Noix%20de%20Coco%3A%20Sans%20parfum%20ni%20colorants%20pour%20peaux%20s%C3%A8ches.%20Chaussettes%20hydratantes%20non%20grasses%2C%20faciles%20%C3%A0%20utiliser.%20Emballage%20et%20masque%20recyclables%2C%201%20paire"
-    },
-    {
-        "name": "BuzzoXerex Ventilateur de Plafond avec Lumière et Telecommande, 52CM 40W Petit Dimmable Ventilateur LED avec Douille E27, Lustre Ventilateurs de Plafond pour Chambre, 6 Pales,3 Vitesses,Timing",
-        "length": 26,
-        "url": "https://www.amazon.fr/s?k=BuzzoXerex%20Ventilateur%20de%20Plafond%20avec%20Lumi%C3%A8re%20et%20Telecommande%2C%2052CM%2040W%20Petit%20Dimmable%20Ventilateur%20LED%20avec%20Douille%20E27%2C%20Lustre%20Ventilateurs%20de%20Plafond%20pour%20Chambre%2C%206%20Pales%2C3%20Vitesses%2CTiming"
-    },
-    {
-        "name": "SUWIN Guirlande Guinguette Extérieur 30M, Guirlande Lumineuse Exterieure avec 50+2 G40 LED Ampoules IP45 Imperméable, Blanc Chaud Chaîne Lumiere Exterieur pour terrasse, mariage, Noël",
-        "length": 24,
-        "url": "https://www.amazon.fr/s?k=SUWIN%20Guirlande%20Guinguette%20Ext%C3%A9rieur%2030M%2C%20Guirlande%20Lumineuse%20Exterieure%20avec%2050%2B2%20G40%20LED%20Ampoules%20IP45%20Imperm%C3%A9able%2C%20Blanc%20Chaud%20Cha%C3%AEne%20Lumiere%20Exterieur%20pour%20terrasse%2C%20mariage%2C%20No%C3%ABl"
-    },
-    {
-        "name": "HOVVIDA Ruban LED 10M, 1 Rouleau, 30 LED/Mètre, 24V RVB Bande LED, 300 LED, APP et Télécommande, Synchronisation de la Musique, Mode Minuterie, pour Chambre, Salle de Jeux, Fête, Festival",
-        "length": 30,
-        "url": "https://www.amazon.fr/s?k=HOVVIDA%20Ruban%20LED%2010M%2C%201%20Rouleau%2C%2030%20LED/M%C3%A8tre%2C%2024V%20RVB%20Bande%20LED%2C%20300%20LED%2C%20APP%20et%20T%C3%A9l%C3%A9commande%2C%20Synchronisation%20de%20la%20Musique%2C%20Mode%20Minuterie%2C%20pour%20Chambre%2C%20Salle%20de%20Jeux%2C%20F%C3%AAte%2C%20Festival"
-    },
-    {
-        "name": "Gritin Lampe de Lecture Rechargeable, 9 LED Liseuse Lampe Clip, Gradation Progressive & 3 Modes Protection des Yeux (Blanc Froid&Chaud), 360° Cou Flexible, Indicateur, Longue Travail pour Lire au Lit",
-        "length": 30,
-        "url": "https://www.amazon.fr/s?k=Gritin%20Lampe%20de%20Lecture%20Rechargeable%2C%209%20LED%20Liseuse%20Lampe%20Clip%2C%20Gradation%20Progressive%20%26%203%20Modes%20Protection%20des%20Yeux%20%28Blanc%20Froid%26Chaud%29%2C%20360%C2%B0%20Cou%20Flexible%2C%20Indicateur%2C%20Longue%20Travail%20pour%20Lire%20au%20Lit"
-    },
-    {
-        "name": "GRIFEMA GD101-1, Veilleuse Enfant, Veilleuse Prise Électrique avec 3 Niveaux de Réglage de La Luminosité, Veilleuse Bébé Adaptée aux Chambres, Cuisines, Couloirs, Salles de Bains, Blanc Chaud",
-        "length": 27,
-        "url": "https://www.amazon.fr/s?k=GRIFEMA%20GD101-1%2C%20Veilleuse%20Enfant%2C%20Veilleuse%20Prise%20%C3%89lectrique%20avec%203%20Niveaux%20de%20R%C3%A9glage%20de%20La%20Luminosit%C3%A9%2C%20Veilleuse%20B%C3%A9b%C3%A9%20Adapt%C3%A9e%20aux%20Chambres%2C%20Cuisines%2C%20Couloirs%2C%20Salles%20de%20Bains%2C%20Blanc%20Chaud"
-    },
-    {
-        "name": "ZYRIVON Guirlande Lumineuse Exterieure 20M,30+2 Ampoules,Incassable Étanche,Guirlande Guinguette LED Connectable,Blanc Chaud,Plug & Play, pour Intérieur Jardin Balcon Maison Mariage Fête Noël",
-        "length": 21,
-        "url": "https://www.amazon.fr/s?k=ZYRIVON%20Guirlande%20Lumineuse%20Exterieure%2020M%2C30%2B2%20Ampoules%2CIncassable%20%C3%89tanche%2CGuirlande%20Guinguette%20LED%20Connectable%2CBlanc%20Chaud%2CPlug%20%26%20Play%2C%20pour%20Int%C3%A9rieur%20Jardin%20Balcon%20Maison%20Mariage%20F%C3%AAte%20No%C3%ABl"
-    },
-    {
-        "name": "Joyblossom Pare Soleil Voiture Bébé,2 Pièces Chaussette pour Enfants et Animaux,Bloquer Les Rayons UV Anti Moustiquaire,Taille Universelle pour Plupart des Voitures",
-        "length": 21,
-        "url": "https://www.amazon.fr/s?k=Joyblossom%20Pare%20Soleil%20Voiture%20B%C3%A9b%C3%A9%2C2%20Pi%C3%A8ces%20Chaussette%20pour%20Enfants%20et%20Animaux%2CBloquer%20Les%20Rayons%20UV%20Anti%20Moustiquaire%2CTaille%20Universelle%20pour%20Plupart%20des%20Voitures"
-    },
-    {
-        "name": "Miracase Support Téléphone Voiture [2025 Ventouse Puissante] Porte Telephone Voiture Tableau de Bord, Rotation 360° Portable Ventouse pour iPhone Compatible avec 4-7.2\" Smartphone",
-        "length": 23,
-        "url": "https://www.amazon.fr/s?k=Miracase%20Support%20T%C3%A9l%C3%A9phone%20Voiture%20%5B2025%20Ventouse%20Puissante%5D%20Porte%20Telephone%20Voiture%20Tableau%20de%20Bord%2C%20Rotation%20360%C2%B0%20Portable%20Ventouse%20pour%20iPhone%20Compatible%20avec%204-7.2%22%20Smartphone"
-    },
-    {
-        "name": "FACOM 006025 Décalaminage Moteur Intégral Diesel, décrassant moteur-CURATIF-1L",
-        "length": 8,
-        "url": "https://www.amazon.fr/s?k=FACOM%20006025%20D%C3%A9calaminage%20Moteur%20Int%C3%A9gral%20Diesel%2C%20d%C3%A9crassant%20moteur-CURATIF-1L"
-    },
-    {
-        "name": "OGGIPRO 2 Boutons Coque Clé Compatible CE0536 clé à Rabat Pliable pour Peugeot 207 307 308 407 408 3008 5008 Citroen C2 C3 C4 C5 C6 C8 (2 Boutons, CE0536)",
-        "length": 30,
-        "url": "https://www.amazon.fr/s?k=OGGIPRO%202%20Boutons%20Coque%20Cl%C3%A9%20Compatible%20CE0536%20cl%C3%A9%20%C3%A0%20Rabat%20Pliable%20pour%20Peugeot%20207%20307%20308%20407%20408%203008%205008%20Citroen%20C2%20C3%20C4%20C5%20C6%20C8%20%282%20Boutons%2C%20CE0536%29"
-    },
-    {
-        "name": "BassMotor Kit Complet pour polir les phares ternes et usés pour la restauration de voiture - Ensemble pour nettoyer et poncer pour le contrôle technique et améliorer la visibilité et la sécurité",
-        "length": 32,
-        "url": "https://www.amazon.fr/s?k=BassMotor%20Kit%20Complet%20pour%20polir%20les%20phares%20ternes%20et%20us%C3%A9s%20pour%20la%20restauration%20de%20voiture%20-%20Ensemble%20pour%20nettoyer%20et%20poncer%20pour%20le%20contr%C3%B4le%20technique%20et%20am%C3%A9liorer%20la%20visibilit%C3%A9%20et%20la%20s%C3%A9curit%C3%A9"
-    },
-    {
-        "name": "LISEN Chargeur Allume Cigare USB C, PD 36W & QC 18W Chargeur Voiture Rapide3.0, Mini Alumencigare USB C, Prise Allume Cigrae 12 V pour iPhone 16 Pro Max 15 14 13 Galaxy S24 23 iPad Tablette Airpods",
-        "length": 37,
-        "url": "https://www.amazon.fr/s?k=LISEN%20Chargeur%20Allume%20Cigare%20USB%20C%2C%20PD%2036W%20%26%20QC%2018W%20Chargeur%20Voiture%20Rapide3.0%2C%20Mini%20Alumencigare%20USB%20C%2C%20Prise%20Allume%20Cigrae%2012%20V%20pour%20iPhone%2016%20Pro%20Max%2015%2014%2013%20Galaxy%20S24%2023%20iPad%20Tablette%20Airpods"
-    },
-    {
-        "name": "Livres, art& articles de collection",
-        "length": 5,
-        "url": "https://www.amazon.fr/s?k=Livres%2C%20art%26%20articles%20de%20collection"
-    },
-    {
-        "name": "Auto-publiez facilementvos livres au format numérique",
-        "length": 6,
-        "url": "https://www.amazon.fr/s?k=Auto-publiez%20facilementvos%20livres%20au%20format%20num%C3%A9rique"
-    },
-    {
-        "name": "Produits d'occasion ou emballage ouvert",
-        "length": 5,
-        "url": "https://www.amazon.fr/s?k=Produits%20d%27occasion%20ou%20emballage%20ouvert"
-    },
-    {
-        "name": "Ciblez, attirez etfidélisez vos clients",
-        "length": 5,
-        "url": "https://www.amazon.fr/s?k=Ciblez%2C%20attirez%20etfid%C3%A9lisez%20vos%20clients"
-    },
-    {
-        "name": "Paiement 30 jours. Hors TVA.Pour les professionnels.",
-        "length": 7,
-        "url": "https://www.amazon.fr/s?k=Paiement%2030%20jours.%20Hors%20TVA.Pour%20les%20professionnels."
+        "product_name": "LISEN A608",
+        "category": "High-Tech",
+        "classement": 78,
+        "region": "Chine"
     }
 ]
