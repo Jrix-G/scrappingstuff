@@ -1,40 +1,50 @@
 [
     {
-        "product_name": "LISEN A608",
-        "category": "High-Tech",
-        "value": 78,
-        "region": "Chine"
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "LISEN Ventouse à Stabilité Militaire, Support Telephone Voiture Magsafe, Réutilisable Support Telephone Voiture Magnetique pour iPhone 16 15 Pro Max, Galaxy S25, Xiaomi, Huawei",
+            "category": "High-Tech",
+            "classement": 106,
+            "region": "Chine",
+            "releaseDate": "28 avril 2025",
+            "price": 23.73,
+            "url": "https://www.amazon.fr/LISEN-Stabilit%C3%A9-Militaire-R%C3%A9utilisable-Magnetique/dp/B0F6NHW9MM/260-2440604-0082219?psc=1"
+        }
     },
     {
-        "product_name": "LISEN A608",
-        "category": "High-Tech",
-        "value": 78,
-        "region": "Chine"
-    }
-][
-    {
-        "product_name": "LISEN A608",
-        "category": "High-Tech",
-        "classement": 78,
-        "region": "Chine"
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "Miracase 2025 Support TéLéPhone Voiture Très Stable 【Crochet MéTallique】 Porte TéLéPhone Portable pour Grille D'aération Voiture GPS, 360° Support Universel Mains Libres pour (4-7.2\" Smartphone)",
+            "category": "High-Tech",
+            "classement": 106,
+            "region": "Chine",
+            "releaseDate": "25 octobre 2023",
+            "price": 15.99,
+            "url": "https://aax-eu.amazon.fr/x/c/JF60krVpeliFRE3ieB-EOoQAAAGYqV6AywMAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDEgICA4snjn/clv1_CEuOPUxokZA0iHrVBOkwzi3ZaVMlT-YZu7kW6RiKssl48X8y_GX6H_018HHz9hvVjq0yzpNb3XHSfU1QA2cAN1JYDD2uEpTMMn8gWkxTF3v9Jdh8lEfB8IkGXCRfUOW6XJfef1D8rsFSE0M9llvwdksJOldODd93Q196UuYlQRaY37qDjF4oXlv5OpjsdqwyCjQHbdXAhZRSWWhBJNwAffQdjs-hn4wsEjvWNPQG9gUahJtJn6j8Z0wG3nKH1EB2AHnpPv3v4jxS3xU8A-krSDiZI16JjAz9B7yl_bPrUYAZJ0SW56eH2BSUezfhOraenMko9s1afermpbXnIceXL-h4jdxKbD4LlI8C-9FHE6Fj0W5fDGy7yyidoLUGchmZYxYwqVSAj0UNuzT-N52bUz1lAp3XhtVXPtM6C2xN4SphFeZb5hVEEkw3451CQVUOJIGFRfzDq-CNeisqVh6Pqac2BmyinkW_OS1qT9VB--CtPWlt9LLZ1AL9cWtEMNa_tdFWyj4bHrkev0KjjkiT7TjbRRprTEMJBSyGfzrHPrzUUyeDFTB-yiANF1rZcXvbZMZigPRbLgeyrKhlg-IcNyLiIhs4qTxPicEigbiGjHBQvKCqwqYKbFLC5SaBd6WbD0I5RfIcOSh-wehPGo9KnxsH_5SuEgl0e1QZirEg_pUmBF8QU3-hmFEGoRTaQ-Rh7zgb5HNL3PgR2fIrN3S0G31B_77wF-DQ8IvcLRY2Bg39nxHURf9t5jtL8egCaNigopFoEjXyt0SpyQjYDmTuASth_TPZIHlyvfg_XccJcgGu2EMZEsxygAU4saSLSWSXd-O4dyZnhS_cksh3duJcsqef3GY1m-qRLMLSusC_jXO122bz1ygOyDOX1W-7mmbfo6d-sPU2ngDFGt0sXdsNMPSIx_XgwBFUbHszNifqsBqGsh5_CEMnb2RsRBzi9mWCmh6jUfDU7q-yqvruzQqqUIFiLtmAVuTxyUDIXhAmMskbfRVFenpdQrzs9jzyA3gsCAbZ0LkIwCoYZ7g0r7yhxx9ehDJHH-6r-21m_pcg7RwBZEa1UaKwBxjaYqF8O9B2VGKySYreGxICML2ybbeAltPqRhqFlJdOW_JWCihRNpaaD2mHKflrlWlDXq-ok8jiufwGe9PDxD5eAOpAjgsEUW41WPvvJyTtOasKuompgLGb9hyF-Gn35u0nliRUIpIcJUOvJwmh0UOAWy0jpU33LN6j1fsGkZRwxCWp-7JTK1jmHFUFSHucykOc0CIBB7XJeel7meqIYHPXFL1oW8oUpVYPhL5AqZyy_hqtpxCOIeWoLfxZZv_IzY0asDOHqoYIJ4k8dj7-03L3jv8neGY2xp_N8tYjwnpQVftbAOdWlbssxm62B0K8ndCRV3aXUO9TLBONbk6ScQT8XQo6bZuxT4bEhSqsCXxEn4dQ9cP1hFdyThVLwpYHHcIALAbAMwGQ2g9cGmaj75iAxSzlEAr0fgTy7gGGeco5yJgKztQ18U0isg7uH274AUtfgpgMvdW_s3raeypnX_lVOc3jSfwWPQq-kuntDkaMG1WDCqIDsfaky9Kw46OOWa9DI-xZmtpURp-kDkKx6Z7NYeTkEm0fbBBHx-rQ8bsWho3uwwrL5eWrQX3RCCWDqSt8kWRbaa2ETwaGJGTFhoQTWzi1lAwN9agCAxPvfUwCFYhprfJmDP2CB90ulLHVTXgsm_aHhqKF_alofoKn7Rd2mTe7trEQFBfu6x9hjiGv9NZkARm5k1af0_uRpnD4w3XEUuxbiLRbYWDAFJN0jMTP4S-40XJulaq6tEcqpJG9ZY_kIBCT98_eTMXAseZzhqVTO_C16uV1pB5gArVNLpIpvuTBfHjCFL6MropSAIKoTdNLZgVxiQcqltfTcLy6uX9_IOme0twD09DONzJQqtbqiEQCYSXBLMWliSNLu80taIaLnbN8lXsvPBRu0a7fcOAd-wKUznJlaPHFOh8QGeem5LS9Wq24D06N1u5qAUyeZJ57fSzHMfD5IjwAa8Wsdoj1vCLbj30UNP1SejtvdKM9jnlLp9HqouL2msRibumMV9w8brFyEKSmyPVX0mc0KNc_9yOBVg/https://www.amazon.fr/dp/B0CHYBKQPM/"
+        }
     },
     {
-        "product_name": "LISEN A608",
-        "category": "High-Tech",
-        "classement": 78,
-        "region": "Chine"
-    }
-][][][][][][][][][][][][][][][][][][][][][][][
-    {
-        "product_name": "LISEN A608",
-        "category": "High-Tech",
-        "classement": 78,
-        "region": "Chine"
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "PlusAcc Support Téléphone Voiture avec Ventouse Puissante & Magnétique – Rotation 360°, Fixation Ultra-Stable, Compatible iPhone, pour Tableaux de Bord et Pare-Brise",
+            "category": "High-Tech",
+            "classement": 106,
+            "region": "Chine",
+            "releaseDate": "12 mars 2025",
+            "price": 24.99,
+            "url": "https://aax-eu.amazon.fr/x/c/JM0p7z_6HXI1tT9uNjQ8eQQAAAGYqV6AzAMAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDEgICCJYNec/clv1_CEuOPUxokZA0iHrVBOkwzi3ZaVMlT-YZu7kW6RiKssl48X8y_GX6H_018HHz9hvVjq0yzpNb3XHSfU1YA2cAFXNlKRnXEcb4EX5UXhstEX2NDNtWlEfB8IkGXCRaUOW6XJfef1D8rsFSE0M9llvwdksJOldODd93Q196UuYlQRaY37qDjF4oXlv5OpjsdqwyCjQHbdXAhZRSWWhBJNwAffQdjs-hn4wsEjvWNPQG9gUahJtJn6j8Z0wG3nKH1EB2AHnpPv3v4jxS3xU8A-krSDiZI16JjAz9B7yl_bPrUYAZJ0SW56eH2BSUewXFPpevw9oF9rtST9jcnIvkItjsLMYq-OxaYBILlI8C-9FHE6Fj0W5fDGy7yyiNobY4TBmacyQxqnqqj0UNuzT-N52bUz1lAp3XhtVXPtM6C2xN4SphFeZb5hVEEkw3451CQVUOJIGFRfzDq-CNeisqVh6Pqac2BmyinkW_OS1qT9VB--CtPWlt9LLZ1AL9cWtEMNa_tdFWyj4bHrkev0KjjkiT7TjbRRprTEMJBSyGfzrHPrzUUyeDFTB-yiANF1rZcXvbZMZigPRbLgeyrKdlg-IcNyLiIhs4qTxPicEigbiGjHBQvKCqwqYKbFLC5SaBd6WbD0I5RfIcOSh-wehPGo9KnxsH_5SuEgl0e1QZirEg_pUmBF8QU3-hmFEGoRTaQ-Rh7zgb5HNL3PgR2fIrN3S0G31B_77wF-DQ8IvcLRY2Bg39nxHURf9t5jhU4fksZNueh519FRzMvX3D1TvRH0HkBytL_TDZCjdyk_hyXMc3cAGT6VMIPMhwuwpLrpyLQX-mS92wZg9ByS_iksh3SMAUspmDmGYLseqSAtaTrsWCjUuP5U_A1yBJzgrwhn6SvCfeiso_p_UEjSvGJMQrd7gcMN-A2Pngrw5sGAwhAjjurBHarjFFVlc9aRE1UTfk7nuBmh6lRPDm_YSxlOPp52m7UKkVNeiSRqrH1mKMZh9FNvcZfUxNdRUBdb_4lT_8Jn07IQ6a0LlE1C8wXr4OxZ6l_jRKnD5XKeqQnm1nwIUs7xJqdFO3aLqsBRzFN7J7Dc5MMU-7S5rsEgI4T6KJYpmGle_ARSiE_7hPReIPMSxOY5KzGH2CAtg2q3lhBp-S4O_i5dEZbP7-kRICD_V7-3QdUm86XezAGXvvFKsBi4napK2e-RaA0yfn5Yk7kxpEUZIkKiiqHXjdhFKpYQM7mwDwLYW_w_9zgaZr-yqj_pl-Klu5DA88IV6P3WyijxlwBLv0fbQiourieHLmb7xRfqUVpUJw3pAln5mK7izxn3TlJMvNS-RgE92Czo0Jsgn23ZULN44jdgCJ1EnOsOYgVgEl6Pq2tO4apSZqCvN3BMlsgLE6tn6nLXClsPaVD3G9QLFsLhvTZVqJJADCZwEsfamkX4an3RPwEW556pcL-8Phs28YUldy3bwYJrcQDAbTKAOH8y5TM33Y752tvyb2KSSpRnDirTrtYYkJ8cEtzsAmsWExiFHDJWWgF1tc8ItWtfG7sFzaf3F3UuRGMrrlSIZtJDf5kv_2LBqgOXTdDKE26cy_1JOw4p6kWr9HFu8Bs-lJJem6DnTC0p7NYeTkEm0JXh8Wxtnt36QT8bvvy2_p5eWrQX3RCCWDqSt8kWRbaa2zcQrFE2LrxbMVdVeClABOwq4sQAvraUwvAfNtq_0FVcCoOdgZm630SngGw8qFhuG2ocJxf42gsDxcmkWo7alKFH_A9RQFvB-nk75LPQLCk0ra6wAcSnZiFwbof-It2_FTUUfiaMFIjPzPhDPN3e2As05SXsjthgqLPK_5ZFWI687CSNyI8f0p0ucROKTupP19px85VrVHL4s8uf7FPguPAbqGs45MbMS7AcRWbFpkiRlryYuRLa2wsT4qZ-mZxcAT04SZOwR0gfGiyxBGUkvXPveE0ANsu9EJS7TNtLkBk1x0DQ9t6k6NfG1Lwnf8PxNusrDPdXQ0Mee6mc6sf4u0Omz-wJ1pPk2fU6YnOxzIFMD2ERwmVvyocLf2rDTWhl8SNP1SejtvdJw-qEZIge7pnd7Tg_hHd-NKhpJkY1pRHa_-CJpx6dA/https://www.amazon.fr/dp/B0F18V6PVH/"
+        }
     },
     {
-        "product_name": "LISEN A608",
-        "category": "High-Tech",
-        "classement": 78,
-        "region": "Chine"
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "Lamicall Support Téléphone Voiture de Grille d'Aération, [Conception Translucide] Libération Rapide, Crochet en Métal, Porte Téléphone Voiture pour iPhone 16 15 14 13 12, Huawei, 4-7” Smartphones",
+            "category": "High-Tech",
+            "classement": 106,
+            "region": "Chine",
+            "releaseDate": "16 février 2023",
+            "price": 17.99,
+            "url": "https://aax-eu.amazon.fr/x/c/JC_BrBDpPlijK6NLhPMc-JoAAAGYqV6AzQMAAAH2AQBvbm9fdHhuX2JpZDMgICBvbm9fdHhuX2ltcDEgICB-ZdVR/clv1_CEuOPUxokZA0iHrVBOkwzi3ZaVMlT-YZu7kW6RiKssl48X8y_GX6H_018HHz9hvVjq0yzpNb3XHSfU1FA2cAIxhMLAy2FY_MMGQXYRlsZguxDtp5skfB8IkGXCRGUOW6XJfef1D8rsFSE0M9llvwdksJOldODd93Q196UuYlQRaY37qDjF4oXlv5OpjsdqwyCjQHbdXAhZRSWWhBJNwAffQdjs-hn4wsEjvWNPQG9gUahJtJn6j8Z0wG3nKH1EB2AHnpPv3v4jxS3xU8A-krSDiZI16JjAz9B7yl_bPrUYAZJ0SW56eH2BSUezTtGKqon80g9fAxfeqAzorTHNPtM_l3iex0ZCUAvo8C-9FHE6Fj0W5fDGi7yziJoLU4RF6aYzQ0qVSAwUQnhinFOJGQaFdhRZzXuNdUWekbGEVr5ihxKPVak1QCImRE_6VGXQoPCpWOQNHHoeWSfggnbGmXup4QBG-iox-6XBNvT79FhO2XSnF-zZSX1y_pa3hxDtK4kN10-wR0BZINmR2P0UuZxQ35ahZ0VAk1ABLZajrbJb2uSDiXEA1ty1VMUW3LKGXbe_g1kd1iexabr7x0qdMMJg_mLh1TtS9M7dkagreKn0gngpOSna4PVGnj7yCHcK-xDF5lQtc6JRZL3fN1H7FQix46_JTLZQpOa34Hsuhbi5IQBEooaQT-pUQ4_gP1fstl7yQr9Vl6zOk_qv0pDXyqGEcy5I3YMfvb4vzeK3JVQzH4oU7WbIoo5Bdb6-kWcIKgsoE0EAPuq0Tw8xrTGn-7BRVDtDDJMHlyvc4-X-k3exS521oYBrdvgAVlqJ-3SWGtX8blYg9vxC_MksZ0ZuoQspmb3WQlm-6HO8WJl9GapkiPjjzA7ksb5Q7NknuSgiPKo9k8ndgckSrFQ8AqXMMYC6v3wfqU1AJXCQA0MQHqqBqHtil-VzAuQklvRTLkwH-VsxWmft3-4YWy8-foz227V6lyJ-mQfKT6yVyUZQJBaPcLHk5CT2YBeoTJzCrAEGE5CDeM1JRy2D8GWr0N25a6_SVGgwVXMfOWjAIg_phfpCllbEaOfKH2BzLKcoskHs53QFCiSo6XDwI4EruyXruelLfcZi7v74FyXulVJCx_NpadNiqvJ8RqnGYeA670ouvPutITav3yhAJdMfB4n0UHR1U6XfnCJHTnFqsEkIzopK2auAyo6Ujr4Jkr1h9ULtcdPljpHXje_1u_Hgs__nv3LfCn4uNfr6Zr_wio7sZycmG6LVYQfF6P8TKckh4vIaTKR-A9m_WQekvmc6BvdcIVozM5x6hAqdqx7lu0snSOPeSobbhhEujG9YwOvwqM1pgyOIUndymdyEjJ0-AhDQV_0J-2tOx8ylxgfv9tDs9zo7E6tXebJnC3sPmJCXCverRROD6OcE2VYRXVeAQtU7njZdmzhBSFCW1J-ocZzqbx-m1tfA9IqJI6JcMxLxP_N1OuygxTGW3Yr4u5kW7OOQaoRgTuqAuJHtE43712ycAl72Afj1DoG2KNAgNQ_oAxufm71kDRYQdNWPpUbsD9dcE9Nwbmy-zENB2gPkLbJo857uaXz-ao3IKQWYFiFfNanrBWe-nvPELC0p7NYfLWEh4kWhFHyN_89aER47Ply2_p5eWrQX3RCCWDqSt8kVNlZYGzcQrFE2Lr6bMVdXuClABO7awRRyPVL1EqDpBxlsgvUcyNC8QovqHuS0AO382-mvuxh8F0Vay7nSkFhjWg7bkoHH3i8xxgiSaTnN4bIUb7Mql4A4OjAHCu9kj3qQt-zUvrCCZ_hLAhaVkm7J18A8NDxRdxRIyvnBaOJ7D_eFaQo4reCZee8P1vmfcKeOW1s_c-vgQ5VulAIJND6PHFKmLJEq2bssZRdM7kT85Ub0c1wQV1lt2ROKryonY8ZunfgpImv-3ofzdDvNDo9yd0c0vcKo-FmjJY_e8zbYHm97YhqHrpWzOgiLeRPowqzBW3PSFMrbjLRCloOuCf4IWudOfAC1T1nNtZMX6fU7AXNC_oJM3AMAowW_WKdrf2rDTWhl8SNP1teR1Qd4UCjXl0pPfVnsc8aI2b5YqrEEsw5tkvqYtN/https://www.amazon.fr/dp/B0BTYT4G47/"
+        }
     }
 ]
