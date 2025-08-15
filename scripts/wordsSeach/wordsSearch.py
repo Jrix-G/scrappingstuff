@@ -157,91 +157,9 @@ def txtWand():
                 f2.write(stripped_line + "\n")
                 unique_lines.add(stripped_line)
 
-"""
-def scrappingAli(productName):
-    productName = productName.replace(" ", "-")
-    search_url = f"https://fr.aliexpress.com/w/wholesale-{productName}.html?spm=a2g0o.productlist.search.0"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                    "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/115.0.0.0 Safari/537.36",
-        "Accept-Language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-        "Connection": "keep-alive",
-        "Upgrade-Insecure-Requests": "1",
-        "Referer": "https://www.amazon.fr/",
-        "Cache-Control": "max-age=0",
-    }
-    
-    request = requests.get(search_url, headers=headers)
-    soup = BeautifulSoup(request.text, 'html.parser')
-    
-    results = []
-    
-    print(soup)
-    for a in soup.find_all("a", href=True):
-        print(a)
-"""
-
-def scrappingAli(productName, max_items=20):
-    productName = productName.replace(" ", "-")
-    url = f"https://fr.aliexpress.com/w/wholesale-{productName}.html"
-
-    options = Options()
-    options.headless = True
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--window-size=1920,1080")
-
-    driver = webdriver.Chrome(options=options)
-    driver.get(url)
-
-    # Attendre que les éléments produits apparaissent
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_all_elements_located((By.CSS_SELECTOR, "a[href*='/item/']"))
-    )
-
-    # Scroll pour charger plus d'items
-    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
-
-    results = []
-    items = driver.find_elements(By.CSS_SELECTOR, "a[href*='/item/']")
-
-    count = 0
-    for item in items:
-        try:
-            link = item.get_attribute("href")
-            title = item.get_attribute("title") or item.text
-
-            # Sélecteur plus général pour le prix
-            try:
-                price_elem = item.find_element(By.CSS_SELECTOR, "[class*='price']")
-                price = price_elem.text
-            except:
-                price = "N/A"
-
-            results.append({"title": title, "price": price, "link": link})
-            count += 1
-            if count >= max_items:
-                break
-        except:
-            continue
-
-    driver.quit()
-    return results
 
 
-products = scrappingAli("smartphone", max_items=10)
-print("Items")
-for p in products:
-    print("Item", p)
-    
 if __name__ == "__main__":
-    
-    """
     data = scrapper(startURL, maxPAGES)
     
     file_path = "./scripts/wordsSeach/words.json"
@@ -259,4 +177,3 @@ if __name__ == "__main__":
     
     with open("./scripts/wordsSeach/words.json", "w", encoding="utf-8") as f:
             json.dump(existing_data, f, ensure_ascii=False, indent=4)
-    """
