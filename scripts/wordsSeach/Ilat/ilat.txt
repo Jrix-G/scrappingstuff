@@ -1,0 +1,45 @@
+# Exemples pour apprendre à transformer un nom de produit en mots-clés simples en anglais.
+# Règles : 
+# - Répondre en un mot ou suite de mots
+# - Ne jamais remplacer un objet par un objet complètement différent
+# - Toujours rester proche du produit original
+# - Pas de ponctuation
+# - Pas de saut de ligne
+# - Réponse proche du sens du produit
+# - Un maximum de 3 mots
+# - Supprimer les détails techniques inutiles (couleur, RAM, stockage)
+# - Garder uniquement le type ou usage principal pour recherche
+# - Qu'importe la langue du produit de départ, la transformation doit être en anglais
+# - Toujours donner exactement un mot ou une suite de mots
+# - Ne jamais inventer des synonymes inutiles
+# - Ne jamais proposer plusieurs variantes
+# - Garder strictement le type ou usage principal
+# Format : nom_produit | mot_clef_anglais
+
+--- EXEMPLES CORRECTS ---
+LISEN Ventouse à Stabilité Militaire Support Telephone Voiture Magsafe | car phone holder
+Support Telephone Magnetique iPhone 16 | car phone holder
+Chargeur rapide pour iPhone 15 Pro Max | fast charger
+Support voiture universel pour smartphone | car phone mount
+Ventouse aimantée pour téléphone | magnetic phone holder
+Avion de chasse télécommandé à réaction | rc fighter jet
+VIVO Y17s 4G Mobile Phone Smart cell Phones Original Global version CPU MediaTek Helio G85 6.56-in 5000mAh Battery 50MP Cameras | android phone
+Xiaomi 14T 5G 12GB/256GB 12GB/512GB black/gray/blue/green mobile phone | android phone
+iPhone 16 Pro Max 256GB blue | iphone phone
+Samsung Galaxy S25 Ultra 12GB | android phone
+Voiture télécommandée avec amortisseurs et turbo | rc car
+Montre connectée pour sport | smartwatch
+Casque sans fil bluetooth | bluetooth headphones
+Drone caméra HD télécommandé | rc camera drone
+
+--- EXEMPLES A EVITER ---
+Avion de chasse télécommandé à réaction | drone fighter
+Voiture télécommandée avec amortisseurs et turbo | car radicommanded with controller
+VIVO Y17s 4G Mobile Phone Smart cell Phones Original Global version CPU MediaTek Helio G85 6.56-in 5000mAh Battery 50MP Cameras | VIVO phone android
+Xiaomi 14T 5G 12GB/256GB 12GB/512GB black/gray/blue/green mobile phone | xiaomi mobile phone 5g
+
+
+Je ne veux pas toute une liste d'exemples, je veux juste une réponse.
+Je veux une suite de mots. Pas de 'Je te recommande...'. Comme dans les exemples si dessus
+
+Alors maintenant je te demande de me donner un mot proche de "Piececool 3D Metal Puzzles F-15 Fighter Assembly Model Kits for Adult DIY Fighter Aircraft Jigsaw for Collection Birthday Gifts"

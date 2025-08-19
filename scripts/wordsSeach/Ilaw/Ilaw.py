@@ -97,8 +97,8 @@ def Ilaw(wordsSTR):
             searchInput.press("Enter")
 
             first_product_divs = page.query_selector_all("div.g8_b3.search-item-card-wrapper-gallery")
-
             first_product = first_product_divs[0] if first_product_divs else None
+
             if first_product:
                 product_link = first_product.query_selector("a")
                 if product_link:
@@ -152,15 +152,10 @@ def runIlaw():
                 data = json.load(f)
                 for product in data:
                     product_name = product["details"]["product_name"]
-                    product_name = " ".join(product_name.split()[:5])
 
-                    date = datetime.now().strftime("%d-%m-%Y")
-                    product[f"{date}.Ilaw"] = Ilaw(product_name)
-
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=4, ensure_ascii=False)
         newFileName = f"DONE_{file}"
         shutil.move(file_path, os.path.join(products_dir, newFileName))
+        print("New file done")
 
 
 if __name__ == "__main__":
