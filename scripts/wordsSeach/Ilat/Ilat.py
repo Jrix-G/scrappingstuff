@@ -19,6 +19,7 @@ if not apiKey:
     raise ValueError('API Key not set')
 
 client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../../"))
 filePath = os.path.join(project_root, "scripts", "wordsSeach", "Ilat", "ilat.txt")
