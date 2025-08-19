@@ -1,9 +1,12 @@
 import os
 import random
+import shutil
 import time
+from datetime import datetime
 from urllib.parse import quote
 from playwright.sync_api import sync_playwright
 from tqdm import tqdm
+import json
 
 HEADERS_LIST_ILAW = [
     {
@@ -101,7 +104,6 @@ def Ilaw(wordsSTR):
                 if product_link:
                     href = product_link.get_attribute("href")
                     if href:
-                        # Navigation directe vers la page du produit
                         if not href.startswith("http"):
                             href = "https:" + href
                         page.goto(href)
@@ -113,27 +115,53 @@ def Ilaw(wordsSTR):
                         productPrice = page.query_selector('span[class*="price"]')
                         productPrice = productPrice.inner_text() if productPrice else None
                         
-                        productSold = page.query_selector('span[data-pl="reviewer--sold--ytPeoEy"]')
+                        productSold = page.query_selector('span[class*="reviewer--sold"]')
                         productSold = productSold.inner_text() if productSold else None
                         
                         productStars = page.query_selector('strong')
                         productStars = productStars.inner_text() if productStars else None
+                        productStars = productStars.replace("\u202f", "").strip()
+                        url = page.url
 
-                        print("Titre:", productTitle)
-                        print("Prix:", productPrice)
-                        print("Vendu:", productSold)
-                        print("Étoiles:", productStars)
+                        results = [] #Peut-être inutile...
+                        results.append({
+                            "placeProduct": "Aliexpress",
+                            "details": {
+                                "product_name": productTitle,
+                                "product_price": productPrice,
+                                "product_sold": productSold,
+                                "product_stars": productStars,
+                                "url": url
+                            }
+                        })
+                        page.wait_for_timeout(random.randint(1500, 2500))
 
-        page.wait_for_timeout(random.randint(20000, 40000))
-            
+                        return results
+
 def runIlaw():
-    files = os.listdir("scripts/wordsSeach/products")
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    base_dir = os.path.dirname(current_dir)
+    products_dir = os.path.join(base_dir, "products")
+    files = os.listdir(products_dir)
+
     for file in files:
         if not(file.startswith("DONE")):
-            with open("./scripts/wordsSeach/words.txt", "r", encoding="utf-8") as f:
-                lines = f.readlines()
-                for line in lines:
-                    Ilaw(line.strip())
+            file_path = os.path.join(products_dir, file)
+
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for product in data:
+                    product_name = product["details"]["product_name"]
+                    product_name = " ".join(product_name.split()[:5])
+
+                    date = datetime.now().strftime("%d-%m-%Y")
+                    product[f"{date}.Ilaw"] = Ilaw(product_name)
+
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+        newFileName = f"DONE_{file}"
+        shutil.move(file_path, os.path.join(products_dir, newFileName))
+
 
 if __name__ == "__main__":
-    Ilaw("Voiture RC formule 1")
+    runIlaw()
