@@ -145,18 +145,29 @@ def runIlaw():
     files = os.listdir(products_dir)
 
     for file in files:
+        if file.startswith("DONE"):
+            continue
+
         if not(file.startswith("DONE")):
             file_path = os.path.join(products_dir, file)
+
+            if not os.path.isfile(file_path):
+                continue
 
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 for product in data:
                     product_name = product["details"]["product_name"]
+                    product_data = Ilaw(" ".join(product_name.split()[:5]))
+                    while product_data == None:
+                        product_data = Ilaw(" ".join(product_name.split()[:5]))
+                    now = datetime.now()
+                    filename = now.strftime("%d-%m-%Y")
+                    product[f"{filename}.Ilaw"] = product_data
+                with open(file_path, "w", encoding="utf-8") as f:
+                    json.dump(data, f, indent=4, ensure_ascii=False)
 
-        newFileName = f"DONE_{file}"
-        shutil.move(file_path, os.path.join(products_dir, newFileName))
-        print("New file done")
 
-
-if __name__ == "__main__":
-    runIlaw()
+            newFileName = f"DONE_{file}"
+            shutil.move(file_path, os.path.join(products_dir, newFileName))
+            print("New file done")

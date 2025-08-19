@@ -24,16 +24,55 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../../"))
 filePath = os.path.join(project_root, "scripts", "wordsSeach", "Ilat", "ilat.txt")
 
-with open(filePath, "r", encoding="utf-8") as f:
-    dataForIA = f.read()
+def productTrendName():
+    current_dir_s = os.path.dirname(os.path.abspath(__file__))
+    base_dir_s = os.path.dirname(current_dir_s)
+    products_dir_s = os.path.join(base_dir_s, "products")
+    files_s = os.listdir(products_dir_s)
 
-response = client.chat.completions.create(
-    model="llama-3.1-8b-instant",
-    messages=[
-        {"role": "user", "content": dataForIA}
-    ]
-)
-print(response.choices[0].message.content)
+    for file in files_s:
+        if file.startswith("DONE_") and not(file.endswith("_DONE.json")):
+            file_path = os.path.join(products_dir_s, file)
+
+            with open(file_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for product in data:
+                    product_name = product["details"]["product_name"]
+                    new_product_name = callAPI(product_name)
+                    if new_product_name:
+                        dataFromTrend = importDataFromTrends(new_product_name)
+                        if dataFromTrend:
+                            product["trend"] = {
+                                "product_name": new_product_name,
+                                "trend_data": dataFromTrend
+                            }
+
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
+
+            time.sleep(0.1)
+            filename, ext = os.path.splitext(file)
+            newFileName = f"{filename}_DONE{ext}"
+            shutil.move(file_path, os.path.join(products_dir_s, newFileName))
+            print("File Trend down")
+
+def callAPI(productTitle):
+    with open(filePath, "r", encoding="utf-8") as f:
+        dataForIA = f.read()
+
+    prompt = f"""
+    {dataForIA}
+    Produit: {productTitle}
+    Réponse:
+    """
+
+    response = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
+    )
+    return response.choices[0].message.content
 
 vpn_lock = threading.Lock()
 
@@ -78,53 +117,21 @@ HEADERS_LIST = [
 ]
 
 def get_pytrends():
-    headers = {'User-Agent': random.choice(HEADERS_LIST)}
+    headers = random.choice(HEADERS_LIST)
     return TrendReq(hl='fr-FR', tz=360, requests_args={'headers': headers})
 
 def importDataFromTrends(name: str):
-    try:
-        pytrends = get_pytrends()
-        pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
-        data = pytrends.interest_over_time()
-        if 'isPartial' in data.columns:
-            data = data.drop(columns=['isPartial'])
-        result = [
-            {
-                "name": name,
-                "date": index.strftime("%Y-%m-%d %H:%M:%S"),
-                "value": int(row[name])
-            }
-            for index, row in data.iterrows()
-        ]
-
-    except Exception as e:
-        print(f"Erreur pour '{name}': {e}")
-
-
-if __name__ == "__main__":
-    """
-    vpn_thread = threading.Thread(target=vpn_loop, daemon=True)
-    vpn_thread.start()
-
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    base_dir = os.path.dirname(current_dir)
-    products_dir = os.path.join(base_dir, "products")
-    files = os.listdir(products_dir)
-
-    for file in files:
-        if file.startswith("DONE_"):
-            file_path = os.path.join(products_dir, file)
-
-            with open(file_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                for product in data:
-                    product_name = product["details"]["product_name"]
-                    product_name = " ".join(product_name.split()[:5])
-
-
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=4, ensure_ascii=False)
-        newFileName = f"DONE_{file}"
-        shutil.move(file_path, os.path.join(products_dir, newFileName))
-        print("New file done")
-    """
+    pytrends = get_pytrends()
+    pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
+    data = pytrends.interest_over_time()
+    if 'isPartial' in data.columns:
+        data = data.drop(columns=['isPartial'])
+    result = [
+        {
+            "name": name,
+            "date": index.strftime("%Y-%m-%d %H:%M:%S"),
+            "value": int(row[name])
+        }
+        for index, row in data.iterrows()
+    ]
+    return result
