@@ -17,8 +17,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-from scripts.wordsSeach.Ilat.Ilat import productTrendName
-from scripts.wordsSeach.Ilaw.Ilaw import runIlaw
+from Ilat.Ilat import productTrendName
+from Ilaw.Ilaw import runIlaw
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
