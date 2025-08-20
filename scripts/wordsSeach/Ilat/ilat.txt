@@ -9,11 +9,13 @@
 # - Un maximum de 3 mots
 # - Supprimer les détails techniques inutiles (couleur, RAM, stockage)
 # - Garder uniquement le type ou usage principal pour recherche
-# - Qu'importe la langue du produit de départ, la transformation doit être en anglais
+# - Qu'importe la langue du produit de départ, la transformation doit être en français
 # - Toujours donner exactement un mot ou une suite de mots
 # - Ne jamais inventer des synonymes inutiles
 # - Ne jamais proposer plusieurs variantes
 # - Garder strictement le type ou usage principal
+# - Une réponse qu'avec les mots demandés
+# - Aucun commentaires de ta part
 # Format : nom_produit | mot_clef_anglais
 
 --- EXEMPLES CORRECTS ---
@@ -37,6 +39,9 @@ Avion de chasse télécommandé à réaction | drone fighter
 Voiture télécommandée avec amortisseurs et turbo | car radicommanded with controller
 VIVO Y17s 4G Mobile Phone Smart cell Phones Original Global version CPU MediaTek Helio G85 6.56-in 5000mAh Battery 50MP Cameras | VIVO phone android
 Xiaomi 14T 5G 12GB/256GB 12GB/512GB black/gray/blue/green mobile phone | xiaomi mobile phone 5g
+Avion de chasse télécommandé à réaction | drone fighter (Pour rappel, ce produit était en anglais, mais la réponse doit être en français)
+Voiture télécommandée avec amortisseurs et turbo | (Je me suis basé sur les règles fournies : le produit est en anglais, la réponse doit être en français, proche du sens du produit, un maximum de 3 mots, supprimer les détails techniques, garder le type ou usage principal)
+
 
 
 Je ne veux pas toute une liste d'exemples, je veux juste une réponse.

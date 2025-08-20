@@ -38,14 +38,15 @@ def productTrendName():
                 data = json.load(f)
                 for product in data:
                     product_name = product["details"]["product_name"]
-                    new_product_name = callAPI(product_name)
-                    if new_product_name:
-                        dataFromTrend = importDataFromTrends(new_product_name)
-                        if dataFromTrend:
-                            product["trend"] = {
-                                "product_name": new_product_name,
-                                "trend_data": dataFromTrend
-                            }
+                    best_keyword, best_trend = get_best_trend(product_name, max_attempts=3)
+                    if best_trend:
+                        product["trend"] = {
+                            "product_name": best_keyword,
+                            "trend_data": best_trend
+                        }
+                    else:
+                        while not best_trend:
+                            best_keyword, best_trend = get_best_trend(product_name, max_attempts=3)
 
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
@@ -72,6 +73,7 @@ def callAPI(productTitle):
             {"role": "user", "content": prompt}
         ]
     )
+    print("word", response.choices[0].message.content)
     return response.choices[0].message.content
 
 vpn_lock = threading.Lock()
@@ -120,10 +122,30 @@ def get_pytrends():
     headers = random.choice(HEADERS_LIST)
     return TrendReq(hl='fr-FR', tz=360, requests_args={'headers': headers})
 
+def get_best_trend(product_name, max_attempts=3):
+    best_data = None
+    best_score = -1
+    best_keyword = None
+
+    for _ in range(max_attempts):
+        new_product_name = callAPI(product_name)
+        trend_data, score = importDataFromTrends(new_product_name)
+        if trend_data and score > best_score:
+            best_score = score
+            best_data = trend_data
+            best_keyword = new_product_name
+        time.sleep(0.5)
+
+    return best_keyword, best_data
+
 def importDataFromTrends(name: str):
     pytrends = get_pytrends()
     pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
     data = pytrends.interest_over_time()
+
+    if data.empty:
+        return [], 0
+
     if 'isPartial' in data.columns:
         data = data.drop(columns=['isPartial'])
     result = [
@@ -134,4 +156,8 @@ def importDataFromTrends(name: str):
         }
         for index, row in data.iterrows()
     ]
-    return result
+
+    dataScore = sum(row[name] for _, row in data.iterrows())
+    return result, dataScore
+
+productTrendName()
