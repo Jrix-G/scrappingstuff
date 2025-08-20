@@ -173,6 +173,8 @@ def scrapper_playwright(startURL, maxPAGES, delayQuests=3):
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+
         page = browser.new_page()
 
         with tqdm(total=maxPAGES, desc="Scraping Amazon", unit="page") as pbar:

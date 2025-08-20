@@ -114,10 +114,10 @@ def Ilaw(wordsSTR):
                         
                         productPrice = page.query_selector('span[class*="price"]')
                         productPrice = productPrice.inner_text() if productPrice else None
-                        
+
                         productSold = page.query_selector('span[class*="reviewer--sold"]')
                         productSold = productSold.inner_text() if productSold else None
-                        
+
                         productStars = page.query_selector('strong')
                         productStars = productStars.inner_text() if productStars else None
                         productStars = productStars.replace("\u202f", "").strip()
