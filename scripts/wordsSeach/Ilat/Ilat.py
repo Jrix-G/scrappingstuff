@@ -15,8 +15,7 @@ import threading
 from groq import Groq
 from dotenv import load_dotenv
 
-from Greg import callAPI
-from subTunnel import connect_vpn, disconnect_vpn
+from .Greg import callAPI
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../../"))
@@ -107,9 +106,7 @@ def get_best_trend(product_name, max_attempts=3):
     best_keyword = None
 
     for _ in range(max_attempts):
-        disconnect_vpn()
         new_product_name = callAPI(product_name)
-        connect_vpn()
         trend_data, score = importDataFromTrends(new_product_name)
         if trend_data and score > best_score:
             best_score = score
@@ -140,5 +137,3 @@ def importDataFromTrends(name: str):
 
     dataScore = sum(row[name] for _, row in data.iterrows())
     return result, dataScore
-
-productTrendName()

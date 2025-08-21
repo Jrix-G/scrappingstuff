@@ -1,16 +1,19 @@
 import json
 import os
+import time
 from datetime import datetime
 from Vapora.Vapora import scrapper_playwright
 from Ilat.Ilat import productTrendName
 from Ilaw.Ilaw import runIlaw
+from VPN import changeVPN
 
 startURL = "https://www.amazon.fr/K-PRO-Choc-Asiatique-Technique-Professionnelle/dp/B07KZG6Y6B/258-9555804-6729030"
 maxPAGES = 1
 delayQuests = 1
-
+vpn_interval = 50
 
 if __name__ == "__main__":
+
     for i in range(2):
         data = scrapper_playwright(startURL, maxPAGES)
 
@@ -24,5 +27,6 @@ if __name__ == "__main__":
 
         with open(filePath, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
-    runIlaw()
-    productTrendName()
+        runIlaw()
+        productTrendName()
+        changeVPN()
