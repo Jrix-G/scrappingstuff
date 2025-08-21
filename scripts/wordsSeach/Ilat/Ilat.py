@@ -3,6 +3,8 @@ import random
 import shutil
 import time
 from tkinter import simpledialog
+
+import requests
 from pytrends.request import TrendReq
 import json
 import tkinter as tk
@@ -13,12 +15,8 @@ import threading
 from groq import Groq
 from dotenv import load_dotenv
 
-load_dotenv()
-apiKey = Groq(api_key=os.environ.get('GROQ_API_KEY'))
-if not apiKey:
-    raise ValueError('API Key not set')
-
-client = Groq(api_key=os.environ.get('GROQ_API_KEY'))
+from Greg import callAPI
+from subTunnel import connect_vpn, disconnect_vpn
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../../"))
@@ -56,25 +54,6 @@ def productTrendName():
             newFileName = f"{filename}_DONE{ext}"
             shutil.move(file_path, os.path.join(products_dir_s, newFileName))
             print("File Trend down")
-
-def callAPI(productTitle):
-    with open(filePath, "r", encoding="utf-8") as f:
-        dataForIA = f.read()
-
-    prompt = f"""
-    {dataForIA}
-    Produit: {productTitle}
-    Réponse:
-    """
-
-    response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
-    print("word", response.choices[0].message.content)
-    return response.choices[0].message.content
 
 vpn_lock = threading.Lock()
 
@@ -128,7 +107,9 @@ def get_best_trend(product_name, max_attempts=3):
     best_keyword = None
 
     for _ in range(max_attempts):
+        disconnect_vpn()
         new_product_name = callAPI(product_name)
+        connect_vpn()
         trend_data, score = importDataFromTrends(new_product_name)
         if trend_data and score > best_score:
             best_score = score

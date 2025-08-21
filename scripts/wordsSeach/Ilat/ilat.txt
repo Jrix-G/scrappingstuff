@@ -16,33 +16,23 @@
 # - Garder strictement le type ou usage principal
 # - Une réponse qu'avec les mots demandés
 # - Aucun commentaires de ta part
-# Format : nom_produit | mot_clef_anglais
 
+# Format des exemples : nom_produit | mot_clef_français
 --- EXEMPLES CORRECTS ---
-LISEN Ventouse à Stabilité Militaire Support Telephone Voiture Magsafe | car phone holder
-Support Telephone Magnetique iPhone 16 | car phone holder
-Chargeur rapide pour iPhone 15 Pro Max | fast charger
-Support voiture universel pour smartphone | car phone mount
-Ventouse aimantée pour téléphone | magnetic phone holder
-Avion de chasse télécommandé à réaction | rc fighter jet
-VIVO Y17s 4G Mobile Phone Smart cell Phones Original Global version CPU MediaTek Helio G85 6.56-in 5000mAh Battery 50MP Cameras | android phone
-Xiaomi 14T 5G 12GB/256GB 12GB/512GB black/gray/blue/green mobile phone | android phone
-iPhone 16 Pro Max 256GB blue | iphone phone
-Samsung Galaxy S25 Ultra 12GB | android phone
-Voiture télécommandée avec amortisseurs et turbo | rc car
-Montre connectée pour sport | smartwatch
-Casque sans fil bluetooth | bluetooth headphones
-Drone caméra HD télécommandé | rc camera drone
-
---- EXEMPLES A EVITER ---
-Avion de chasse télécommandé à réaction | drone fighter
-Voiture télécommandée avec amortisseurs et turbo | car radicommanded with controller
-VIVO Y17s 4G Mobile Phone Smart cell Phones Original Global version CPU MediaTek Helio G85 6.56-in 5000mAh Battery 50MP Cameras | VIVO phone android
-Xiaomi 14T 5G 12GB/256GB 12GB/512GB black/gray/blue/green mobile phone | xiaomi mobile phone 5g
-Avion de chasse télécommandé à réaction | drone fighter (Pour rappel, ce produit était en anglais, mais la réponse doit être en français)
-Voiture télécommandée avec amortisseurs et turbo | (Je me suis basé sur les règles fournies : le produit est en anglais, la réponse doit être en français, proche du sens du produit, un maximum de 3 mots, supprimer les détails techniques, garder le type ou usage principal)
-
-
+LISEN Ventouse à Stabilité Militaire Support Telephone Voiture Magsafe | support téléphone voiture
+Support Telephone Magnetique iPhone 16 | support téléphone voiture
+Chargeur rapide pour iPhone 15 Pro Max | chargeur rapide
+Support voiture universel pour smartphone | support voiture smartphone
+Ventouse aimantée pour téléphone | support téléphone magnétique
+Avion de chasse télécommandé à réaction | avion radiocommandé chasse
+VIVO Y17s 4G Mobile Phone Smart cell Phones Original Global version CPU MediaTek Helio G85 6.56-in 5000mAh Battery 50MP Cameras | téléphone Android
+Xiaomi 14T 5G 12GB/256GB 12GB/512GB black/gray/blue/green mobile phone | téléphone Android
+iPhone 16 Pro Max 256GB blue | téléphone iPhone
+Samsung Galaxy S25 Ultra 12GB | téléphone Android
+Voiture télécommandée avec amortisseurs et turbo | voiture radiocommandée
+Montre connectée pour sport | montre connectée
+Casque sans fil bluetooth | casque Bluetooth
+Drone caméra HD télécommandé | drone caméra radiocommandé
 
 Je ne veux pas toute une liste d'exemples, je veux juste une réponse.
 Je veux une suite de mots. Pas de 'Je te recommande...'. Comme dans les exemples si dessus

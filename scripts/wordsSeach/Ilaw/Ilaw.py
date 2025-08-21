@@ -109,11 +109,12 @@ def Ilaw(wordsSTR):
                         page.goto(href)
                         page.wait_for_timeout(random.randint(2000, 4000))
 
+                        #Attention changememt régulier product title
                         productTitle = page.query_selector('h1[data-pl="product-title"]')
                         if productTitle and productTitle.is_visible():
                             productTitle = productTitle.inner_text()
                         else:
-                            productTitle = None 
+                            productTitle = None
                         
                         productPrice = page.query_selector('span[class*="price"]')
                         productPrice = productPrice.inner_text() if productPrice else None
