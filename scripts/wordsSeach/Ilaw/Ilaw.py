@@ -5,8 +5,11 @@ import time
 from datetime import datetime
 from urllib.parse import quote
 from playwright.sync_api import sync_playwright
+from selenium.webdriver.common.devtools.v137.fetch import continue_request
 from tqdm import tqdm
 import json
+
+from scripts.wordsSeach.logger import logger
 
 HEADERS_LIST_ILAW = [
     {
@@ -124,7 +127,8 @@ def Ilaw(wordsSTR):
 
                         productStars = page.query_selector('strong')
                         productStars = productStars.inner_text() if productStars else None
-                        productStars = productStars.replace("\u202f", "").strip()
+                        if productStars is not None:
+                            productStars = productStars.replace("\u202f", "").strip()
                         url = page.url
 
                         results = [] #Peut-être inutile...
@@ -163,7 +167,8 @@ def runIlaw():
                 for product in data:
                     product_name = product["details"]["product_name"]
                     product_data = Ilaw(" ".join(product_name.split()[:5]))
-                    while product_data == None:
+                    while product_data is None:
+                        #Page ouverture bug, alors on essaye de l'ouvrir à nouveau
                         product_data = Ilaw(" ".join(product_name.split()[:5]))
                     now = datetime.now()
                     filename = now.strftime("%d-%m-%Y")
@@ -174,4 +179,4 @@ def runIlaw():
 
             newFileName = f"DONE_{file}"
             shutil.move(file_path, os.path.join(products_dir, newFileName))
-            print("New file done")
+            logger.debug(f"{newFileName} -> Aliexpress file created")

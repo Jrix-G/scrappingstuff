@@ -17,6 +17,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
+from scripts.wordsSeach.VPN import changeVPN
+from scripts.wordsSeach.logger import logger
+
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                   "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -187,8 +190,8 @@ def scrapper_playwright(startURL, maxPAGES, delayQuests=3):
 
                     content = page.content()
                     if "captcha" in content.lower():
-                        print(f"CAPTCHA détecté sur {current_url}")
-                        continue
+                        logger.critical("CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN")
+                        changeVPN()
 
                     try:
                         productName = page.query_selector("#productTitle").inner_text().strip()

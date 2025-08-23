@@ -5,6 +5,7 @@ import time
 from tkinter import simpledialog
 
 import requests
+from pytrends.exceptions import TooManyRequestsError
 from pytrends.request import TrendReq
 import json
 import tkinter as tk
@@ -16,6 +17,8 @@ from groq import Groq
 from dotenv import load_dotenv
 
 from .Greg import callAPI
+from scripts.wordsSeach.VPN import (changeVPN)
+from scripts.wordsSeach.logger import logger
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../../"))
@@ -52,28 +55,9 @@ def productTrendName():
             filename, ext = os.path.splitext(file)
             newFileName = f"{filename}_DONE{ext}"
             shutil.move(file_path, os.path.join(products_dir_s, newFileName))
-            print("File Trend down")
+            logger.debug(f"{newFileName} -> Google trend file created")
 
 vpn_lock = threading.Lock()
-
-def changeVPN():
-    with vpn_lock:
-        pyautogui.moveTo(1181, 1057, duration=0.5)
-        pyautogui.click()
-        pyautogui.moveTo(758, 703, duration=0.5)
-        pyautogui.click()
-        time.sleep(2)
-        pyautogui.moveTo(1078, random.randint(500, 750), duration=2)
-        pyautogui.click()
-        pyautogui.moveTo(758, 703, duration=0.5)
-        pyautogui.click()
-        pyautogui.moveTo(1291, 240, duration=0.5)
-        pyautogui.click()
-
-def vpn_loop():
-    while True:
-        changeVPN()
-        time.sleep(5)
 
 HEADERS_LIST = [
     {
@@ -116,24 +100,33 @@ def get_best_trend(product_name, max_attempts=3):
 
     return best_keyword, best_data
 
-def importDataFromTrends(name: str):
-    pytrends = get_pytrends()
-    pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
-    data = pytrends.interest_over_time()
+def importDataFromTrends(name: str, max_retries=2):
+    for attempt in range(max_retries):
+        try:
+            pytrends = get_pytrends()
+            pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
+            data = pytrends.interest_over_time()
 
-    if data.empty:
-        return [], 0
+            if data.empty:
+                return [], 0
 
-    if 'isPartial' in data.columns:
-        data = data.drop(columns=['isPartial'])
-    result = [
-        {
-            "name": name,
-            "date": index.strftime("%Y-%m-%d %H:%M:%S"),
-            "value": int(row[name])
-        }
-        for index, row in data.iterrows()
-    ]
+            if 'isPartial' in data.columns:
+                data = data.drop(columns=['isPartial'])
 
-    dataScore = sum(row[name] for _, row in data.iterrows())
-    return result, dataScore
+            result = [
+                {
+                    "name": name,
+                    "date": index.strftime("%Y-%m-%d %H:%M:%S"),
+                    "value": int(row[name])
+                }
+                for index, row in data.iterrows()
+            ]
+            dataScore = sum(row[name] for _, row in data.iterrows())
+            return result, dataScore
+
+        except TooManyRequestsError:
+            logger.warning("VPN changed  - Error 429 Google")
+            changeVPN()
+            time.sleep(random.randint(17, 20))
+
+    return [], 0
