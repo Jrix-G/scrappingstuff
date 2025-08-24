@@ -1,0 +1,74 @@
+2025-08-24 10:41:44 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:41:44 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:41:49 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:41:49 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:43:31 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:43:31 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:43:35 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:43:35 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:43:47 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:43:47 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:43:53 | DEBUG    | MainThread | DONE_24_08_10_43_53.json -> Aliexpress file created
+2025-08-24 10:43:53 | DEBUG    | MainThread | DONE_24_08_10_43_53.json -> Aliexpress file created
+2025-08-24 10:43:53 | DEBUG    | MainThread | DONE_24_08_10_43_53_DONE.json -> Google trend file created
+2025-08-24 10:43:53 | DEBUG    | MainThread | DONE_24_08_10_43_53_DONE.json -> Google trend file created
+2025-08-24 10:43:57 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:43:57 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:44:01 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:44:01 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:44:34 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:44:34 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:44:39 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:44:39 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:44:58 | DEBUG    | MainThread | DONE_24_08_10_44_58.json -> Aliexpress file created
+2025-08-24 10:44:58 | DEBUG    | MainThread | DONE_24_08_10_44_58.json -> Aliexpress file created
+2025-08-24 10:44:58 | DEBUG    | MainThread | DONE_24_08_10_44_58_DONE.json -> Google trend file created
+2025-08-24 10:44:58 | DEBUG    | MainThread | DONE_24_08_10_44_58_DONE.json -> Google trend file created
+2025-08-24 10:45:03 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:45:03 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:55:55 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:55:55 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:56:21 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:56:21 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:56:25 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:56:25 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-24 10:56:43 | INFO     | MainThread | Starting of the scraper
+2025-08-24 10:56:43 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:02:35 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:02:35 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:03:16 | DEBUG    | MainThread | DONE_24_08_11_02_49.json -> Aliexpress file created
+2025-08-24 11:03:16 | DEBUG    | MainThread | DONE_24_08_11_02_49.json -> Aliexpress file created
+2025-08-24 11:03:21 | DEBUG    | MainThread | DONE_24_08_11_02_49_DONE.json -> Google trend file created
+2025-08-24 11:03:21 | DEBUG    | MainThread | DONE_24_08_11_02_49_DONE.json -> Google trend file created
+2025-08-24 11:03:38 | DEBUG    | MainThread | DONE_24_08_11_03_38.json -> Aliexpress file created
+2025-08-24 11:03:38 | DEBUG    | MainThread | DONE_24_08_11_03_38.json -> Aliexpress file created
+2025-08-24 11:03:38 | DEBUG    | MainThread | DONE_24_08_11_03_38_DONE.json -> Google trend file created
+2025-08-24 11:03:38 | DEBUG    | MainThread | DONE_24_08_11_03_38_DONE.json -> Google trend file created
+2025-08-24 11:08:42 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:08:42 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:08:53 | DEBUG    | MainThread | DONE_24_08_11_08_53.json -> Aliexpress file created
+2025-08-24 11:08:53 | DEBUG    | MainThread | DONE_24_08_11_08_53.json -> Aliexpress file created
+2025-08-24 11:08:53 | DEBUG    | MainThread | DONE_24_08_11_08_53_DONE.json -> Google trend file created
+2025-08-24 11:08:53 | DEBUG    | MainThread | DONE_24_08_11_08_53_DONE.json -> Google trend file created
+2025-08-24 11:20:36 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:20:36 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:21:16 | DEBUG    | MainThread | DONE_24_08_11_20_49.json -> Aliexpress file created
+2025-08-24 11:21:16 | DEBUG    | MainThread | DONE_24_08_11_20_49.json -> Aliexpress file created
+2025-08-24 11:21:21 | DEBUG    | MainThread | DONE_24_08_11_20_49_DONE.json -> Google trend file created
+2025-08-24 11:21:21 | DEBUG    | MainThread | DONE_24_08_11_20_49_DONE.json -> Google trend file created
+2025-08-24 11:21:23 | DEBUG    | MainThread | DONE_24_08_11_21_23.json -> Aliexpress file created
+2025-08-24 11:21:23 | DEBUG    | MainThread | DONE_24_08_11_21_23.json -> Aliexpress file created
+2025-08-24 11:21:23 | DEBUG    | MainThread | DONE_24_08_11_21_23_DONE.json -> Google trend file created
+2025-08-24 11:21:23 | DEBUG    | MainThread | DONE_24_08_11_21_23_DONE.json -> Google trend file created
+2025-08-24 11:23:16 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:23:16 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:24:44 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:24:44 | INFO     | MainThread | Starting of the scraper
+2025-08-24 11:25:44 | DEBUG    | MainThread | DONE_24_08_11_24_59.json -> Aliexpress file created
+2025-08-24 11:25:44 | DEBUG    | MainThread | DONE_24_08_11_24_59.json -> Aliexpress file created
+2025-08-24 11:25:50 | DEBUG    | MainThread | DONE_24_08_11_24_59_DONE.json -> Google trend file created
+2025-08-24 11:25:50 | DEBUG    | MainThread | DONE_24_08_11_24_59_DONE.json -> Google trend file created
+2025-08-24 11:26:50 | DEBUG    | MainThread | DONE_24_08_11_26_04.json -> Aliexpress file created
+2025-08-24 11:26:50 | DEBUG    | MainThread | DONE_24_08_11_26_04.json -> Aliexpress file created
+2025-08-24 11:26:55 | DEBUG    | MainThread | DONE_24_08_11_26_04_DONE.json -> Google trend file created
+2025-08-24 11:26:55 | DEBUG    | MainThread | DONE_24_08_11_26_04_DONE.json -> Google trend file created

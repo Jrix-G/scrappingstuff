@@ -2,6 +2,7 @@ import json
 import re
 import time
 from datetime import datetime
+import random
 from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
@@ -36,112 +37,6 @@ headers = {
 def clean_text(t):
     return t.strip().lower()
 
-number = 0
-
-def scrapper(startURL, maxPAGES, delayQuests=3):
-    global number
-    toVisit = [startURL]
-    visited = set()
-    results = []
-    data = []
-    urlsAlreadyAdded = set()
-
-    with tqdm(total=maxPAGES, desc="Scraping Amazon", unit="page") as pbar:
-        while toVisit and len(results) < maxPAGES:
-            current_url = toVisit.pop(0)
-            if current_url in visited:
-                continue
-
-            visited.add(current_url)
-            # print(f"Visiting: {current_url}")
-            try:
-                number += 1
-                response = requests.get(current_url, headers=headers)
-                print("Status:", response.status_code)
-                html_start = response.text[:2000]  # affiche les 2000 premiers caractères
-                print(html_start)
-                if response.status_code != 200:
-                    print(f"Error fetching {current_url}: {response.status_code}")
-                    continue
-
-                soup = BeautifulSoup(response.text, 'html.parser')
-                results.append(soup)
-                foundSpan = False
-
-                for span in soup.find_all("h2"):
-                    texte = span.get_text(strip=True).lower()
-                    if "détails sur le produit" in texte:
-                        foundSpan = True
-                        break
-
-                if foundSpan == True:
-                    for h1 in soup.find_all("span"):
-                        text = h1.get_text(strip=True).lower()
-
-                        if text.startswith("classement des meilleures ventes d'amazon :"):
-                            globalCate = h1.get_text(strip=True)
-                            globalCate = globalCate.replace("Classement des meilleures ventes d'Amazon :", "").strip()
-
-                            match = re.match(r"^([\d\s]+)\s+en\s+([^(]+)", globalCate)
-
-                            if match:
-                                valueStr = match.group(1).strip()
-                                category = match.group(2).strip()
-                                value = int(valueStr.replace(" ", "").replace("\u202f", "").strip())
-
-                        stringDate = "Date de mise en ligne sur Amazon.fr".lower()
-                        if text.startswith(stringDate):
-                            childs = h1.find_all("span", recursive=False)
-                            if len(childs) >= 2:
-                                releaseDate = childs[1].get_text(strip=True)
-
-                        if text.startswith("pays d'origine"):
-                            childs = h1.find_all("span", recursive=False)
-
-                            if len(childs) >= 2:
-                                region = childs[1].get_text(strip=True)
-
-                    for spanish in soup.find_all("span", id="productTitle"):
-                        productName = spanish.get_text(strip=True)
-
-                    prices = [float(match.group().replace(',', '.'))
-                              for span in soup.find_all("span", class_="aok-offscreen")
-                              if (match := re.search(r'\d+,\d+', span.get_text(strip=True).replace('\xa0', ' ')))]
-                    price = prices[0] if prices else None
-
-                    directUrl = canonicalize_url(current_url)
-                    if directUrl not in urlsAlreadyAdded:
-                        data.append({
-                            "placeProduct": "Amazon",
-                            "details": {
-                                "product_name": productName,
-                                "category": category,
-                                "classement": value,
-                                "region": region,
-                                "releaseDate": releaseDate,
-                                "price": price,
-                                "url": current_url
-                            }
-                        })
-                        urlsAlreadyAdded.add(directUrl)
-
-            except requests.RequestException as e:
-                print(f"Request failed: {e}")
-
-            baseDomain = "amazon.fr"
-
-            for a in soup.find_all("a", href=True):
-                href = urljoin(current_url, a['href'])
-                clean_href = href.split("#")[0].split("?")[0]
-                parsed = urlparse(clean_href)
-                if baseDomain in parsed.netloc and clean_href not in visited:
-                    toVisit.append(clean_href)
-
-            time.sleep(delayQuests)
-            pbar.update(1)
-    return data
-
-
 def canonicalize_url(url):
     parsed = urlparse(url)
     asin_match = re.search(r'/([A-Z0-9]{10})(?:[/?]|$)', parsed.path)
@@ -164,18 +59,116 @@ def txtWand():
                 f2.write(stripped_line + "\n")
                 unique_lines.add(stripped_line)
 
+fingerprints = [
+    {
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "viewport": {"width": 1920, "height": 1080},
+        "locale": "fr-FR",
+        "timezone_id": "Europe/Paris",
+        "device_scale_factor": 1,
+    },
+    {
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                      "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
+        "viewport": {"width": 1440, "height": 900},
+        "locale": "fr-FR",
+        "timezone_id": "Europe/Paris",
+        "device_scale_factor": 2,
+    },
+    {
+        "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) "
+                      "AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Mobile/15E148 Safari/604.1",
+        "viewport": {"width": 390, "height": 844},
+        "locale": "fr-FR",
+        "timezone_id": "Europe/Paris",
+        "device_scale_factor": 3,
+    },
+]
 
-def scrapper_playwright(startURL, maxPAGES, delayQuests=3):
+moves = [
+    {
+        "x": 100,
+        "y": 100 ,
+        "time1": 100,
+        "time2": 200,
+        "uni1": 0.5,
+        "uni2": 1.5
+    },
+    {
+        "x": 200,
+        "y": 200 ,
+        "time1": 50,
+        "time2": 150,
+        "uni1": 0.8,
+        "uni2": 1.1
+    },
+    {
+        "x": 50,
+        "y": 50 ,
+        "time1": 200,
+        "time2": 300,
+        "uni1": 0.8,
+        "uni2": 1.8
+    },
+    {
+        "x": 150,
+        "y": 150 ,
+        "time1": 100,
+        "time2": 200,
+        "uni1": 0.5,
+        "uni2": 1.5
+    },
+    {
+        "x": 300,
+        "y": 300 ,
+        "time1": 300,
+        "time2": 300,
+        "uni1": 0.5,
+        "uni2": 1.5
+    },
+]
+
+def start_browser(playwright, cookies_path=None):
+    fp = random.choice(fingerprints)
+    browser = playwright.chromium.launch(headless=False)
+    if cookies_path and os.path.exists(cookies_path):
+        context = browser.new_context(
+            ignore_https_errors=True,
+            user_agent=fp["user_agent"],
+            viewport=fp["viewport"],
+            locale=fp["locale"],
+            timezone_id=fp["timezone_id"],
+            device_scale_factor=fp["device_scale_factor"],
+            storage_state=cookies_path
+        )
+    else:
+        context = browser.new_context(
+            ignore_https_errors=True,
+            user_agent=fp["user_agent"],
+            viewport=fp["viewport"],
+            locale=fp["locale"],
+            timezone_id=fp["timezone_id"],
+            device_scale_factor=fp["device_scale_factor"],
+        )
+
+    context.add_init_script("""
+        Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+        Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3,4,5]});
+        Object.defineProperty(navigator, 'languages', {get: () => ['fr-FR','fr']});
+        Object.defineProperty(navigator, 'platform', {get: () => 'Win32'});
+    """)
+    page = context.new_page()
+    return browser, context, page
+
+def scrapper_playwright(startURL, maxPAGES, cookies_path="cookies_amazon.json"):
     data = []
     toVisit = [startURL]
     visited = set()
     urlsAlreadyAdded = set()
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
-        context = browser.new_context()
-
-        page = browser.new_page()
+        browser, context, page = start_browser(p, cookies_path)
 
         with tqdm(total=maxPAGES, desc="Scraping Amazon", unit="page") as pbar:
             while toVisit and len(data) < maxPAGES:
@@ -184,14 +177,26 @@ def scrapper_playwright(startURL, maxPAGES, delayQuests=3):
                     continue
 
                 visited.add(current_url)
+
                 try:
                     page.goto(current_url, wait_until="domcontentloaded", timeout=30000)
-                    time.sleep(delayQuests)
+                    time.sleep(random.uniform(1, 3))
+
+                    # Random move choice - Better against CAPTCHAs
+                    movesChoice = random.choice(moves)
+                    page.mouse.move(movesChoice["x"], movesChoice["y"])
+                    page.mouse.move(random.randint(movesChoice["time1"], movesChoice["time2"]), random.randint(movesChoice["time1"], movesChoice["time2"]))
+                    page.evaluate("window.scrollBy(0, window.innerHeight / 2)")
+                    time.sleep(random.uniform(movesChoice["uni1"], movesChoice["uni2"]))
 
                     content = page.content()
                     if "captcha" in content.lower():
                         logger.critical("CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN")
+                        browser.close()
                         changeVPN()
+                        browser, context, page = start_browser(p, cookies_path)
+                        toVisit.insert(0, current_url)
+                        continue
 
                     try:
                         productName = page.query_selector("#productTitle").inner_text().strip()
@@ -260,7 +265,7 @@ def scrapper_playwright(startURL, maxPAGES, delayQuests=3):
                         urlsAlreadyAdded.add(current_url)
 
                     product_pattern = re.compile(r"/(dp|gp/product)/([A-Z0-9]{10})(?:[/?]|$)")
-
+                    context.storage_state(path=cookies_path)
                     anchors = page.query_selector_all("a[href]")
                     for a in anchors:
                         href = a.get_attribute("href")

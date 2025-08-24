@@ -14,9 +14,16 @@ handler.setFormatter(colorlog.ColoredFormatter(
     }
 ))
 
+fileHandler = logging.FileHandler("logger.log", encoding="utf-8")
+fileHandler.setFormatter(logging.Formatter(
+    "%(asctime)s | %(levelname)-8s | %(threadName)s | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+))
+
 logger = logging.getLogger("scraper")
 logger.setLevel(logging.DEBUG)
 logger.addHandler(handler)
+logger.addHandler(fileHandler)
 
 
 """
