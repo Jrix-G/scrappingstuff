@@ -194,7 +194,11 @@ def scrapper_playwright(startURL, maxPAGES, cookies_path="cookies_amazon.json"):
                         logger.critical("CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN")
                         browser.close()
                         changeVPN()
-                        browser, context, page = start_browser(p, cookies_path)
+
+                        if os.path.exists(cookies_path):
+                            os.remove(cookies_path)
+
+                        browser, context, page = start_browser(p, None)
                         toVisit.insert(0, current_url)
                         continue
 

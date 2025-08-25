@@ -13,7 +13,7 @@ from logger import logger
 --- TO DO LIST ---
 -> Problème quand l'objet n'est pas trouvé - Quand la recherche n'aboutie à rien
 -> Problème de None type 
-
+-> Problème de création de fichier quand infos non trouvées -> []
 
 --- DONE LIST ---
 -> Changement VPN lorsque trend 429
@@ -21,10 +21,10 @@ from logger import logger
 """
 
 startURL = "https://www.amazon.fr/Eastpak-Pinnacle-Sac-dos-Noir/dp/B000CRF7M2/258-9555804-6729030?psc=1"
-maxPAGES = 1
+maxPAGES = 3
 delayQuests = 1
 vpn_interval = 50
-VPNActivated = False
+VPNActivated = True
 
 if __name__ == "__main__":
     logger.info("Starting of the scraper")
