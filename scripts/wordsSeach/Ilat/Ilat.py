@@ -17,8 +17,8 @@ from groq import Groq
 from dotenv import load_dotenv
 
 from .Greg import callAPI
-from scripts.wordsSeach.VPN import (changeVPN)
-from scripts.wordsSeach.logger import logger
+from VPN import (changeVPN)
+from logger import logger
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../../"))

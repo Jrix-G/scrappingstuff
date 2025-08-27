@@ -7,6 +7,10 @@ from Ilat.Ilat import productTrendName
 from Ilaw.Ilaw import runIlaw
 from VPN import changeVPN
 from logger import logger
+import sys, os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+
 
 """
 
@@ -17,11 +21,12 @@ from logger import logger
 
 --- DONE LIST ---
 -> Changement VPN lorsque trend 429
+-> Problème lors du main for réglé, nouveau produit rechercé à chaque fois
 
 """
 
 startURL = "https://www.amazon.fr/Eastpak-Pinnacle-Sac-dos-Noir/dp/B000CRF7M2/258-9555804-6729030?psc=1"
-maxPAGES = 2
+maxPAGES = 1
 delayQuests = 1
 vpn_interval = 50
 VPNActivated = False

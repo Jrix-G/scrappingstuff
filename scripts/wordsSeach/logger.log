@@ -136,3 +136,9 @@
 2025-08-27 17:24:03 | DEBUG    | MainThread | DONE_27_08_17_23_13.json -> Aliexpress file created
 2025-08-27 17:24:12 | DEBUG    | MainThread | DONE_27_08_17_23_13_DONE.json -> Google trend file created
 2025-08-27 17:24:12 | DEBUG    | MainThread | DONE_27_08_17_23_13_DONE.json -> Google trend file created
+2025-08-27 17:59:54 | INFO     | MainThread | Starting of the scraper
+2025-08-27 18:00:04 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-27 18:00:25 | DEBUG    | MainThread | DONE_27_08_18_00_25.json -> Aliexpress file created
+2025-08-27 18:00:25 | DEBUG    | MainThread | DONE_27_08_18_00_25_DONE.json -> Google trend file created
+2025-08-27 18:00:29 | DEBUG    | MainThread | DONE_27_08_18_00_29.json -> Aliexpress file created
+2025-08-27 18:00:29 | DEBUG    | MainThread | DONE_27_08_18_00_29_DONE.json -> Google trend file created

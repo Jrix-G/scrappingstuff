@@ -9,7 +9,7 @@ from selenium.webdriver.common.devtools.v137.fetch import continue_request
 from tqdm import tqdm
 import json
 
-from scripts.wordsSeach.logger import logger
+from logger import logger
 
 HEADERS_LIST_ILAW = [
     {

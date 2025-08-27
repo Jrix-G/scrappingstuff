@@ -18,8 +18,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-from scripts.wordsSeach.VPN import changeVPN
-from scripts.wordsSeach.logger import logger
+from VPN import changeVPN
+from logger import logger
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
