@@ -21,15 +21,15 @@ from logger import logger
 """
 
 startURL = "https://www.amazon.fr/Eastpak-Pinnacle-Sac-dos-Noir/dp/B000CRF7M2/258-9555804-6729030?psc=1"
-maxPAGES = 3
+maxPAGES = 2
 delayQuests = 1
 vpn_interval = 50
-VPNActivated = True
+VPNActivated = False
 
 if __name__ == "__main__":
     logger.info("Starting of the scraper")
     for i in range(2):
-        data = scrapper_playwright(startURL, maxPAGES)
+        data, nextUrl = scrapper_playwright(startURL, maxPAGES)
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
         products_dir = os.path.join(current_dir, "products")
@@ -46,3 +46,5 @@ if __name__ == "__main__":
         if VPNActivated:
             logger.warning("Automatic VPN change")
             changeVPN()
+        print(nextUrl)
+        startURL = nextUrl

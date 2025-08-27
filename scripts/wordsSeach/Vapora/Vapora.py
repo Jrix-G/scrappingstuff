@@ -172,6 +172,8 @@ def scrapper_playwright(startURL, maxPAGES, cookies_path="cookies_amazon.json"):
 
         with tqdm(total=maxPAGES, desc="Scraping Amazon", unit="page") as pbar:
             while toVisit and len(data) < maxPAGES:
+                if len(data) >= maxPAGES:
+                    break
                 current_url = toVisit.pop(0)
                 if current_url in visited:
                     continue
@@ -272,19 +274,21 @@ def scrapper_playwright(startURL, maxPAGES, cookies_path="cookies_amazon.json"):
                     context.storage_state(path=cookies_path)
                     anchors = page.query_selector_all("a[href]")
                     for a in anchors:
+                        base_url = str(page.url)
                         href = a.get_attribute("href")
                         if href:
-                            clean_href = href.split("#")[0].split("?")[0]
+                            full_url = urljoin(base_url, href)
+                            clean_href = full_url.split("#")[0].split("?")[0]
                             parsed = urlparse(clean_href)
 
                             if "amazon.fr" in parsed.netloc and product_pattern.search(clean_href):
-                                if clean_href not in visited:
+                                if clean_href not in visited and clean_href not in urlsAlreadyAdded:
                                     toVisit.append(clean_href)
 
                 except Exception as e:
                     print(f"Erreur sur {current_url}: {e}")
 
                 pbar.update(1)
-
         browser.close()
-    return data
+
+    return data, (toVisit[0] if toVisit else None)
