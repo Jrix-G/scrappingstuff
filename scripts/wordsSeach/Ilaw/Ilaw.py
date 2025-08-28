@@ -99,8 +99,13 @@ def Ilaw(wordsSTR):
                 page.wait_for_timeout(random.randint(300, 600))
             searchInput.press("Enter")
 
-            first_product_divs = page.query_selector_all("div.g8_b3.search-item-card-wrapper-gallery")
-            first_product = first_product_divs[0] if first_product_divs else None
+            try:
+                page.wait_for_selector("div.g8_b3.search-item-card-wrapper-gallery", timeout=20000)
+                first_product_divs = page.query_selector_all("div.g8_b3.search-item-card-wrapper-gallery")
+                first_product = first_product_divs[0] if first_product_divs else None
+            except Exception as e:
+                print(f"[SKIP] Produit introuvable : {e}")
+                return None
 
             if first_product:
                 product_link = first_product.query_selector("a")
@@ -109,14 +114,14 @@ def Ilaw(wordsSTR):
                     if href:
                         if not href.startswith("http"):
                             href = "https:" + href
-                        page.goto(href)
+                        page.goto(href, timeout=20000, wait_until="domcontentloaded")
                         page.wait_for_timeout(random.randint(2000, 4000))
 
                         #Attention changememt régulier product title
-                        productTitle = page.query_selector('h1[data-pl="product-title"]')
-                        if productTitle and productTitle.is_visible():
-                            productTitle = productTitle.inner_text()
-                        else:
+                        try:
+                            page.wait_for_selector('h1[data-pl="product-title"]', timeout=20000)
+                            productTitle = page.query_selector('h1[data-pl="product-title"]').inner_text().strip()
+                        except:
                             productTitle = None
                         
                         productPrice = page.query_selector('span[class*="price"]')
@@ -145,6 +150,8 @@ def Ilaw(wordsSTR):
                         page.wait_for_timeout(random.randint(1500, 2500))
 
                         return results
+            else:
+                logger.warning("ALIEXPRESS - Aucun produit trouvé")
 
 def runIlaw():
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -166,16 +173,24 @@ def runIlaw():
                 data = json.load(f)
                 for product in data:
                     product_name = product["details"]["product_name"]
-                    product_data = Ilaw(" ".join(product_name.split()[:5]))
+
+                    try:
+                        product_data = Ilaw(" ".join(product_name.split()[:5]))
+                    except Exception as e:
+                        logger.error(f"Erreur Ali Scrap {e}")
+                        product_data = None
+
                     while product_data is None:
                         #Page ouverture bug, alors on essaye de l'ouvrir à nouveau
                         product_data = Ilaw(" ".join(product_name.split()[:5]))
-                    now = datetime.now()
-                    filename = now.strftime("%d-%m-%Y")
-                    product[f"{filename}.Ilaw"] = product_data
+
+                    if product_data:
+                        now = datetime.now()
+                        filename = now.strftime("%d-%m-%Y")
+                        product[f"{filename}.Ilaw"] = product_data
+
                 with open(file_path, "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=4, ensure_ascii=False)
-
 
             newFileName = f"DONE_{file}"
             shutil.move(file_path, os.path.join(products_dir, newFileName))

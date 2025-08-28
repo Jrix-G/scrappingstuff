@@ -205,11 +205,13 @@ def scrapper_playwright(startURL, maxPAGES, cookies_path="cookies_amazon.json"):
                         continue
 
                     try:
+                        page.wait_for_selector("#productTitle", timeout=10000)
                         productName = page.query_selector("#productTitle").inner_text().strip()
                     except:
                         productName = None
 
                     try:
+                        page.wait_for_selector("span.a-price span.a-offscreen", timeout=8000)
                         price_text = page.query_selector("span.a-price span.a-offscreen").inner_text()
                         price = float(price_text.replace('€', '').replace(',', '.').strip())
                     except:
