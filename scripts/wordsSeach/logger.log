@@ -189,3 +189,14 @@ Call log:
 2025-08-28 17:25:25 | DEBUG    | MainThread | DONE_28_08_17_22_45.json -> Aliexpress file created
 2025-08-28 17:26:09 | DEBUG    | MainThread | DONE_28_08_17_22_45_DONE.json -> Google trend file created
 2025-08-28 17:26:09 | WARNING  | MainThread | Automatic VPN change
+2025-08-28 17:41:53 | INFO     | MainThread | Starting of the scraper
+2025-08-28 17:47:23 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:47:51 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:50:03 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:54:52 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:55:22 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:55:52 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:56:22 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:57:42 | WARNING  | MainThread | Page produit non trouvé
+2025-08-28 17:59:01 | INFO     | MainThread | Starting of the scraper
+2025-08-28 18:07:40 | INFO     | MainThread | Starting of the scraper

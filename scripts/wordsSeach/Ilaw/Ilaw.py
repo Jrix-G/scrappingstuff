@@ -111,6 +111,12 @@ def Ilaw(wordsSTR):
                 logger.warning("Page produit non trouvé")
                 browser.close()
                 return None
+            
+            if page.query_selector("warning-text"):
+                logger.warning("ILAW change vpn")
+                browser.close()
+                return None
+
 
             try:
                 if "punish" in page.url.lower() or "acces denied" in page.content().lower():
