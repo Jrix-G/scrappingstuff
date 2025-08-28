@@ -15,24 +15,25 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 --- TO DO LIST ---
 -> Problème quand l'objet n'est pas trouvé - Quand la recherche n'aboutie à rien
 -> Problème de création de fichier quand infos non trouvées -> []
--Problème changement de VPN lors de ALIEXPRESS et mauvaise détection punish
+-> On purpose: Problème avec les produits non trouvés de aliexpress -> ils sont skip
 
 --- DONE LIST ---
 -> Changement VPN lorsque trend 429
 -> Problème lors du main for réglé, nouveau produit rechercé à chaque fois
 -> Problème de None type 
+-> Problème changement de VPN lors de ALIEXPRESS et mauvaise détection punish
 
 """
 
 startURL = "https://www.amazon.fr/Eastpak-Pinnacle-Sac-dos-Noir/dp/B000CRF7M2/258-9555804-6729030?psc=1"
-maxPAGES = 10
+maxPAGES = 5
 delayQuests = 1
 vpn_interval = 50
 VPNActivated = True
 
 if __name__ == "__main__":
     logger.info("Starting of the scraper")
-    for i in range(2):
+    for i in range(1):
         data, nextUrl = scrapper_playwright(startURL, maxPAGES)
 
         current_dir = os.path.dirname(os.path.abspath(__file__))

@@ -10,6 +10,12 @@ from tqdm import tqdm
 import json
 
 from logger import logger
+from VPN import changeVPN
+
+"""
+from scripts.wordsSeach.VPN import changeVPN
+from scripts.wordsSeach.logger import logger
+"""
 
 HEADERS_LIST_ILAW = [
     {
@@ -90,19 +96,32 @@ def Ilaw(wordsSTR):
             page.wait_for_selector("input.search--keyword--15P08Ji", timeout=20000)
         except Exception as e:
             print("Erreur de chargement :", e)
-        page.wait_for_timeout(random.randint(1000, 2000))
 
+        page.wait_for_timeout(random.randint(1000, 2000))
         searchInput = page.query_selector("input.search--keyword--15P08Ji")
+
         if searchInput:
             for c in wordsSTR:
                 searchInput.type(c)
                 page.wait_for_timeout(random.randint(300, 600))
             searchInput.press("Enter")
 
+            #Page de produit non trouvé - Problème plus tard, car manque d'info sur le produit en question, alors qu'il existe
+            if page.query_selector(".c4_c8"):
+                logger.warning("Page produit non trouvé")
+                browser.close()
+                return None
+
             try:
+                if "punish" in page.url.lower() or "acces denied" in page.content().lower():
+                    logger.critical("Page punish Aliexpress - Changement de VPN")
+                    browser.close()
+                    changeVPN()
+                    return None
                 page.wait_for_selector("div.g8_b3.search-item-card-wrapper-gallery", timeout=20000)
                 first_product_divs = page.query_selector_all("div.g8_b3.search-item-card-wrapper-gallery")
                 first_product = first_product_divs[0] if first_product_divs else None
+
             except Exception as e:
                 print(f"[SKIP] Produit introuvable : {e}")
                 return None

@@ -205,8 +205,27 @@ def scrapper_playwright(startURL, maxPAGES, cookies_path="cookies_amazon.json"):
                         continue
 
                     try:
-                        page.wait_for_selector("#productTitle", timeout=10000)
-                        productName = page.query_selector("#productTitle").inner_text().strip()
+                        productName = None
+
+                        try:
+                            page.wait_for_selector("#productTitle", timeout=5000)
+                            el = page.query_selector("#productTitle")
+                            if el:
+                                productName = el.inner_text().strip()
+                        except:
+                            pass
+
+                        if not productName:
+                            try:
+                                page.wait_for_selector("#title", timeout=5000)
+                                el = page.query_selector("#title")
+                                if el:
+                                    productName = el.inner_text().strip()
+                            except:
+                                pass
+
+                        if not productName:
+                            logger.critical(f"PRODUCT NAME NOT FOUND on {page.url}")
                     except:
                         productName = None
 

@@ -170,3 +170,22 @@ Call log:
 2025-08-28 02:35:51 | DEBUG    | MainThread | DONE_28_08_01_13_34_DONE.json -> Google trend file created
 2025-08-28 02:35:51 | WARNING  | MainThread | Automatic VPN change
 2025-08-28 02:36:11 | WARNING  | MainThread | Automatic VPN change
+2025-08-28 11:19:56 | INFO     | MainThread | Starting of the scraper
+2025-08-28 11:20:35 | INFO     | MainThread | Starting of the scraper
+2025-08-28 11:29:03 | INFO     | MainThread | Starting of the scraper
+2025-08-28 11:29:20 | CRITICAL | MainThread | PRODUCT NAME NOT FOUND
+2025-08-28 11:29:55 | CRITICAL | MainThread | PRODUCT NAME NOT FOUND
+2025-08-28 11:30:20 | CRITICAL | MainThread | PRODUCT NAME NOT FOUND
+2025-08-28 11:30:53 | CRITICAL | MainThread | PRODUCT NAME NOT FOUND
+2025-08-28 11:31:23 | CRITICAL | MainThread | PRODUCT NAME NOT FOUND
+2025-08-28 11:31:53 | CRITICAL | MainThread | PRODUCT NAME NOT FOUND
+2025-08-28 11:32:55 | INFO     | MainThread | Starting of the scraper
+2025-08-28 11:33:00 | CRITICAL | MainThread | CAPTCHA DETECTED ON AMAZON - CHANGE OF VPN
+2025-08-28 11:33:20 | DEBUG    | MainThread | DONE_28_08_11_33_20.json -> Aliexpress file created
+2025-08-28 11:33:20 | DEBUG    | MainThread | DONE_28_08_11_33_20_DONE.json -> Google trend file created
+2025-08-28 11:33:20 | WARNING  | MainThread | Automatic VPN change
+2025-08-28 11:34:59 | INFO     | MainThread | Starting of the scraper
+2025-08-28 17:21:31 | INFO     | MainThread | Starting of the scraper
+2025-08-28 17:25:25 | DEBUG    | MainThread | DONE_28_08_17_22_45.json -> Aliexpress file created
+2025-08-28 17:26:09 | DEBUG    | MainThread | DONE_28_08_17_22_45_DONE.json -> Google trend file created
+2025-08-28 17:26:09 | WARNING  | MainThread | Automatic VPN change
