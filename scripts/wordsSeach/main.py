@@ -29,7 +29,7 @@ startURL = "https://www.amazon.fr/Eastpak-Pinnacle-Sac-dos-Noir/dp/B000CRF7M2/25
 maxPAGES = 5
 delayQuests = 1
 vpn_interval = 50
-VPNActivated = True
+VPNActivated = False
 
 if __name__ == "__main__":
     logger.info("Starting of the scraper")

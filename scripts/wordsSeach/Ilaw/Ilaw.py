@@ -132,6 +132,15 @@ def Ilaw(wordsSTR):
                 print(f"[SKIP] Produit introuvable : {e}")
                 return None
 
+            if first_product is None:
+                """
+                Pour les versions sur téléphones ou ipad
+                Noms des divs différentes, et produits quand même affichés, mais peut-être il manque un scroll du screen
+                """
+                page.wait_for_selector("div.f3_fn", timeout=20000)
+                first_product_divs = page.query_selector_all("div.f3_fn")
+                first_product = first_product_divs[0] if first_product_divs else None
+
             if first_product:
                 product_link = first_product.query_selector("a")
                 if product_link:
