@@ -8,7 +8,7 @@ from playwright.sync_api import sync_playwright
 from selenium.webdriver.common.devtools.v137.fetch import continue_request
 from tqdm import tqdm
 import json
-
+import random
 from logger import logger
 from VPN import changeVPN
 
@@ -82,6 +82,40 @@ HEADERS_LIST_ILAW = [
     },
 ]
 
+def apply_stealth(page):
+    page.add_init_script("""
+        Object.defineProperty(navigator, 'webdriver', {
+            get: () => undefined
+        });
+    """)
+
+    page.add_init_script("""
+        Object.defineProperty(navigator, 'language', {
+            get: () => 'en-US'
+        });
+    """)
+
+    page.add_init_script("""
+        Object.defineProperty(navigator, 'plugins', {
+            get: () => [1, 2, 3]
+        });
+    """)
+
+    page.add_init_script("""
+        const originalQuery = window.navigator.permissions.query;
+        window.navigator.permissions.query = (parameters) =>
+            parameters.name === 'notifications'
+                ? Promise.resolve({ state: Notification.permission })
+                : originalQuery(parameters);
+    """)
+
+    page.add_init_script("""
+        window.chrome = {
+            runtime: {},
+            // Ajoute d'autres propriétés si nécessaire
+        };
+    """)
+
 
 def Ilaw(wordsSTR):
     with sync_playwright() as p:
@@ -91,8 +125,11 @@ def Ilaw(wordsSTR):
             extra_http_headers=random.choice(HEADERS_LIST_ILAW)
         )
         page = context.new_page()
+        apply_stealth(page)
+
         try:
             page.goto("https://fr.aliexpress.com/", timeout=60000, wait_until="domcontentloaded")
+            page.wait_for_timeout(random.randint(1000, 2000)) 
             page.wait_for_selector("input.search--keyword--15P08Ji", timeout=20000)
         except Exception as e:
             print("Erreur de chargement :", e)
@@ -107,16 +144,26 @@ def Ilaw(wordsSTR):
             searchInput.press("Enter")
 
             #Page de produit non trouvé - Problème plus tard, car manque d'info sur le produit en question, alors qu'il existe
-            if page.query_selector(".c4_c8"):
-                logger.warning("Page produit non trouvé")
-                browser.close()
+            try:
+                if page.query_selector(".c4_c8"):
+                    logger.warning("Page produit non trouvé")
+                    browser.close()
+                    return None
+            except Exception as e:
+                logger.error(f"Erreur pendant query_selector .c4_c8 : {e}")
                 return None
-            
+
             if page.query_selector("warning-text"):
                 logger.warning("ILAW change vpn")
                 browser.close()
                 return None
-
+            
+            content = page.content().lower()
+            if "verify you're humain" in content or "checking if you are a roboto" in content or "if you're not a robot" in content:
+                    logger.critical("Page robot Aliexpress - Changement de VPN")
+                    browser.close()
+                    changeVPN()
+                    return None
 
             try:
                 if "punish" in page.url.lower() or "acces denied" in page.content().lower():
@@ -158,8 +205,15 @@ def Ilaw(wordsSTR):
                         except:
                             productTitle = None
                         
+                        randomMouseMovemnts = [100, 50, 200, 250, 300, 350]
+                        page.mouse.wheel(delta_x=0, delta_y=random.choice(randomMouseMovemnts))                        
                         productPrice = page.query_selector('span[class*="price"]')
                         productPrice = productPrice.inner_text() if productPrice else None
+
+                        page.mouse.move(random.randint(100, 800), random.randint(100, 600))
+                        page.wait_for_timeout(random.randint(300, 700))
+                        page.mouse.wheel(delta_x=0, delta_y=random.choice(randomMouseMovemnts))
+                        page.wait_for_timeout(random.randint(500, 1000))
 
                         productSold = page.query_selector('span[class*="reviewer--sold"]')
                         productSold = productSold.inner_text() if productSold else None

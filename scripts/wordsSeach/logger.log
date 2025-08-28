@@ -201,3 +201,22 @@ Call log:
 2025-08-28 17:59:01 | INFO     | MainThread | Starting of the scraper
 2025-08-28 18:07:40 | INFO     | MainThread | Starting of the scraper
 2025-08-28 23:58:00 | INFO     | MainThread | Starting of the scraper
+2025-08-29 00:21:55 | INFO     | MainThread | Starting of the scraper
+2025-08-29 00:29:10 | DEBUG    | MainThread | DONE_29_08_00_23_51.json -> Aliexpress file created
+2025-08-29 00:45:16 | INFO     | MainThread | Starting of the scraper
+2025-08-29 00:47:41 | ERROR    | MainThread | Erreur Ali Scrap Random.uniform() missing 1 required positional argument: 'b'
+2025-08-29 00:48:50 | INFO     | MainThread | Starting of the scraper
+2025-08-29 00:54:05 | INFO     | MainThread | Starting of the scraper
+2025-08-29 01:01:58 | INFO     | MainThread | Starting of the scraper
+2025-08-29 01:04:15 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-29 01:06:16 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-29 01:06:45 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-29 01:11:19 | INFO     | MainThread | Starting of the scraper
+2025-08-29 01:16:25 | ERROR    | MainThread | Erreur Ali Scrap Timeout 30000ms exceeded.
+=========================== logs ===========================
+"load" event fired
+============================================================
+2025-08-29 01:20:14 | INFO     | MainThread | Starting of the scraper
+2025-08-29 01:25:25 | DEBUG    | MainThread | DONE_29_08_01_21_54.json -> Aliexpress file created
+2025-08-29 01:26:28 | DEBUG    | MainThread | DONE_29_08_01_21_54_DONE.json -> Google trend file created
+2025-08-29 01:26:28 | WARNING  | MainThread | Automatic VPN change

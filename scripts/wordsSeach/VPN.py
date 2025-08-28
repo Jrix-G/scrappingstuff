@@ -7,7 +7,7 @@ def update_position():
     while True:
         x, y = pyautogui.position()
         print(f"Position actuelle : X={x}, Y={y}")
-
+        
 def changeVPN():
     """
     #Windows versions
@@ -21,9 +21,9 @@ def changeVPN():
     """
     pyautogui.moveTo(66, 574, duration=0.1)
     pyautogui.click()
-    pyautogui.moveTo(804, 459, duration=0.5)
+    pyautogui.moveTo(1100, 390, duration=2)
     pyautogui.click()
-    pyautogui.moveTo(804, 459, duration=1)
+    pyautogui.moveTo(1100, 390, duration=1)
     pyautogui.click()
 
 
