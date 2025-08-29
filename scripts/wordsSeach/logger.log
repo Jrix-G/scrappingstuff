@@ -237,3 +237,11 @@ Call log:
 2025-08-29 20:47:25 | INFO     | MainThread | Starting of the scraper
 2025-08-29 20:55:29 | DEBUG    | MainThread | DONE_29_08_20_49_26.json -> Aliexpress file created
 2025-08-29 20:55:58 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-29 21:03:27 | INFO     | MainThread | Starting of the scraper
+2025-08-29 21:03:59 | INFO     | MainThread | Starting of the scraper
+2025-08-29 21:05:07 | INFO     | MainThread | Starting of the scraper
+2025-08-29 21:05:22 | INFO     | MainThread | Starting of the scraper
+2025-08-29 23:14:10 | INFO     | MainThread | Starting of the scraper
+2025-08-29 23:15:38 | WARNING  | MainThread | Tentative 1/3 échouée pour EASTPAK PINNACLE Sac à Dos, 38 L
+2025-08-29 23:16:05 | DEBUG    | MainThread | DONE_29_08_23_14_47.json -> Aliexpress file created
+2025-08-29 23:16:09 | DEBUG    | MainThread | DONE_29_08_23_14_47_DONE.json -> Google trend file created

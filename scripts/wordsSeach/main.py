@@ -5,8 +5,8 @@ from datetime import datetime
 from Vapora.Vapora import scrapper_playwright
 from Ilat.Ilat import productTrendName
 from Ilaw.Ilaw import runIlaw
-from VPN import changeVPN
 from logger import logger
+from VPN import changeVPN
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,8 +25,8 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 """
 
-startURL = "https://www.amazon.fr/Eastpak-Pinnacle-Sac-dos-Noir/dp/B000CRF7M2/258-9555804-6729030?psc=1"
-maxPAGES = 5
+startURL = "https://www.amazon.fr/Sony-WH-CH720N-Bluetooth-r%C3%A9duction-dautonomie/dp/B0BTDX26B2/258-9555804-6729030?psc=1"
+maxPAGES = 1
 delayQuests = 1
 vpn_interval = 50
 VPNActivated = True

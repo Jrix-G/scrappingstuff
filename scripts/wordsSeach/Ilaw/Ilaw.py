@@ -268,14 +268,26 @@ def runIlaw():
                         logger.error(f"Erreur Ali Scrap {e}")
                         product_data = None
 
-                    while product_data is None:
+                    maxRetries = 3
+                    attempt = 0
+
+                    while attempt < maxRetries and product_data is None:
                         #Page ouverture bug, alors on essaye de l'ouvrir à nouveau
-                        product_data = Ilaw(" ".join(product_name.split()[:5]))
+                        try:
+                            product_data = Ilaw(" ".join(product_name.split()[:5]))
+                        except Exception as e:
+                            logger.error(f"Erreur Ali Scrap {e}")
+                            product_data = None
+                        attempt += 1
+                        if product_data is None:
+                            logger.warning(f"Tentative {attempt}/{maxRetries} échouée pour {product_name}")
 
                     if product_data:
                         now = datetime.now()
                         filename = now.strftime("%d-%m-%Y")
                         product[f"{filename}.Ilaw"] = product_data
+                    else:
+                        logger.error(f"Échec définitif pour {product_name}, on passe au suivant.")
 
                 with open(file_path, "w", encoding="utf-8") as f:
                     json.dump(data, f, indent=4, ensure_ascii=False)
