@@ -15,6 +15,7 @@ def run_change_vpn():
     result = subprocess.run(['sudo', './connectVPN.sh'], capture_output=True, text=True)
     print("stdout:", result.stdout)
     print("stderr:", result.stderr)
+    time.sleep(15)
 
 def changeVPN():
     if windowsRun:
