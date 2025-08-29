@@ -108,7 +108,7 @@ def importDataFromTrends(name: str, max_retries=2):
             data = pytrends.interest_over_time()
 
             if data.empty:
-                return [], 0
+                return ["No data"], 0
 
             if 'isPartial' in data.columns:
                 data = data.drop(columns=['isPartial'])
@@ -129,4 +129,4 @@ def importDataFromTrends(name: str, max_retries=2):
             changeVPN()
             time.sleep(random.randint(17, 20))
 
-    return [], 0
+    return ["no data"], 0
