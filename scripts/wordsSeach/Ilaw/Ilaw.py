@@ -257,7 +257,7 @@ def runIlaw():
             if not os.path.isfile(file_path):
                 continue
 
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 data = json.load(f)
                 for product in data:
                     product_name = product["details"]["product_name"]
@@ -289,7 +289,7 @@ def runIlaw():
                     else:
                         logger.error(f"Échec définitif pour {product_name}, on passe au suivant.")
 
-                with open(file_path, "w", encoding="utf-8") as f:
+                with open(file_path, "w", encoding="utf-8", errors="ignore") as f:
                     json.dump(data, f, indent=4, ensure_ascii=False)
 
             newFileName = f"DONE_{file}"
