@@ -220,3 +220,20 @@ Call log:
 2025-08-29 01:25:25 | DEBUG    | MainThread | DONE_29_08_01_21_54.json -> Aliexpress file created
 2025-08-29 01:26:28 | DEBUG    | MainThread | DONE_29_08_01_21_54_DONE.json -> Google trend file created
 2025-08-29 01:26:28 | WARNING  | MainThread | Automatic VPN change
+2025-08-29 01:29:25 | INFO     | MainThread | Starting of the scraper
+2025-08-29 01:33:34 | ERROR    | MainThread | Erreur Ali Scrap ElementHandle.type: Timeout 30000ms exceeded.
+Call log:
+  - elementHandle.type("m")
+
+2025-08-29 11:19:48 | INFO     | MainThread | Starting of the scraper
+2025-08-29 11:20:35 | INFO     | MainThread | Starting of the scraper
+2025-08-29 11:49:29 | INFO     | MainThread | Starting of the scraper
+2025-08-29 11:50:33 | CRITICAL | MainThread | PRODUCT NAME NOT FOUND on https://www.amazon.fr/Eastpak-Pinnacle-Sac-dos-Noir/dp/B000CRF7M2/258-9555804-6729030
+2025-08-29 14:13:40 | INFO     | MainThread | Starting of the scraper
+2025-08-29 20:43:54 | INFO     | MainThread | Starting of the scraper
+2025-08-29 20:44:39 | INFO     | MainThread | Starting of the scraper
+2025-08-29 20:45:15 | INFO     | MainThread | Starting of the scraper
+2025-08-29 20:45:34 | INFO     | MainThread | Starting of the scraper
+2025-08-29 20:47:25 | INFO     | MainThread | Starting of the scraper
+2025-08-29 20:55:29 | DEBUG    | MainThread | DONE_29_08_20_49_26.json -> Aliexpress file created
+2025-08-29 20:55:58 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN

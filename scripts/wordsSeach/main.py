@@ -33,6 +33,8 @@ VPNActivated = True
 
 if __name__ == "__main__":
     logger.info("Starting of the scraper")
+    changeVPN()
+    time.sleep(5)
     for i in range(1):
         data, nextUrl = scrapper_playwright(startURL, maxPAGES)
 
