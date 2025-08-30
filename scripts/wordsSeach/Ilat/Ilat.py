@@ -83,7 +83,16 @@ HEADERS_LIST = [
 
 def get_pytrends():
     headers = random.choice(HEADERS_LIST)
-    return TrendReq(hl='fr-FR', tz=360, requests_args={'headers': headers, 'timeout': (10, 60)}, retries=5, backoff_factor=0.5)
+    return TrendReq(
+        hl='fr-FR',
+        tz=360,
+        retries=5,
+        backoff_factor=0.5,
+        requests_args={
+            'headers': headers,
+            'timeout': 60  # <-- juste un int, pas un tuple
+        }
+    )
 
 def get_best_trend(product_name, max_attempts=3):
     best_data = None
