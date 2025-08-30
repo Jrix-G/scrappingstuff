@@ -62,7 +62,7 @@ def generateURL(cookies_path="cookies_amazon.json"):
 
         page.wait_for_selector("a.a-link-normal")
 
-        links = page.query_selector_all("a.a-link-normal")
+        links = page.query_selector_all("a.a-link-normal.aok-block[href*='/dp/']")
         products_urls = []
 
         for link in links:
