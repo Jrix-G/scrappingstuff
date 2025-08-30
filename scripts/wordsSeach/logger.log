@@ -250,3 +250,81 @@ Call log:
 2025-08-30 13:26:32 | WARNING  | MainThread | Tentative 1/3 échouée pour Soundcore Space One Casque Bletooth sans fil avec Réduction de Bruit Active Adaptative by Anker, Réduction des Voix Humaine 2X Plus Efficace, ANC 46H, Contrôle app, LDAC Hi-Res Wireless Audio, Confort
 2025-08-30 13:27:18 | WARNING  | MainThread | Tentative 2/3 échouée pour Soundcore Space One Casque Bletooth sans fil avec Réduction de Bruit Active Adaptative by Anker, Réduction des Voix Humaine 2X Plus Efficace, ANC 46H, Contrôle app, LDAC Hi-Res Wireless Audio, Confort
 2025-08-30 13:29:42 | DEBUG    | MainThread | DONE_30_08_13_21_38.json -> Aliexpress file created
+2025-08-30 13:37:18 | INFO     | MainThread | Starting of the scraper
+2025-08-30 13:44:04 | WARNING  | MainThread | Tentative 1/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-08-30 13:46:07 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir
+2025-08-30 13:46:52 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir
+2025-08-30 13:47:17 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-30 13:47:33 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir
+2025-08-30 13:47:33 | ERROR    | MainThread | Échec définitif pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir, on passe au suivant.
+2025-08-30 13:47:33 | DEBUG    | MainThread | DONE_30_08_13_39_34.json -> Aliexpress file created
+2025-08-30 13:47:33 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 13:47:34 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 13:47:35 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 13:47:36 | CRITICAL | MainThread | Impossible de lire /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp, fichier ignoré
+2025-08-30 13:49:14 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-08-30 13:50:03 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-08-30 13:50:52 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-08-30 13:50:52 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-08-30 13:55:21 | DEBUG    | MainThread | DONE_30_08_00_41_55.json -> Aliexpress file created
+2025-08-30 13:56:09 | DEBUG    | MainThread | DONE_30_08_00_41_55_DONE.json -> Google trend file created
+2025-08-30 13:57:51 | DEBUG    | MainThread | DONE_30_08_00_30_27_DONE.json -> Google trend file created
+2025-08-30 13:58:04 | WARNING  | MainThread | VPN changed  - Error 429 Google
+2025-08-30 14:06:49 | DEBUG    | MainThread | DONE_30_08_13_21_38_DONE.json -> Google trend file created
+2025-08-30 14:11:35 | WARNING  | MainThread | VPN changed  - Error 429 Google
+2025-08-30 14:12:22 | DEBUG    | MainThread | DONE_30_08_13_39_34_DONE.json -> Google trend file created
+2025-08-30 14:12:22 | DEBUG    | MainThread | DONE_30_08_00_25_19_DONE.json -> Google trend file created
+2025-08-30 14:12:22 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 14:15:56 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Argent
+2025-08-30 14:19:12 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir
+2025-08-30 14:20:13 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-30 14:21:18 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WF-LS900 Écouteurs Bluetooth sans Fil à réduction du Bruit - Connexion Bluetooth Multipoint - Ultra Compact et léger - Jusqu'à 20 Heures d'autonomie avec boitier de Charge - Noir
+2025-08-30 14:22:07 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WF-LS900 Écouteurs Bluetooth sans Fil à réduction du Bruit - Connexion Bluetooth Multipoint - Ultra Compact et léger - Jusqu'à 20 Heures d'autonomie avec boitier de Charge - Noir
+2025-08-30 14:23:35 | DEBUG    | MainThread | DONE_30_08_14_14_23.json -> Aliexpress file created
+2025-08-30 14:23:35 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:23:36 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:23:37 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:23:38 | CRITICAL | MainThread | Impossible de lire /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp, fichier ignoré
+2025-08-30 14:24:27 | DEBUG    | MainThread | DONE_30_08_14_14_23_DONE.json -> Google trend file created
+2025-08-30 14:24:27 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 14:30:33 | DEBUG    | MainThread | DONE_30_08_14_27_32.json -> Aliexpress file created
+2025-08-30 14:30:33 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:30:34 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:30:35 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:30:36 | CRITICAL | MainThread | Impossible de lire /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp, fichier ignoré
+2025-08-30 14:31:12 | WARNING  | MainThread | VPN changed  - Error 429 Google
+2025-08-30 14:32:31 | DEBUG    | MainThread | DONE_30_08_14_27_32_DONE.json -> Google trend file created
+2025-08-30 14:32:31 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 14:35:48 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:35:49 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:35:50 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:35:51 | CRITICAL | MainThread | Impossible de lire /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp, fichier ignoré
+2025-08-30 14:37:34 | WARNING  | MainThread | Page produit non trouvé
+2025-08-30 14:39:29 | DEBUG    | MainThread | DONE_30_08_14_35_48.json -> Aliexpress file created
+2025-08-30 14:40:19 | DEBUG    | MainThread | DONE_30_08_14_35_48_DONE.json -> Google trend file created
+2025-08-30 14:40:19 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 14:41:07 | DEBUG    | MainThread | DONE_30_08_14_41_07.json -> Aliexpress file created
+2025-08-30 14:41:07 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:41:08 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:41:09 | ERROR    | MainThread | Erreur JSON lecture /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp : Expecting value: line 1 column 1 (char 0)
+2025-08-30 14:41:10 | CRITICAL | MainThread | Impossible de lire /home/albator/Documents/scrappingstuff/scripts/wordsSeach/products/.DONE_30_08_00_09_50_DONE.json.swp, fichier ignoré
+2025-08-30 14:41:10 | DEBUG    | MainThread | DONE_30_08_14_41_07_DONE.json -> Google trend file created
+2025-08-30 14:41:10 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 14:54:18 | INFO     | MainThread | Starting of the scraper
+2025-08-30 15:00:38 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-30 15:00:54 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir
+2025-08-30 15:01:34 | DEBUG    | MainThread | DONE_30_08_14_56_34.json -> Aliexpress file created
+2025-08-30 15:02:23 | DEBUG    | MainThread | DONE_30_08_14_56_34_DONE.json -> Google trend file created
+2025-08-30 15:02:23 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 15:03:10 | DEBUG    | MainThread | DONE_30_08_15_03_10.json -> Aliexpress file created
+2025-08-30 15:03:10 | DEBUG    | MainThread | DONE_30_08_15_03_10_DONE.json -> Google trend file created
+2025-08-30 15:03:10 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 15:03:28 | DEBUG    | MainThread | DONE_30_08_15_03_28.json -> Aliexpress file created
+2025-08-30 15:03:28 | DEBUG    | MainThread | DONE_30_08_15_03_28_DONE.json -> Google trend file created
+2025-08-30 15:03:28 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 15:03:45 | DEBUG    | MainThread | DONE_30_08_15_03_45.json -> Aliexpress file created
+2025-08-30 15:03:45 | DEBUG    | MainThread | DONE_30_08_15_03_45_DONE.json -> Google trend file created
+2025-08-30 15:03:45 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 15:04:02 | DEBUG    | MainThread | DONE_30_08_15_04_02.json -> Aliexpress file created
+2025-08-30 15:04:03 | DEBUG    | MainThread | DONE_30_08_15_04_02_DONE.json -> Google trend file created
+2025-08-30 15:04:03 | WARNING  | MainThread | Automatic VPN change
