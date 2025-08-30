@@ -52,7 +52,7 @@ def productTrendName():
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
 
-            time.sleep(0.1)
+            time.sleep(random.randint(2, 4))
             filename, ext = os.path.splitext(file)
             newFileName = f"{filename}_DONE{ext}"
             shutil.move(file_path, os.path.join(products_dir_s, newFileName))
