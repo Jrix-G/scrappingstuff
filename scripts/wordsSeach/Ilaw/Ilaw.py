@@ -263,8 +263,9 @@ def runIlaw():
 
             while attempt < maxRetries and data is None:
                 try:
-                    with open(file_path, "r", encoding="utf-8-sig") as f:
-                        data = json.load(f)
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                        raw = f.read()
+                    data = json.loads(raw)
                 except json.JSONDecodeError as e:
                     logger.error(f"Erreur JSON lecture {file_path} : {e}")
                     data = None
