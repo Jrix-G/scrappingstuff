@@ -6,6 +6,7 @@ from tkinter import simpledialog
 
 import requests
 from pytrends.exceptions import TooManyRequestsError
+from requests.exceptions import ReadTimeout, ConnectionError
 from pytrends.request import TrendReq
 import json
 import tkinter as tk
@@ -82,7 +83,7 @@ HEADERS_LIST = [
 
 def get_pytrends():
     headers = random.choice(HEADERS_LIST)
-    return TrendReq(hl='fr-FR', tz=360, requests_args={'headers': headers})
+    return TrendReq(hl='fr-FR', tz=360, requests_args={'headers': headers, 'timeout': (10, 60)}, retries=5, backoff_factor=0.5)
 
 def get_best_trend(product_name, max_attempts=3):
     best_data = None
@@ -124,9 +125,10 @@ def importDataFromTrends(name: str, max_retries=2):
             dataScore = sum(row[name] for _, row in data.iterrows())
             return result, dataScore
 
-        except TooManyRequestsError:
-            logger.warning("VPN changed  - Error 429 Google")
+
+        except (TooManyRequestsError, ReadTimeout, ConnectionError) as e:
+            logger.warning(f"Erreur réseau: {e}, retry après pause")
             changeVPN()
-            time.sleep(random.randint(17, 20))
+            time.sleep(random.randint(10, 20))
 
     return ["no data"], 0
