@@ -114,12 +114,12 @@ def importDataFromTrends(name: str, max_retries=2):
             if pytrends is None:
                 logger.warning(f"Impossible d'initialiser pytrends pour {name}, on passe au suivant.")
                 changeVPN()
-                return ["no data"], 0
+                continue
             try:
                 pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
             except Exception as e:
                 logger.warning(f"Erreur pytrends build_payload pour {name}: {e}")
-                return ["no data"], 0
+                continue
             data = pytrends.interest_over_time()
 
             if data.empty:
