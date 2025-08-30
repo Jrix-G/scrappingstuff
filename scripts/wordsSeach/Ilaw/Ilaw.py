@@ -248,10 +248,10 @@ def runIlaw():
     files = os.listdir(products_dir)
 
     for file in files:
-        if file.startswith("DONE"):
+        if file.startswith("DONE") or file.startswith(".") or not file.endswith(".json"):
             continue
 
-        if not file.startswith("DONE"):
+        if not file.startswith("DONE"): #On peut supprimer ce if, mais j'ai la flemme
             file_path = os.path.join(products_dir, file)
 
             if not os.path.isfile(file_path):
