@@ -113,6 +113,7 @@ def importDataFromTrends(name: str, max_retries=2):
             pytrends = get_pytrends()
             if pytrends is None:
                 logger.warning(f"Impossible d'initialiser pytrends pour {name}, on passe au suivant.")
+                changeVPN()
                 return ["no data"], 0
             try:
                 pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
