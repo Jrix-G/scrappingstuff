@@ -3,7 +3,7 @@ import random
 import shutil
 import time
 from tkinter import simpledialog
-
+from pytrends.request import TrendReq
 import requests
 from pytrends.exceptions import TooManyRequestsError
 from requests.exceptions import ReadTimeout, ConnectionError
@@ -81,7 +81,7 @@ HEADERS_LIST = [
     },
 ]
 
-def get_pytrends():
+def get_pytrends() -> TrendReq:
     headers = random.choice(HEADERS_LIST)
     TrendReq(
         hl='fr-FR',
@@ -111,7 +111,14 @@ def importDataFromTrends(name: str, max_retries=2):
     for attempt in range(max_retries):
         try:
             pytrends = get_pytrends()
-            pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
+            if pytrends is None:
+                logger.warning(f"Impossible d'initialiser pytrends pour {name}, on passe au suivant.")
+                return ["no data"], 0
+            try:
+                pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
+            except Exception as e:
+                logger.warning(f"Erreur pytrends build_payload pour {name}: {e}")
+                return ["no data"], 0
             data = pytrends.interest_over_time()
 
             if data.empty:
