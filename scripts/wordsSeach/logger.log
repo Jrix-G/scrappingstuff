@@ -245,3 +245,4 @@ Call log:
 2025-08-29 23:15:38 | WARNING  | MainThread | Tentative 1/3 échouée pour EASTPAK PINNACLE Sac à Dos, 38 L
 2025-08-29 23:16:05 | DEBUG    | MainThread | DONE_29_08_23_14_47.json -> Aliexpress file created
 2025-08-29 23:16:09 | DEBUG    | MainThread | DONE_29_08_23_14_47_DONE.json -> Google trend file created
+2025-08-30 00:39:32 | INFO     | MainThread | Starting of the scraper

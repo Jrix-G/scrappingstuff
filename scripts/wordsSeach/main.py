@@ -26,7 +26,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 """
 
 startURL = "https://www.amazon.fr/Sony-WH-CH720N-Bluetooth-r%C3%A9duction-dautonomie/dp/B0BTDX26B2/258-9555804-6729030?psc=1"
-maxPAGES = 1
+maxPAGES = 5
 delayQuests = 1
 vpn_interval = 50
 VPNActivated = True
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     logger.info("Starting of the scraper")
     changeVPN()
     time.sleep(5)
-    for i in range(1):
+    for i in range(5):
         data, nextUrl = scrapper_playwright(startURL, maxPAGES)
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
