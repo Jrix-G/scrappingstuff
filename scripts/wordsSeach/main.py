@@ -7,21 +7,23 @@ from Ilat.Ilat import productTrendName
 from Ilaw.Ilaw import runIlaw
 from logger import logger
 from VPN import changeVPN
+from generateUrl import generateURL
 import sys, os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 """
 
 --- TO DO LIST ---
--> Problème quand l'objet n'est pas trouvé - Quand la recherche n'aboutie à rien
 -> Problème de création de fichier quand infos non trouvées -> []
 -> On purpose: Problème avec les produits non trouvés de aliexpress -> ils sont skip
+-> IMPORTANT: problème URL None, dans main, faire une nouvelle fonction quand c'est le cas, trouver un nouvel url à check au pire, random
 
 --- DONE LIST ---
 -> Changement VPN lorsque trend 429
 -> Problème lors du main for réglé, nouveau produit rechercé à chaque fois
 -> Problème de None type 
 -> Problème changement de VPN lors de ALIEXPRESS et mauvaise détection punish
+-> Problème quand l'objet n'est pas trouvé - Quand la recherche n'aboutie à rien
 
 """
 
@@ -50,8 +52,13 @@ if __name__ == "__main__":
             json.dump(data, f, ensure_ascii=False, indent=4)
         runIlaw()
         productTrendName()
+
         if VPNActivated:
             logger.warning("Automatic VPN change")
             changeVPN()
-        print(nextUrl)
+
+        if nextUrl is None:
+            nextUrl = generateURL()
+
+        logger.warning(f"Next url is: {nextUrl}")
         startURL = nextUrl
