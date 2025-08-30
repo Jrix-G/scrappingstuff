@@ -251,46 +251,61 @@ def runIlaw():
         if file.startswith("DONE"):
             continue
 
-        if not(file.startswith("DONE")):
+        if not file.startswith("DONE"):
             file_path = os.path.join(products_dir, file)
 
             if not os.path.isfile(file_path):
                 continue
 
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                data = json.load(f)
-                for product in data:
-                    product_name = product["details"]["product_name"]
+            data = None
+            maxRetries = 3
+            attempt = 0
 
+            while attempt < maxRetries and data is None:
+                try:
+                    with open(file_path, "r", encoding="utf-8-sig") as f:
+                        data = json.load(f)
+                except json.JSONDecodeError as e:
+                    logger.error(f"Erreur JSON lecture {file_path} : {e}")
+                    data = None
+                    attempt += 1
+                    time.sleep(1)
+
+            if data is None:
+                logger.critical(f"Impossible de lire {file_path}, fichier ignoré")
+                continue
+
+            for product in data:
+                product_name = product["details"]["product_name"]
+
+                try:
+                    product_data = Ilaw(" ".join(product_name.split()[:5]))
+                except Exception as e:
+                    logger.error(f"Erreur Ali Scrap {e}")
+                    product_data = None
+
+                maxRetries = 3
+                attempt = 0
+
+                while attempt < maxRetries and product_data is None:
                     try:
                         product_data = Ilaw(" ".join(product_name.split()[:5]))
                     except Exception as e:
                         logger.error(f"Erreur Ali Scrap {e}")
                         product_data = None
+                    attempt += 1
+                    if product_data is None:
+                        logger.warning(f"Tentative {attempt}/{maxRetries} échouée pour {product_name}")
 
-                    maxRetries = 3
-                    attempt = 0
+                if product_data:
+                    now = datetime.now()
+                    filename = now.strftime("%d-%m-%Y")
+                    product[f"{filename}.Ilaw"] = product_data
+                else:
+                    logger.error(f"Échec définitif pour {product_name}, on passe au suivant.")
 
-                    while attempt < maxRetries and product_data is None:
-                        #Page ouverture bug, alors on essaye de l'ouvrir à nouveau
-                        try:
-                            product_data = Ilaw(" ".join(product_name.split()[:5]))
-                        except Exception as e:
-                            logger.error(f"Erreur Ali Scrap {e}")
-                            product_data = None
-                        attempt += 1
-                        if product_data is None:
-                            logger.warning(f"Tentative {attempt}/{maxRetries} échouée pour {product_name}")
-
-                    if product_data:
-                        now = datetime.now()
-                        filename = now.strftime("%d-%m-%Y")
-                        product[f"{filename}.Ilaw"] = product_data
-                    else:
-                        logger.error(f"Échec définitif pour {product_name}, on passe au suivant.")
-
-                with open(file_path, "w", encoding="utf-8", errors="ignore") as f:
-                    json.dump(data, f, indent=4, ensure_ascii=False)
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4, ensure_ascii=False)
 
             newFileName = f"DONE_{file}"
             shutil.move(file_path, os.path.join(products_dir, newFileName))
