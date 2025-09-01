@@ -32,11 +32,18 @@ add_tailscale_route() {
     ip route add $TAILSCALE_IP/32 via $GATEWAY dev $IFACE 2>/dev/null
 }
 
+remove_tailscale_route() {
+    ip route del $TAILSCALE_IP/32 via $GATEWAY dev $IFACE 2>/dev/null
+}
+
 if [ -n "$current_iface" ]; then
     echo "VPN actif sur interface: $current_iface"
     current_config_file="$WG_DIR/$current_iface.conf"
 
     new_config=$(choose_random_config "$current_config_file")
+
+    echo "Suppression de la route Tailscale..."
+    remove_tailscale_route
 
     echo "Déconnexion de l'interface actuelle..."
     sudo wg-quick down "$current_iface"
@@ -44,11 +51,12 @@ if [ -n "$current_iface" ]; then
     echo "Connexion avec la config : $new_config"
     sudo wg-quick up "$new_config"
 
+    echo "Ajout de la route Tailscale..."
     add_tailscale_route
 else
     echo "Pas de VPN actif, connexion aléatoire."
     new_config=${configs[RANDOM % ${#configs[@]}]}
-    sudo wg-quick up "$new_config"
 
+    sudo wg-quick up "$new_config"
     add_tailscale_route
 fi
