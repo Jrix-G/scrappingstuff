@@ -1,6 +1,9 @@
 #!/bin/bash
 
 WG_DIR="/etc/wireguard"
+TAILSCALE_IP="100.87.86.58"
+GATEWAY=$(ip route | grep default | awk '{print $3}')
+IFACE=$(ip route | grep default | awk '{print $5}')
 
 configs=($(ls $WG_DIR/*.conf 2>/dev/null))
 if [ ${#configs[@]} -eq 0 ]; then
@@ -25,10 +28,14 @@ choose_random_config() {
     fi
 }
 
+add_tailscale_route() {
+    ip route add $TAILSCALE_IP/32 via $GATEWAY dev $IFACE 2>/dev/null
+}
+
 if [ -n "$current_iface" ]; then
     echo "VPN actif sur interface: $current_iface"
     current_config_file="$WG_DIR/$current_iface.conf"
-    
+
     new_config=$(choose_random_config "$current_config_file")
 
     echo "Déconnexion de l'interface actuelle..."
@@ -36,9 +43,12 @@ if [ -n "$current_iface" ]; then
 
     echo "Connexion avec la config : $new_config"
     sudo wg-quick up "$new_config"
+
+    add_tailscale_route
 else
     echo "Pas de VPN actif, connexion aléatoire."
-     new_config=${configs[RANDOM % ${#configs[@]}]}
+    new_config=${configs[RANDOM % ${#configs[@]}]}
     sudo wg-quick up "$new_config"
-fi
 
+    add_tailscale_route
+fi
