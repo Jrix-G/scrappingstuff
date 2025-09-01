@@ -2,6 +2,8 @@
 
 WG_DIR="/etc/wireguard"
 TAILSCALE_IP="100.87.86.58"
+
+# Détecte la passerelle locale et l'interface
 GATEWAY=$(ip route | grep default | awk '{print $3}')
 IFACE=$(ip route | grep default | awk '{print $5}')
 
@@ -22,18 +24,20 @@ choose_random_config() {
         fi
     done
     if [ ${#choices[@]} -eq 0 ]; then
-         echo "$current_config"
+        echo "$current_config"
     else
         echo "${choices[RANDOM % ${#choices[@]}]}"
     fi
 }
 
 add_tailscale_route() {
-    ip route add $TAILSCALE_IP/32 via $GATEWAY dev $IFACE 2>/dev/null
+    if ! ip route | grep -q "$TAILSCALE_IP"; then
+        sudo ip route add $TAILSCALE_IP/32 via $GATEWAY dev $IFACE
+    fi
 }
 
 remove_tailscale_route() {
-    ip route del $TAILSCALE_IP/32 via $GATEWAY dev $IFACE 2>/dev/null
+    sudo ip route del $TAILSCALE_IP/32 2>/dev/null
 }
 
 if [ -n "$current_iface" ]; then
