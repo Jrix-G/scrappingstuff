@@ -1,6 +1,21 @@
 #!/bin/bash
 WG_DIR="/etc/wireguard"
 
+# 🔍 IP fixes des sites à scraper
+AMAZON_IPS="52.95.120.39,52.95.116.113,54.239.33.91"
+ALIEXPRESS_IPS="23.54.143.80"
+TRENDS_IPS="142.251.220.238"
+
+ALLOWED="$AMAZON_IPS,$ALIEXPRESS_IPS,$TRENDS_IPS"
+
+echo "✅ AllowedIPs = $ALLOWED"
+
+# 🔧 Mise à jour de tous les .conf WireGuard
+for conf in $WG_DIR/*.conf; do
+    sudo sed -i "s|^AllowedIPs =.*|AllowedIPs = $ALLOWED|" "$conf"
+done
+
+# 🔀 Choix de la config VPN aléatoire
 configs=($(ls $WG_DIR/*.conf 2>/dev/null))
 if [ ${#configs[@]} -eq 0 ]; then
     echo "Aucun fichier .conf trouvé dans $WG_DIR"
