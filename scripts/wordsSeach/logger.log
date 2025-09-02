@@ -328,3 +328,875 @@ Call log:
 2025-08-30 15:04:02 | DEBUG    | MainThread | DONE_30_08_15_04_02.json -> Aliexpress file created
 2025-08-30 15:04:03 | DEBUG    | MainThread | DONE_30_08_15_04_02_DONE.json -> Google trend file created
 2025-08-30 15:04:03 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 22:33:37 | INFO     | MainThread | Starting of the scraper
+2025-08-30 22:40:12 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-30 22:41:22 | DEBUG    | MainThread | DONE_30_08_22_35_57.json -> Aliexpress file created
+2025-08-30 22:41:33 | WARNING  | MainThread | VPN changed  - Error 429 Google
+2025-08-30 22:42:32 | WARNING  | MainThread | VPN changed  - Error 429 Google
+2025-08-30 22:43:31 | DEBUG    | MainThread | DONE_30_08_22_35_57_DONE.json -> Google trend file created
+2025-08-30 22:43:31 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 22:43:46 | WARNING  | MainThread | Next url is: https://www.amazon.fr/dp/B0C4TJXPNJ/ref=emc_bcc_2_i
+2025-08-30 22:46:05 | DEBUG    | MainThread | DONE_30_08_22_45_06.json -> Aliexpress file created
+2025-08-30 22:46:10 | DEBUG    | MainThread | DONE_30_08_22_45_06_DONE.json -> Google trend file created
+2025-08-30 22:46:10 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 22:46:38 | WARNING  | MainThread | Next url is: https://www.amazon.fr/SPORTBIT-Pompe-Ballon-avec-Aiguilles/dp/B01A425KQW/ref=zg_bs_g_19076599031_d_sccl_29/522-7603200-3736619?psc=1
+2025-08-30 22:53:28 | DEBUG    | MainThread | DONE_30_08_22_48_30.json -> Aliexpress file created
+2025-08-30 22:54:17 | DEBUG    | MainThread | DONE_30_08_22_48_30_DONE.json -> Google trend file created
+2025-08-30 22:54:17 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 22:54:32 | WARNING  | MainThread | Next url is: https://www.amazon.fr/Ballon-Officielle-Volleyball-Int%C3%A9rieur-Ext%C3%A9rieur/dp/B09Q88P3R4/ref=pd_bxgy_d_sccl_2/522-7603200-3736619
+2025-08-30 23:00:19 | WARNING  | MainThread | Page produit non trouvé
+2025-08-30 23:01:10 | DEBUG    | MainThread | DONE_30_08_22_56_12.json -> Aliexpress file created
+2025-08-30 23:01:58 | DEBUG    | MainThread | DONE_30_08_22_56_12_DONE.json -> Google trend file created
+2025-08-30 23:01:58 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 23:02:14 | WARNING  | MainThread | Next url is: https://www.amazon.fr/Ballon-Officielle-Volleyball-Int%C3%A9rieur-Ext%C3%A9rieur/dp/B09Q88P3R4/ref=pd_bxgy_d_sccl_2/${sign-in-url}
+2025-08-30 23:02:46 | DEBUG    | MainThread | DONE_30_08_23_02_46.json -> Aliexpress file created
+2025-08-30 23:02:46 | DEBUG    | MainThread | DONE_30_08_23_02_46_DONE.json -> Google trend file created
+2025-08-30 23:02:46 | WARNING  | MainThread | Automatic VPN change
+2025-08-30 23:30:53 | INFO     | MainThread | Starting of the scraper
+2025-08-30 23:39:48 | DEBUG    | MainThread | DONE_30_08_23_34_30.json -> Aliexpress file created
+2025-08-30 23:52:54 | INFO     | MainThread | Starting of the scraper
+2025-08-30 23:58:14 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-31 00:00:20 | DEBUG    | MainThread | DONE_30_08_23_55_09.json -> Aliexpress file created
+2025-08-31 00:02:00 | INFO     | MainThread | Starting of the scraper
+2025-08-31 00:02:52 | DEBUG    | MainThread | DONE_31_08_00_02_52.json -> Aliexpress file created
+2025-08-31 00:04:57 | INFO     | MainThread | Starting of the scraper
+2025-08-31 00:10:10 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-31 00:13:06 | DEBUG    | MainThread | DONE_31_08_00_07_11.json -> Aliexpress file created
+2025-08-31 00:19:02 | INFO     | MainThread | Starting of the scraper
+2025-08-31 00:24:34 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-08-31 00:27:45 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-31 00:28:52 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir
+2025-08-31 00:29:34 | DEBUG    | MainThread | DONE_31_08_00_21_16.json -> Aliexpress file created
+2025-08-31 00:33:59 | INFO     | MainThread | Starting of the scraper
+2025-08-31 00:41:31 | DEBUG    | MainThread | DONE_31_08_00_36_14.json -> Aliexpress file created
+2025-08-31 00:41:32 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:32 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:33 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:34 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:35 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:36 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:37 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:38 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:39 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:41:40 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque sans fil, on passe au suivant.
+2025-08-31 00:41:47 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque sans fil, on passe au suivant.
+2025-08-31 00:41:53 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:42:00 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteurs sans fil, on passe au suivant.
+2025-08-31 00:42:07 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteur sans fil, on passe au suivant.
+2025-08-31 00:42:14 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteurs Bluetooth, on passe au suivant.
+2025-08-31 00:42:15 | DEBUG    | MainThread | DONE_31_08_00_36_14_DONE.json -> Google trend file created
+2025-08-31 00:42:22 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:42:29 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:42:35 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:42:42 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque filtre sons, on passe au suivant.
+2025-08-31 00:42:49 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:42:56 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:43:02 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:43:09 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:43:16 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:43:22 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-08-31 00:43:29 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:43:37 | WARNING  | MainThread | Impossible d'initialiser pytrends pour etui casque bluetooth, on passe au suivant.
+2025-08-31 00:43:44 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteurs sans fil, on passe au suivant.
+2025-08-31 00:43:51 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteurs Bluetooth, on passe au suivant.
+2025-08-31 00:43:58 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteurs Bluetooth, on passe au suivant.
+2025-08-31 00:43:58 | DEBUG    | MainThread | DONE_30_08_23_55_09_DONE.json -> Google trend file created
+2025-08-31 00:44:04 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:48:06 | INFO     | MainThread | Starting of the scraper
+2025-08-31 00:56:00 | DEBUG    | MainThread | DONE_31_08_00_50_26.json -> Aliexpress file created
+2025-08-31 00:56:02 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:56:20 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque bluetooth noir, on passe au suivant.
+2025-08-31 00:56:36 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:56:54 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 00:57:11 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque bluetooth, on passe au suivant.
+2025-08-31 00:57:46 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque bluetooth, on passe au suivant.
+2025-08-31 00:58:02 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque audio, on passe au suivant.
+2025-08-31 00:58:20 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque sans fil bluetooth, on passe au suivant.
+2025-08-31 00:58:37 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-08-31 00:58:54 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-08-31 00:59:11 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 00:59:27 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 01:08:54 | INFO     | MainThread | Starting of the scraper
+2025-08-31 01:15:15 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-08-31 01:16:15 | WARNING  | MainThread | Tentative 1/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-08-31 01:19:46 | DEBUG    | MainThread | DONE_31_08_01_11_22.json -> Aliexpress file created
+2025-08-31 01:19:47 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:20:03 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:20:20 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:20:44 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:21:01 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:21:17 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:21:35 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:21:51 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:22:08 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:22:31 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:22:48 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque bluetooth, on passe au suivant.
+2025-08-31 01:23:11 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque bluetooth, on passe au suivant.
+2025-08-31 01:23:28 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 01:23:44 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-08-31 01:24:01 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-08-31 01:24:36 | WARNING  | MainThread | Erreur réseau: HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/explore/?geo=FR (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0xffff8910d450>: Failed to resolve 'trends.google.com' ([Errno -3] Temporary failure in name resolution)")), retry après pause
+2025-08-31 01:25:13 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:25:28 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:25:46 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque sonore, on passe au suivant.
+2025-08-31 01:26:01 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque sonore, on passe au suivant.
+2025-08-31 01:26:18 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque sans fil, on passe au suivant.
+2025-08-31 01:26:33 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque sans fil, on passe au suivant.
+2025-08-31 01:27:08 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-08-31 01:27:24 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-08-31 01:27:41 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteurs sans fil, on passe au suivant.
+2025-08-31 01:28:04 | WARNING  | MainThread | Impossible d'initialiser pytrends pour écouteurs sans fil, on passe au suivant.
+2025-08-31 01:40:55 | INFO     | MainThread | Starting of the scraper
+2025-08-31 01:41:51 | DEBUG    | MainThread | DONE_31_08_01_41_51.json -> Aliexpress file created
+2025-08-31 01:41:53 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casse tête Bluetooth, on passe au suivant.
+2025-08-31 01:42:10 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casse tête Bluetooth, on passe au suivant.
+2025-08-31 01:42:27 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-08-31 01:42:50 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-01 18:27:50 | INFO     | MainThread | Starting of the scraper
+2025-09-01 18:38:51 | INFO     | MainThread | Starting of the scraper
+2025-09-01 18:52:01 | INFO     | MainThread | Starting of the scraper
+2025-09-01 18:58:01 | INFO     | MainThread | Starting of the scraper
+2025-09-01 19:03:51 | INFO     | MainThread | Starting of the scraper
+2025-09-01 19:09:24 | ERROR    | MainThread | Erreur Ali Scrap ElementHandle.press: Timeout 30000ms exceeded.
+Call log:
+  - elementHandle.press("Enter")
+
+2025-09-01 19:09:53 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-01 19:10:23 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-01 19:10:53 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-01 19:10:53 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-01 19:11:52 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-01 19:12:22 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-01 19:12:51 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-01 19:12:51 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-01 19:13:49 | WARNING  | MainThread | Tentative 1/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-01 19:14:19 | WARNING  | MainThread | Tentative 2/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-01 19:14:48 | WARNING  | MainThread | Tentative 3/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-01 19:14:48 | ERROR    | MainThread | Échec définitif pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir), on passe au suivant.
+2025-09-01 19:15:48 | WARNING  | MainThread | Tentative 1/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-01 19:16:18 | WARNING  | MainThread | Tentative 2/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-01 19:16:48 | WARNING  | MainThread | Tentative 3/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-01 19:16:48 | ERROR    | MainThread | Échec définitif pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7, on passe au suivant.
+2025-09-02 11:32:39 | INFO     | MainThread | Starting of the scraper
+2025-09-02 11:34:30 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:34:59 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:36:15 | INFO     | MainThread | Starting of the scraper
+2025-09-02 11:37:34 | INFO     | MainThread | Starting of the scraper
+2025-09-02 11:41:25 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:42:12 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:42:59 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:42:59 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-02 11:44:35 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:45:22 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:46:09 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:46:09 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-02 11:47:38 | WARNING  | MainThread | Tentative 1/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 11:48:22 | WARNING  | MainThread | Tentative 2/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 11:49:06 | WARNING  | MainThread | Tentative 3/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 11:49:06 | ERROR    | MainThread | Échec définitif pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir), on passe au suivant.
+2025-09-02 11:50:43 | WARNING  | MainThread | Tentative 1/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-02 11:51:33 | WARNING  | MainThread | Tentative 2/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-02 11:52:23 | WARNING  | MainThread | Tentative 3/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-02 11:52:23 | ERROR    | MainThread | Échec définitif pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7, on passe au suivant.
+2025-09-02 11:52:48 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-09-02 11:53:47 | WARNING  | MainThread | Tentative 1/3 échouée pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir
+2025-09-02 11:54:32 | WARNING  | MainThread | Tentative 2/3 échouée pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir
+2025-09-02 11:55:15 | WARNING  | MainThread | Tentative 3/3 échouée pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir
+2025-09-02 11:55:15 | ERROR    | MainThread | Échec définitif pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir, on passe au suivant.
+2025-09-02 11:55:15 | DEBUG    | MainThread | DONE_01_09_19_08_07.json -> Aliexpress file created
+2025-09-02 11:56:51 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:57:40 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:58:28 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 11:58:28 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-02 12:00:00 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:00:47 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:01:34 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:01:34 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-02 12:02:42 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-09-02 12:02:57 | WARNING  | MainThread | Tentative 1/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 12:03:21 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-09-02 12:03:36 | WARNING  | MainThread | Tentative 2/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 12:04:42 | WARNING  | MainThread | Tentative 3/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 12:04:42 | ERROR    | MainThread | Échec définitif pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir), on passe au suivant.
+2025-09-02 12:06:37 | WARNING  | MainThread | Tentative 1/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-02 12:07:33 | WARNING  | MainThread | Tentative 2/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-02 12:08:30 | WARNING  | MainThread | Tentative 3/3 échouée pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7
+2025-09-02 12:08:30 | ERROR    | MainThread | Échec définitif pour TP-Link UB500 Adaptateur Bluetooth 5.3, Dongle Bluetooth 5.3, Clé Bluetooth pour PC, Casque, Souris, Manette, Clavier, Imprimantes, Smartphone, Tablette, Compatible avec Windows 11/10/8.1/7, on passe au suivant.
+2025-09-02 12:10:11 | WARNING  | MainThread | Tentative 1/3 échouée pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir
+2025-09-02 12:11:01 | WARNING  | MainThread | Tentative 2/3 échouée pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir
+2025-09-02 12:11:51 | WARNING  | MainThread | Tentative 3/3 échouée pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir
+2025-09-02 12:11:51 | ERROR    | MainThread | Échec définitif pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir, on passe au suivant.
+2025-09-02 12:11:51 | DEBUG    | MainThread | DONE_01_09_18_42_17.json -> Aliexpress file created
+2025-09-02 12:13:36 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:14:29 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:15:22 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:15:22 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-02 12:15:53 | CRITICAL | MainThread | Page punish Aliexpress - Changement de VPN
+2025-09-02 12:16:56 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:17:43 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:18:30 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:18:30 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-02 12:20:44 | WARNING  | MainThread | Tentative 1/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 12:24:44 | INFO     | MainThread | Starting of the scraper
+2025-09-02 12:38:27 | INFO     | MainThread | Starting of the scraper
+2025-09-02 12:41:00 | INFO     | MainThread | Starting of the scraper
+2025-09-02 12:44:42 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:45:28 | WARNING  | MainThread | Tentative 2/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:46:16 | WARNING  | MainThread | Tentative 3/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 12:46:16 | ERROR    | MainThread | Échec définitif pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir, on passe au suivant.
+2025-09-02 12:47:52 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 15:31:41 | INFO     | MainThread | Starting of the scraper
+2025-09-02 15:37:52 | INFO     | MainThread | Starting of the scraper
+2025-09-02 15:40:48 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:42:49 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 15:43:17 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:45:17 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:45:47 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:47:27 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:47:35 | DEBUG    | MainThread | DONE_02_09_11_39_50.json -> Aliexpress file created
+2025-09-02 15:48:01 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:50:02 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:51:37 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:52:07 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:52:42 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:52:51 | DEBUG    | MainThread | DONE_02_09_15_40_17.json -> Aliexpress file created
+2025-09-02 15:54:23 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 15:54:50 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:55:24 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:57:01 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:57:38 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 15:59:59 | WARNING  | MainThread | Tentative 1/3 échouée pour ProCase Housse pour JBL Tune 520BT 510BT 720BT 760NC 770NC/JBL Live 770NC/ Sony Casque WH-CH720N WH-CH520 WH-1000XM5 WH-1000XM4 WH-XB910N/ Bose 700/ AirPods Max avec 2 Couvre Oreillette Hygiène -Noir
+2025-09-02 16:00:24 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:00:33 | DEBUG    | MainThread | DONE_01_09_18_30_55.json -> Aliexpress file created
+2025-09-02 16:01:00 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:02:41 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:04:58 | WARNING  | MainThread | Tentative 1/3 échouée pour XANAD Étui Casque pour Sony WH-CH720N sans Fil Casque Bluetooth à réduction de Bruit (Noir)
+2025-09-02 16:05:22 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:05:59 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:06:32 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:06:40 | DEBUG    | MainThread | DONE_02_09_12_44_36.json -> Aliexpress file created
+2025-09-02 16:06:40 | DEBUG    | MainThread | DONE_02_09_11_33_31.json -> Aliexpress file created
+2025-09-02 16:07:07 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:09:09 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:10:44 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:11:23 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:12:17 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:12:24 | DEBUG    | MainThread | DONE_01_09_19_01_46.json -> Aliexpress file created
+2025-09-02 16:12:25 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:12:41 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:12:57 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:13:13 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:13:30 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:13:45 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:14:02 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:14:18 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:14:35 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:14:50 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:15:07 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:15:23 | WARNING  | MainThread | Impossible d'initialiser pytrends pour casque Bluetooth, on passe au suivant.
+2025-09-02 16:15:39 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-09-02 16:15:55 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-09-02 16:16:12 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-09-02 16:16:28 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-09-02 16:16:44 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-09-02 16:17:00 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque bluetooth, on passe au suivant.
+2025-09-02 16:17:17 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-09-02 16:17:33 | WARNING  | MainThread | Impossible d'initialiser pytrends pour étui casque Bluetooth, on passe au suivant.
+2025-09-02 16:20:33 | INFO     | MainThread | Starting of the scraper
+2025-09-02 16:21:42 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WH-CH720N - Casque Bluetooth sans Fil à réduction de Bruit - Micro intégré - jusqu'à 35 Heures d'autonomie et Charge Rapide - Noir
+2025-09-02 16:22:10 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:22:19 | DEBUG    | MainThread | DONE_02_09_16_21_36.json -> Aliexpress file created
+2025-09-02 16:22:20 | WARNING  | MainThread | Erreur pytrends build_payload pour casque bluetooth: Retry.__init__() got an unexpected keyword argument 'method_whitelist'
+2025-09-02 16:22:20 | WARNING  | MainThread | Erreur pytrends build_payload pour casque bluetooth: Retry.__init__() got an unexpected keyword argument 'method_whitelist'
+2025-09-02 16:22:21 | WARNING  | MainThread | Erreur pytrends build_payload pour casque Bluetooth sans fil: Retry.__init__() got an unexpected keyword argument 'method_whitelist'
+2025-09-02 16:22:21 | WARNING  | MainThread | Erreur pytrends build_payload pour casque Bluetooth sans fil: Retry.__init__() got an unexpected keyword argument 'method_whitelist'
+2025-09-02 16:22:22 | WARNING  | MainThread | Erreur pytrends build_payload pour casque bluetooth: Retry.__init__() got an unexpected keyword argument 'method_whitelist'
+2025-09-02 16:22:22 | WARNING  | MainThread | Erreur pytrends build_payload pour casque bluetooth: Retry.__init__() got an unexpected keyword argument 'method_whitelist'
+2025-09-02 16:22:27 | DEBUG    | MainThread | DONE_02_09_16_21_36_DONE.json -> Google trend file created
+2025-09-02 16:22:27 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 16:26:54 | INFO     | MainThread | Starting of the scraper
+2025-09-02 16:28:18 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:28:25 | DEBUG    | MainThread | DONE_02_09_16_27_47.json -> Aliexpress file created
+2025-09-02 16:31:34 | INFO     | MainThread | Starting of the scraper
+2025-09-02 16:34:03 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:34:11 | DEBUG    | MainThread | DONE_02_09_16_32_25.json -> Aliexpress file created
+2025-09-02 16:42:07 | INFO     | MainThread | Starting of the scraper
+2025-09-02 16:43:36 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:44:05 | DEBUG    | MainThread | DONE_02_09_16_43_12.json -> Aliexpress file created
+2025-09-02 16:44:11 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+2025-09-02 16:44:27 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/api/widgetdata/multiline?req=%7B%22time%22%3A+%222024-09-02+2025-09-02%22%2C+%22resolution%22%3A+%22WEEK%22%2C+%22locale%22%3A+%22fr%22%2C+%22comparisonItem%22%3A+%5B%7B%22geo%22%3A+%7B%22country%22%3A+%22FR%22%7D%2C+%22complexKeywordsRestriction%22%3A+%7B%22keyword%22%3A+%5B%7B%22type%22%3A+%22BROAD%22%2C+%22value%22%3A+%22casque+Bluetooth%22%7D%5D%7D%7D%5D%2C+%22requestOptions%22%3A+%7B%22property%22%3A+%22%22%2C+%22backend%22%3A+%22IZG%22%2C+%22category%22%3A+0%7D%2C+%22userConfig%22%3A+%7B%22userType%22%3A+%22USER_TYPE_SCRAPER%22%7D%7D&token=APP6_UEAAAAAaLhUO_NPGLRpz2Gz_MDBbXhVs_l4UT7c&tz=360 (Caused by ResponseError('too many 429 error responses'))
+2025-09-02 16:44:27 | WARNING  | MainThread | -> Tentative de changement de VPN + pause longue avant retry...
+2025-09-02 16:45:27 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 16:45:44 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/api/widgetdata/multiline?req=%7B%22time%22%3A+%222024-09-02+2025-09-02%22%2C+%22resolution%22%3A+%22WEEK%22%2C+%22locale%22%3A+%22fr%22%2C+%22comparisonItem%22%3A+%5B%7B%22geo%22%3A+%7B%22country%22%3A+%22FR%22%7D%2C+%22complexKeywordsRestriction%22%3A+%7B%22keyword%22%3A+%5B%7B%22type%22%3A+%22BROAD%22%2C+%22value%22%3A+%22casque+Bluetooth%22%7D%5D%7D%7D%5D%2C+%22requestOptions%22%3A+%7B%22property%22%3A+%22%22%2C+%22backend%22%3A+%22IZG%22%2C+%22category%22%3A+0%7D%2C+%22userConfig%22%3A+%7B%22userType%22%3A+%22USER_TYPE_SCRAPER%22%7D%7D&token=APP6_UEAAAAAaLhUiGMbOfAOBbXQpMjddmiD8bObJvqK&tz=360 (Caused by ResponseError('too many 429 error responses'))
+2025-09-02 16:45:44 | WARNING  | MainThread | -> Tentative de changement de VPN + pause longue avant retry...
+2025-09-02 16:46:55 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 16:47:10 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/api/widgetdata/multiline?req=%7B%22time%22%3A+%222024-09-02+2025-09-02%22%2C+%22resolution%22%3A+%22WEEK%22%2C+%22locale%22%3A+%22fr%22%2C+%22comparisonItem%22%3A+%5B%7B%22geo%22%3A+%7B%22country%22%3A+%22FR%22%7D%2C+%22complexKeywordsRestriction%22%3A+%7B%22keyword%22%3A+%5B%7B%22type%22%3A+%22BROAD%22%2C+%22value%22%3A+%22casque+bluetooth%22%7D%5D%7D%7D%5D%2C+%22requestOptions%22%3A+%7B%22property%22%3A+%22%22%2C+%22backend%22%3A+%22IZG%22%2C+%22category%22%3A+0%7D%2C+%22userConfig%22%3A+%7B%22userType%22%3A+%22USER_TYPE_SCRAPER%22%7D%7D&token=APP6_UEAAAAAaLhU3yhAPu8q29LqAgKaeHImJSdOS51H&tz=360 (Caused by ResponseError('too many 429 error responses'))
+2025-09-02 16:47:10 | WARNING  | MainThread | -> Tentative de changement de VPN + pause longue avant retry...
+2025-09-02 16:48:15 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 16:48:31 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/api/widgetdata/multiline?req=%7B%22time%22%3A+%222024-09-02+2025-09-02%22%2C+%22resolution%22%3A+%22WEEK%22%2C+%22locale%22%3A+%22fr%22%2C+%22comparisonItem%22%3A+%5B%7B%22geo%22%3A+%7B%22country%22%3A+%22FR%22%7D%2C+%22complexKeywordsRestriction%22%3A+%7B%22keyword%22%3A+%5B%7B%22type%22%3A+%22BROAD%22%2C+%22value%22%3A+%22casque+bluetooth%22%7D%5D%7D%7D%5D%2C+%22requestOptions%22%3A+%7B%22property%22%3A+%22%22%2C+%22backend%22%3A+%22IZG%22%2C+%22category%22%3A+0%7D%2C+%22userConfig%22%3A+%7B%22userType%22%3A+%22USER_TYPE_SCRAPER%22%7D%7D&token=APP6_UEAAAAAaLhVL7kKUTGC94it54WuaNipaJMFytm7&tz=360 (Caused by ResponseError('too many 429 error responses'))
+2025-09-02 16:48:31 | WARNING  | MainThread | -> Tentative de changement de VPN + pause longue avant retry...
+2025-09-02 16:49:56 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Safari/605.1.15
+2025-09-02 16:50:15 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/api/widgetdata/multiline?req=%7B%22time%22%3A+%222024-09-02+2025-09-02%22%2C+%22resolution%22%3A+%22WEEK%22%2C+%22locale%22%3A+%22fr%22%2C+%22comparisonItem%22%3A+%5B%7B%22geo%22%3A+%7B%22country%22%3A+%22FR%22%7D%2C+%22complexKeywordsRestriction%22%3A+%7B%22keyword%22%3A+%5B%7B%22type%22%3A+%22BROAD%22%2C+%22value%22%3A+%22casque+Bluetooth%22%7D%5D%7D%7D%5D%2C+%22requestOptions%22%3A+%7B%22property%22%3A+%22%22%2C+%22backend%22%3A+%22IZG%22%2C+%22category%22%3A+0%7D%2C+%22userConfig%22%3A+%7B%22userType%22%3A+%22USER_TYPE_SCRAPER%22%7D%7D&token=APP6_UEAAAAAaLhVlZ9fshYnsTGWUYq29CBESHlSI7RT&tz=360 (Caused by ResponseError('too many 429 error responses'))
+2025-09-02 16:50:15 | WARNING  | MainThread | -> Tentative de changement de VPN + pause longue avant retry...
+2025-09-02 16:50:26 | INFO     | MainThread | Starting of the scraper
+2025-09-02 16:51:48 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 16:52:15 | DEBUG    | MainThread | DONE_02_09_16_51_17.json -> Aliexpress file created
+2025-09-02 16:52:16 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/135.0.7049.53 Mobile/15E148 Safari/604.1
+2025-09-02 16:52:31 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': HTTPSConnectionPool(host='trends.google.com', port=443): Max retries exceeded with url: /trends/api/widgetdata/multiline?req=%7B%22time%22%3A+%222024-09-02+2025-09-02%22%2C+%22resolution%22%3A+%22WEEK%22%2C+%22locale%22%3A+%22fr%22%2C+%22comparisonItem%22%3A+%5B%7B%22geo%22%3A+%7B%22country%22%3A+%22FR%22%7D%2C+%22complexKeywordsRestriction%22%3A+%7B%22keyword%22%3A+%5B%7B%22type%22%3A+%22BROAD%22%2C+%22value%22%3A+%22casque+Bluetooth%22%7D%5D%7D%7D%5D%2C+%22requestOptions%22%3A+%7B%22property%22%3A+%22%22%2C+%22backend%22%3A+%22IZG%22%2C+%22category%22%3A+0%7D%2C+%22userConfig%22%3A+%7B%22userType%22%3A+%22USER_TYPE_SCRAPER%22%7D%7D&token=APP6_UEAAAAAaLhWIMNIONMRLeAH8TWoI9tZOQpW2yLw&tz=360 (Caused by ResponseError('too many 429 error responses'))
+2025-09-02 16:52:31 | WARNING  | MainThread | -> Tentative de changement de VPN + pause longue avant retry...
+2025-09-02 17:00:20 | INFO     | MainThread | Starting of the scraper
+2025-09-02 17:01:52 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 17:02:20 | DEBUG    | MainThread | DONE_02_09_17_01_25.json -> Aliexpress file created
+2025-09-02 17:02:23 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 17:02:23 | WARNING  | MainThread | [IMPORT] Erreur ou 429 détecté pour 'casque Bluetooth': Extra data: line 1 column 4 (char 3)
+2025-09-02 17:02:23 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:02:39 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:02:49 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:02:49 | WARNING  | MainThread | [IMPORT] Erreur ou 429 détecté pour 'casque Bluetooth': Extra data: line 1 column 4 (char 3)
+2025-09-02 17:02:50 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:03:06 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:03:26 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:03:26 | WARNING  | MainThread | [IMPORT] Erreur ou 429 détecté pour 'casque Bluetooth': Extra data: line 1 column 4 (char 3)
+2025-09-02 17:03:26 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:03:42 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:04:28 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+2025-09-02 17:04:28 | WARNING  | MainThread | [IMPORT] Erreur ou 429 détecté pour 'casque Bluetooth': Extra data: line 1 column 4 (char 3)
+2025-09-02 17:04:28 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:04:44 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:17:48 | INFO     | MainThread | Starting of the scraper
+2025-09-02 17:19:23 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 17:19:32 | DEBUG    | MainThread | DONE_02_09_17_18_53.json -> Aliexpress file created
+2025-09-02 17:19:32 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36
+2025-09-02 17:19:32 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:19:32 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:19:48 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:19:58 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Mobile/15E148 Safari/604.1
+2025-09-02 17:19:58 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:19:58 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:20:14 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:20:34 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1
+2025-09-02 17:20:34 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:20:34 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:20:50 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:21:33 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:21:34 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:21:34 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:21:49 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:21:59 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36
+2025-09-02 17:21:59 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:21:59 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:22:15 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:22:35 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Mobile/15E148 Safari/604.1 Ddg/18.3
+2025-09-02 17:22:40 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:22:40 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:22:56 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:23:39 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Mobile/15E148 Safari/604.1
+2025-09-02 17:23:40 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:23:40 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:23:56 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:24:06 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1
+2025-09-02 17:24:06 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:24:06 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:24:22 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:24:42 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+2025-09-02 17:24:42 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:24:42 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:24:58 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:25:43 | DEBUG    | MainThread | DONE_02_09_16_32_25_DONE.json -> Google trend file created
+2025-09-02 17:25:43 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:25:43 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque sans fil': 'headers'
+2025-09-02 17:25:43 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:25:59 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:26:09 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 17:26:09 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque sans fil': 'headers'
+2025-09-02 17:26:09 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:26:25 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:26:45 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 17:26:45 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque sans fil': 'headers'
+2025-09-02 17:26:45 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:27:00 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:27:41 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:27:41 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:27:41 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:27:56 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:28:06 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:28:06 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:28:06 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:28:22 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:28:42 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:28:43 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:28:43 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:28:59 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:29:38 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36 Edg/135.0.0.0
+2025-09-02 17:29:38 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:29:38 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:29:54 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:30:04 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:30:04 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:30:04 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:30:20 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:30:40 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:30:40 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:30:40 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:30:55 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:31:43 | DEBUG    | MainThread | DONE_02_09_17_18_53_DONE.json -> Google trend file created
+2025-09-02 17:31:44 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1
+2025-09-02 17:31:44 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:31:44 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:32:00 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:32:10 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 17:32:10 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:32:10 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:32:25 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:32:45 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1
+2025-09-02 17:32:45 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:32:45 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:33:01 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:33:41 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:33:41 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:33:41 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:33:57 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:34:07 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:34:07 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:34:07 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:34:23 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:34:43 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/363.0.743255906 Mobile/15E148 Safari/604.1
+2025-09-02 17:34:43 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:34:43 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:34:59 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:35:42 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:35:42 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:35:42 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:35:58 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:36:08 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15
+2025-09-02 17:36:08 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:36:08 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:36:24 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:36:44 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36
+2025-09-02 17:36:44 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:36:44 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:36:59 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:37:45 | DEBUG    | MainThread | DONE_02_09_17_01_25_DONE.json -> Google trend file created
+2025-09-02 17:37:46 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:37:46 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:37:46 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:38:01 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:38:11 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:38:12 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:38:12 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:38:27 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:38:47 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0
+2025-09-02 17:38:47 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:38:47 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:39:03 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:39:41 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 17:39:41 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:39:41 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:39:57 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:40:07 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:40:07 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:40:07 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:40:23 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:40:43 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:40:43 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:40:43 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:40:59 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:41:40 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+2025-09-02 17:41:40 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:41:40 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:41:56 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:42:06 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.9521.1985 Mobile Safari/537.36
+2025-09-02 17:42:06 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:42:06 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:42:21 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:42:41 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 17:42:41 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:42:41 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:42:57 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:43:40 | DEBUG    | MainThread | DONE_02_09_16_51_17_DONE.json -> Google trend file created
+2025-09-02 17:43:40 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:43:40 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:43:40 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:43:56 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:44:06 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.4407.1353 Mobile Safari/537.36
+2025-09-02 17:44:06 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:44:06 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:44:22 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:44:42 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.6451.1714 Mobile Safari/537.36
+2025-09-02 17:44:42 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:44:42 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:44:58 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:45:41 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+2025-09-02 17:45:41 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:45:41 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:45:57 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:46:07 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:46:07 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 17:46:07 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:49:18 | INFO     | MainThread | Starting of the scraper
+2025-09-02 17:50:36 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 17:51:03 | DEBUG    | MainThread | DONE_02_09_17_50_10.json -> Aliexpress file created
+2025-09-02 17:51:03 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:51:03 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth sans fil': 'headers'
+2025-09-02 17:51:03 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:51:19 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:51:29 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15
+2025-09-02 17:51:29 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth sans fil': 'headers'
+2025-09-02 17:51:29 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:51:45 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:52:05 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:52:05 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth sans fil': 'headers'
+2025-09-02 17:52:05 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:52:21 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:53:05 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 17:53:10 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:53:10 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:53:26 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:53:36 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15
+2025-09-02 17:53:36 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:53:36 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:53:52 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:54:12 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:54:12 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:54:12 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:54:28 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:55:06 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.8650.1050 Mobile Safari/537.36
+2025-09-02 17:55:06 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:55:06 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:55:22 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 17:55:32 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Mobile/15E148 Safari/604.1
+2025-09-02 17:55:33 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:55:33 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:55:49 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 17:56:09 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 17:56:10 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 17:56:10 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 17:56:25 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 17:58:15 | INFO     | MainThread | Starting of the scraper
+2025-09-02 18:00:33 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 18:01:00 | DEBUG    | MainThread | DONE_02_09_17_59_07.json -> Aliexpress file created
+2025-09-02 18:01:01 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0
+2025-09-02 18:01:01 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:01:01 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:01:17 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:01:27 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15
+2025-09-02 18:01:27 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:01:27 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:01:43 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:02:03 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 16_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Mobile/15E148 Safari/604.1
+2025-09-02 18:02:08 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:02:08 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:02:24 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:03:08 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 18:03:08 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:03:08 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:03:23 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:03:33 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 18:03:39 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:03:39 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:03:55 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:04:15 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15
+2025-09-02 18:04:15 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:04:15 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:04:31 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:05:12 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1
+2025-09-02 18:05:12 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth portable': 'headers'
+2025-09-02 18:05:12 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:05:28 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:05:38 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/363.0.743255906 Mobile/15E148 Safari/604.1
+2025-09-02 18:05:43 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth portable': 'headers'
+2025-09-02 18:05:43 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:05:59 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:06:19 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 16_7_10 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1
+2025-09-02 18:06:19 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth portable': 'headers'
+2025-09-02 18:06:19 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:06:35 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:07:20 | DEBUG    | MainThread | DONE_02_09_17_59_07_DONE.json -> Google trend file created
+2025-09-02 18:07:20 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36
+2025-09-02 18:07:20 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'Casque Bluetooth 
+
+ou 
+
+Casque sans fil 
+
+ou 
+
+Casque audio': 'headers'
+2025-09-02 18:07:20 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:07:36 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:07:46 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:07:47 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'Casque Bluetooth 
+
+ou 
+
+Casque sans fil 
+
+ou 
+
+Casque audio': 'headers'
+2025-09-02 18:07:47 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:08:02 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:08:22 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/135.0.7049.83 Mobile/15E148 Safari/604.1
+2025-09-02 18:08:22 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'Casque Bluetooth 
+
+ou 
+
+Casque sans fil 
+
+ou 
+
+Casque audio': 'headers'
+2025-09-02 18:08:22 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:08:38 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:09:16 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:09:17 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:09:17 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:09:33 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:09:43 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 18:09:43 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:09:43 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:09:59 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:10:19 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_2_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Mobile/15E148 Safari/604.1
+2025-09-02 18:10:24 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:10:24 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:25:23 | INFO     | MainThread | Starting of the scraper
+2025-09-02 18:26:52 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 18:27:19 | DEBUG    | MainThread | DONE_02_09_18_26_15.json -> Aliexpress file created
+2025-09-02 18:27:20 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:27:20 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:27:20 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:27:36 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:27:46 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:137.0) Gecko/20100101 Firefox/137.0
+2025-09-02 18:27:46 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:27:46 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:28:01 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:28:21 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 18:28:22 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:28:22 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:28:37 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:29:14 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:29:15 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 18:29:15 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:29:30 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:29:40 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:29:40 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 18:29:40 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:29:56 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:30:16 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36
+2025-09-02 18:30:16 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 18:30:16 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:32:50 | INFO     | MainThread | Starting of the scraper
+2025-09-02 18:35:33 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 18:36:01 | DEBUG    | MainThread | DONE_02_09_18_33_59.json -> Aliexpress file created
+2025-09-02 18:36:01 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:36:01 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:36:01 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:36:17 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:36:27 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:36:27 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:36:27 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:36:43 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:37:03 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/135.0.7049.83 Mobile/15E148 Safari/604.1
+2025-09-02 18:37:03 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:37:03 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:37:19 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:38:03 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.1 Safari/605.1.15
+2025-09-02 18:38:03 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:38:03 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:38:19 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:38:29 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Safari/605.1.15
+2025-09-02 18:38:29 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:38:29 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:38:45 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:39:00 | INFO     | MainThread | Starting of the scraper
+2025-09-02 18:40:38 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 18:40:46 | DEBUG    | MainThread | DONE_02_09_18_40_06.json -> Aliexpress file created
+2025-09-02 18:40:47 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/363.0.743255906 Mobile/15E148 Safari/604.1
+2025-09-02 18:40:47 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 18:40:47 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:41:02 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:41:12 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 18:41:13 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 18:41:13 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:41:28 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:42:01 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:42:01 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:42:01 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:42:16 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:42:26 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+2025-09-02 18:42:27 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:42:27 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:42:42 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:43:12 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:43:12 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:43:12 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:43:27 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:43:37 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 18:43:38 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:43:38 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:43:53 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:44:25 | DEBUG    | MainThread | DONE_02_09_18_26_15_DONE.json -> Google trend file created
+2025-09-02 18:44:26 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+2025-09-02 18:44:26 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque audio Bluetooth': 'headers'
+2025-09-02 18:44:26 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:44:41 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:44:51 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36
+2025-09-02 18:44:52 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque audio Bluetooth': 'headers'
+2025-09-02 18:44:52 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:44:56 | INFO     | MainThread | Starting of the scraper
+2025-09-02 18:46:29 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 18:46:58 | DEBUG    | MainThread | DONE_02_09_18_46_03.json -> Aliexpress file created
+2025-09-02 18:46:58 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:46:58 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:46:58 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:47:14 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:47:24 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 18:47:24 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:47:24 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:47:40 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:48:00 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:48:00 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:48:00 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:48:15 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:48:46 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.4 Mobile/15E148 Safari/604.1
+2025-09-02 18:48:46 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:48:46 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:49:30 | INFO     | MainThread | Starting of the scraper
+2025-09-02 18:51:09 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 18:51:17 | DEBUG    | MainThread | DONE_02_09_18_50_35.json -> Aliexpress file created
+2025-09-02 18:51:18 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15
+2025-09-02 18:51:19 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:51:19 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:51:34 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:51:44 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 18:51:44 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:51:44 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:52:00 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:52:20 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 18:52:20 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 18:52:20 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:52:36 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:53:06 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:53:06 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth portatif': 'headers'
+2025-09-02 18:53:06 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:53:22 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:53:32 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 18:53:32 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth portatif': 'headers'
+2025-09-02 18:53:32 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:53:48 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 18:54:08 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Mobile/15E148 Safari/604.1
+2025-09-02 18:54:08 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth portatif': 'headers'
+2025-09-02 18:54:08 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:54:23 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 18:56:00 | INFO     | MainThread | Starting of the scraper
+2025-09-02 18:58:37 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 18:59:06 | DEBUG    | MainThread | DONE_02_09_18_57_05.json -> Aliexpress file created
+2025-09-02 18:59:06 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:59:06 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 18:59:06 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:59:22 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 18:59:32 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 18:59:32 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 18:59:32 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 18:59:48 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 19:00:08 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.1681.1569 Mobile Safari/537.36
+2025-09-02 19:00:08 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 19:00:08 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:00:23 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 19:00:54 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/363.0.743255906 Mobile/15E148 Safari/604.1
+2025-09-02 19:00:54 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 19:00:54 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:01:10 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 19:01:20 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 19:01:20 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 19:01:20 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:01:35 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 19:01:55 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (X11; CrOS x86_64 14541.0.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36
+2025-09-02 19:01:56 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque bluetooth': 'headers'
+2025-09-02 19:01:56 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:02:11 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 19:02:41 | WARNING  | MainThread | Trop d’erreurs Google Trends - arrêt de la tentative pour ce produit.
+2025-09-02 19:02:41 | WARNING  | MainThread | Problème 429 Google trend - Skip Scrap
+2025-09-02 19:02:41 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 19:02:57 | WARNING  | MainThread | Next url is: https://www.amazon.fr/Sony-WH-CH720N-Bluetooth-r%C3%A9duction-dautonomie/dp/B0BTDX26B2/258-9555804-6729030
+2025-09-02 19:04:05 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:04:32 | DEBUG    | MainThread | DONE_02_09_19_03_41.json -> Aliexpress file created
+2025-09-02 19:04:32 | WARNING  | MainThread | Problème 429 Google trend - Skip Scrap
+2025-09-02 19:04:32 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 19:04:48 | WARNING  | MainThread | Next url is: https://www.amazon.fr/dp/B0C6KFZC9Z/ref=vp_m_cpf-substitute-widget-prsubs_pd
+2025-09-02 19:10:33 | INFO     | MainThread | Starting of the scraper
+2025-09-02 19:13:32 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:14:33 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:16:43 | WARNING  | MainThread | Tentative 1/3 échouée pour Soundcore Space One Casque Bletooth sans fil avec Réduction de Bruit Active Adaptative by Anker, Réduction des Voix Humaine 2X Plus Efficace, ANC 46H, Contrôle app, LDAC Hi-Res Wireless Audio, Confort
+2025-09-02 19:17:13 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:17:47 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:18:20 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:18:28 | DEBUG    | MainThread | DONE_02_09_19_13_01.json -> Aliexpress file created
+2025-09-02 19:18:29 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Mobile Safari/537.36
+2025-09-02 19:18:29 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 19:18:29 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:18:44 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 19:18:54 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 19:18:54 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 19:18:54 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:19:10 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 19:19:30 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 19:19:30 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 19:19:30 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:19:46 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 19:20:16 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36
+2025-09-02 19:20:16 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 19:20:16 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:20:32 | WARNING  | MainThread | [DEBUG] Attente de 10 secondes avant la prochaine tentative...
+2025-09-02 19:20:42 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.6623.1159 Mobile Safari/537.36
+2025-09-02 19:20:42 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 19:20:42 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:20:58 | WARNING  | MainThread | [DEBUG] Attente de 20 secondes avant la prochaine tentative...
+2025-09-02 19:21:18 | WARNING  | MainThread | [DEBUG] User-Agent utilisé : Mozilla/5.0 (iPhone; CPU iPhone OS 18_3_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3.1 Mobile/15E148 Safari/604.1
+2025-09-02 19:21:18 | WARNING  | MainThread | [IMPORT] Erreur de réseau ou 429 détecté pour 'casque Bluetooth': 'headers'
+2025-09-02 19:21:18 | WARNING  | MainThread | -> Tentative de changement de VPN + pause avant retry...
+2025-09-02 19:21:34 | WARNING  | MainThread | [DEBUG] Attente de 30 secondes avant la prochaine tentative...
+2025-09-02 19:22:04 | WARNING  | MainThread | Trop d’erreurs Google Trends - arrêt de la tentative pour ce produit.
+2025-09-02 19:22:04 | WARNING  | MainThread | Problème 429 Google trend - Skip Scrap
+2025-09-02 19:22:04 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 19:22:19 | WARNING  | MainThread | Next url is: https://www.amazon.fr/Sony-WH-CH720N-Bluetooth-r%C3%A9duction-dautonomie/dp/B0BTDX26B2/258-9555804-6729030
+2025-09-02 19:24:57 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:27:10 | WARNING  | MainThread | Tentative 1/3 échouée pour Soundcore Space One Casque Bletooth sans fil avec Réduction de Bruit Active Adaptative by Anker, Réduction des Voix Humaine 2X Plus Efficace, ANC 46H, Contrôle app, LDAC Hi-Res Wireless Audio, Confort
+2025-09-02 19:27:42 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:28:17 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:29:45 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:30:21 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:30:29 | DEBUG    | MainThread | DONE_02_09_19_24_33.json -> Aliexpress file created
+2025-09-02 19:30:29 | WARNING  | MainThread | Problème 429 Google trend - Skip Scrap
+2025-09-02 19:30:29 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 19:30:44 | WARNING  | MainThread | Next url is: https://www.amazon.fr/dp/B0C4TJXPNJ/ref=emc_bcc_2_i
+2025-09-02 19:32:49 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:34:12 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:34:48 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:35:25 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:36:01 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:36:07 | DEBUG    | MainThread | DONE_02_09_19_32_19.json -> Aliexpress file created
+2025-09-02 19:36:07 | WARNING  | MainThread | Problème 429 Google trend - Skip Scrap
+2025-09-02 19:36:07 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 19:36:23 | WARNING  | MainThread | Next url is: https://www.amazon.fr/dp/B0C4TLFZSZ/ref=emc_bcc_2_i
+2025-09-02 19:38:47 | WARNING  | MainThread | Tentative 1/3 échouée pour Sony WF-1000XM5 écouteurs sans Fil à réduction de Bruit, Bluetooth, Intra-Auriculaires avec Micro, 36 Heures d'autonomie, Charge Rapide, IPX4, Compatible iOS et Android - Noir
+2025-09-02 19:39:13 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:40:42 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:42:09 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:42:47 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:44:53 | WARNING  | MainThread | Tentative 1/3 échouée pour kwmobile 14x Embout Compatible avec Sony WF-1000XM3 / WF-1000XM4 / WF-1000XM5 - Embouts de Rechange en Silicone pour Écouteurs Noir-Transparent
+2025-09-02 19:45:25 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:45:33 | DEBUG    | MainThread | DONE_02_09_19_38_38.json -> Aliexpress file created
+2025-09-02 19:45:33 | WARNING  | MainThread | Problème 429 Google trend - Skip Scrap
+2025-09-02 19:45:33 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 19:45:48 | WARNING  | MainThread | Next url is: https://www.amazon.fr/kindle-paperwhite-2024/dp/B0CFP6F89F
+2025-09-02 19:48:10 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:49:59 | WARNING  | MainThread | Tentative 1/3 échouée pour Amazon Kindle (16 Go) | Le plus léger et compact, avec écran antireflets, changements de page plus rapides, éclairage avant réglable et longue autonomie | Avec publicités | Vert matcha
+2025-09-02 19:50:21 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:52:01 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:52:56 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:54:11 | WARNING  | MainThread | Sur la page d'un produit Aliexpress
+2025-09-02 19:54:19 | DEBUG    | MainThread | DONE_02_09_19_47_40.json -> Aliexpress file created
+2025-09-02 19:54:19 | WARNING  | MainThread | Problème 429 Google trend - Skip Scrap
+2025-09-02 19:54:19 | WARNING  | MainThread | Automatic VPN change
+2025-09-02 19:54:34 | WARNING  | MainThread | Next url is: https://www.amazon.fr/dp/B0CM7X424T/ref=ods_dabb_B0CM7X424T_productInfo

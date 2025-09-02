@@ -34,10 +34,11 @@ vpn_interval = 50
 VPNActivated = True
 
 if __name__ == "__main__":
+    stoploss = True
     logger.info("Starting of the scraper")
     changeVPN()
     time.sleep(5)
-    for i in range(5):
+    for i in range(50):
         data, nextUrl = scrapper_playwright(startURL, maxPAGES)
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -51,8 +52,12 @@ if __name__ == "__main__":
         with open(filePath, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
         runIlaw()
-        productTrendName()
 
+        if stoploss:
+            stoploss = productTrendName()
+            print("Result stoploss", stoploss)
+        if stoploss == False:
+            logger.warning("Problème 429 Google trend - Skip Scrap")
         if VPNActivated:
             logger.warning("Automatic VPN change")
             changeVPN()

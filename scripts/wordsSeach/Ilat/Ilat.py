@@ -8,6 +8,7 @@ import requests
 from pytrends.exceptions import TooManyRequestsError
 from requests.exceptions import ReadTimeout, ConnectionError
 from pytrends.request import TrendReq
+from fake_useragent import UserAgent
 import json
 import tkinter as tk
 from datetime import datetime
@@ -39,15 +40,20 @@ def productTrendName():
                 data = json.load(f)
                 for product in data:
                     product_name = product["details"]["product_name"]
-                    best_keyword, best_trend = get_best_trend(product_name, max_attempts=3)
-                    if best_trend:
+                    best_keyword, best_trend, stoploss = get_best_trend(product_name, max_attempts=1)
+                    if best_trend is not None:
+                        print("Réussite de best trend")
                         product["trend"] = {
                             "product_name": best_keyword,
                             "trend_data": best_trend
                         }
                     else:
                         while not best_trend:
-                            best_keyword, best_trend = get_best_trend(product_name, max_attempts=3)
+                            print("echec best trend")
+                            best_keyword, best_trend, stoploss = get_best_trend(product_name, max_attempts=3)
+                            if stoploss is False:
+                                logger.warning("Trop d’erreurs Google Trends - arrêt de la tentative pour ce produit.")
+                                return False
 
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=4, ensure_ascii=False)
@@ -57,6 +63,8 @@ def productTrendName():
             newFileName = f"{filename}_DONE{ext}"
             shutil.move(file_path, os.path.join(products_dir_s, newFileName))
             logger.debug(f"{newFileName} -> Google trend file created")
+
+    return True
 
 vpn_lock = threading.Lock()
 
@@ -81,9 +89,30 @@ HEADERS_LIST = [
     },
 ]
 
+ua = UserAgent()
+
+def get_random_headers():
+    user_agent = ua.random
+    return {
+        "user-agent": user_agent,
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "accept-language": random.choice([
+            "en-US,en;q=0.9",
+            "fr-FR,fr;q=0.8,en-US;q=0.6",
+            "it-IT,it;q=0.9,en;q=0.8",
+            "de-DE,de;q=0.9,en;q=0.8"
+        ]),
+        "referer": "https://www.google.com/",
+        "cache-control": "no-cache",
+        "dnt": "1",
+        "upgrade-insecure-requests": "1",
+        "connection": "keep-alive"
+    }
+
 def get_pytrends() -> TrendReq:
-    headers = random.choice(HEADERS_LIST)
-    TrendReq(
+    headers = get_random_headers()
+    logger.warning(f"[DEBUG] User-Agent utilisé : {headers['user-agent']}")
+    return TrendReq(
         hl='fr-FR',
         tz=360,
         retries=5,
@@ -98,32 +127,31 @@ def get_best_trend(product_name, max_attempts=3):
 
     for _ in range(max_attempts):
         new_product_name = callAPI(product_name)
-        trend_data, score = importDataFromTrends(new_product_name)
+        trend_data, score, stoploss = importDataFromTrends(new_product_name)
+        print("Stop loss at", stoploss)
+        if not stoploss:
+            return None, None, False
+
         if trend_data and score > best_score:
             best_score = score
             best_data = trend_data
             best_keyword = new_product_name
-        time.sleep(0.5)
+        time.sleep(random.randint(7,15))
 
-    return best_keyword, best_data
+    return best_keyword, best_data, True
 
-def importDataFromTrends(name: str, max_retries=2):
+def importDataFromTrends(name: str, max_retries=3):
     for attempt in range(max_retries):
         try:
             pytrends = get_pytrends()
-            if pytrends is None:
-                logger.warning(f"Impossible d'initialiser pytrends pour {name}, on passe au suivant.")
-                changeVPN()
-                continue
-            try:
-                pytrends.build_payload(kw_list=[name], timeframe='today 12-m', geo='FR')
-            except Exception as e:
-                logger.warning(f"Erreur pytrends build_payload pour {name}: {e}")
-                continue
+            pytrends.cookies = {}
+            logger.warning(f"[DEBUG] User-Agent utilisé : {pytrends.requests_args['headers']['user-agent']}")
+
+            pytrends.build_payload([name], timeframe='now 7-d', geo='FR')
             data = pytrends.interest_over_time()
 
             if data.empty:
-                return ["No data"], 0
+                return ["No data"], 0, stoploss
 
             if 'isPartial' in data.columns:
                 data = data.drop(columns=['isPartial'])
@@ -136,13 +164,17 @@ def importDataFromTrends(name: str, max_retries=2):
                 }
                 for index, row in data.iterrows()
             ]
-            dataScore = sum(row[name] for _, row in data.iterrows())
-            return result, dataScore
+            score = sum(row[name] for _, row in data.iterrows())
+            return result, score, True
 
-
-        except (TooManyRequestsError, ReadTimeout, ConnectionError) as e:
-            logger.warning(f"Erreur réseau: {e}, retry après pause")
+        except Exception as e:
+            logger.warning(f"[IMPORT] Erreur de réseau ou 429 détecté pour '{name}': {e}")
+            logger.warning("-> Tentative de changement de VPN + pause avant retry...")
             changeVPN()
-            time.sleep(random.randint(10, 20))
+            
+            wait_time = 10 * (attempt + 1)
+            logger.warning(f"[DEBUG] Attente de {wait_time} secondes avant la prochaine tentative...")
+            time.sleep(wait_time)
 
-    return ["no data"], 0
+
+    return ["no data"], 0, False

@@ -8,11 +8,12 @@ from playwright.sync_api import sync_playwright
 from selenium.webdriver.common.devtools.v137.fetch import continue_request
 from tqdm import tqdm
 import json
+import sys
 import random
 from logger import logger
 from VPN import changeVPN
-
 """
+
 from scripts.wordsSeach.VPN import changeVPN
 from scripts.wordsSeach.logger import logger
 """
@@ -164,9 +165,11 @@ def Ilaw(wordsSTR):
                     browser.close()
                     changeVPN()
                     return None
-                page.wait_for_selector("div.g8_b3.search-item-card-wrapper-gallery", timeout=20000)
-                first_product_divs = page.query_selector_all("div.g8_b3.search-item-card-wrapper-gallery")
+                page.wait_for_selector("div.lh_jy", timeout=20000)
+                first_product_divs = page.query_selector_all("div.lh_jy")
                 first_product = first_product_divs[0] if first_product_divs else None
+                if first_product:
+                    logger.warning("Sur la page d'un produit Aliexpress")
 
             except Exception as e:
                 print(f"[SKIP] Produit introuvable : {e}")
@@ -233,6 +236,7 @@ def Ilaw(wordsSTR):
                         return results
             else:
                 logger.warning("ALIEXPRESS - Aucun produit trouvé")
+
 
 def runIlaw():
     current_dir = os.path.dirname(os.path.abspath(__file__))
