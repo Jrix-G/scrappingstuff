@@ -109,13 +109,6 @@ def apply_stealth(page):
                 : originalQuery(parameters);
     """)
 
-    page.add_init_script("""
-        window.chrome = {
-            runtime: {},
-            // Ajoute d'autres propriétés si nécessaire
-        };
-    """)
-
 
 def Ilaw(wordsSTR):
     with sync_playwright() as p:

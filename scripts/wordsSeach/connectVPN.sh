@@ -1,11 +1,5 @@
 #!/bin/bash
-
 WG_DIR="/etc/wireguard"
-TAILSCALE_IP="100.87.86.58"
-
-# Détecte la passerelle locale et l'interface
-GATEWAY=$(ip route | grep default | awk '{print $3}')
-IFACE=$(ip route | grep default | awk '{print $5}')
 
 configs=($(ls $WG_DIR/*.conf 2>/dev/null))
 if [ ${#configs[@]} -eq 0 ]; then
@@ -24,43 +18,20 @@ choose_random_config() {
         fi
     done
     if [ ${#choices[@]} -eq 0 ]; then
-        echo "$current_config"
+         echo "$current_config"
     else
-        echo "${choices[RANDOM % ${#choices[@]}]}"
+        echo "${choices[RANDOM % ${#choices[@]}]}"`
     fi
-}
-
-add_tailscale_route() {
-    if ! ip route | grep -q "$TAILSCALE_IP"; then
-        sudo ip route add $TAILSCALE_IP/32 via $GATEWAY dev $IFACE
-    fi
-}
-
-remove_tailscale_route() {
-    sudo ip route del $TAILSCALE_IP/32 2>/dev/null
 }
 
 if [ -n "$current_iface" ]; then
     echo "VPN actif sur interface: $current_iface"
-    current_config_file="$WG_DIR/$current_iface.conf"
-
-    new_config=$(choose_random_config "$current_config_file")
-
-    echo "Suppression de la route Tailscale..."
-    remove_tailscale_route
-
-    echo "Déconnexion de l'interface actuelle..."
     sudo wg-quick down "$current_iface"
-
-    echo "Connexion avec la config : $new_config"
-    sudo wg-quick up "$new_config"
-
-    echo "Ajout de la route Tailscale..."
-    add_tailscale_route
-else
-    echo "Pas de VPN actif, connexion aléatoire."
-    new_config=${configs[RANDOM % ${#configs[@]}]}
-
-    sudo wg-quick up "$new_config"
-    add_tailscale_route
 fi
+
+new_config=${configs[RANDOM % ${#configs[@]}]}
+echo "Connexion avec la config : $new_config"
+sudo wg-quick up "$new_config"
+
+# 🚀 Fix DNS après connexion
+echo -e "nameserver 1.1.1.1\nnameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
