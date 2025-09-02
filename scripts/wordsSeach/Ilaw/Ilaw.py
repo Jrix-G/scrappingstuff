@@ -123,7 +123,7 @@ def Ilaw(wordsSTR):
         try:
             page.goto("https://fr.aliexpress.com/", timeout=60000, wait_until="domcontentloaded")
             page.wait_for_timeout(random.randint(1000, 2000)) 
-            page.wait_for_selector("input.search--keyword--15P08Ji", timeout=20000)
+            page.wait_for_selector("input.search--keyword--15P08Ji", timeout=60000)
         except Exception as e:
             print("Erreur de chargement :", e)
 
