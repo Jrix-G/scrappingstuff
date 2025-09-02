@@ -20,7 +20,7 @@ choose_random_config() {
     if [ ${#choices[@]} -eq 0 ]; then
          echo "$current_config"
     else
-        echo "${choices[RANDOM % ${#choices[@]}]}"`
+        echo "${choices[RANDOM % ${#choices[@]}]}"
     fi
 }
 
@@ -29,7 +29,7 @@ if [ -n "$current_iface" ]; then
     sudo wg-quick down "$current_iface"
 fi
 
-new_config=${configs[RANDOM % ${#configs[@]}]}
+new_config=$(choose_random_config "")
 echo "Connexion avec la config : $new_config"
 sudo wg-quick up "$new_config"
 
