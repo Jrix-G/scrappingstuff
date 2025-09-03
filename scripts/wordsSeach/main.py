@@ -14,9 +14,6 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 """
 
 --- TO DO LIST ---
--> Problème de création de fichier quand infos non trouvées -> []
--> On purpose: Problème avec les produits non trouvés de aliexpress -> ils sont skip
--> IMPORTANT: problème URL None, dans main, faire une nouvelle fonction quand c'est le cas, trouver un nouvel url à check au pire, random
 
 --- DONE LIST ---
 -> Changement VPN lorsque trend 429
@@ -24,6 +21,9 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 -> Problème de None type 
 -> Problème changement de VPN lors de ALIEXPRESS et mauvaise détection punish
 -> Problème quand l'objet n'est pas trouvé - Quand la recherche n'aboutie à rien
+-> IMPORTANT: problème URL None, dans main, faire une nouvelle fonction quand c'est le cas, trouver un nouvel url à check au pire, random
+-> Problème de création de fichier quand infos non trouvées -> []
+-> On purpose: Problème avec les produits non trouvés de aliexpress -> ils sont skip
 
 """
 
@@ -34,8 +34,8 @@ vpn_interval = 50
 VPNActivated = True
 
 if __name__ == "__main__":
-    stoploss = True
-    logger.info("Starting of the scraper")
+    stoploss = True # Variable for google trend scrapping
+    logger.info("[STATUS] Starting of the scraper")
     changeVPN()
     time.sleep(5)
     for i in range(50):
@@ -65,5 +65,6 @@ if __name__ == "__main__":
         if nextUrl is None:
             nextUrl = generateURL()
 
-        logger.warning(f"Next url is: {nextUrl}")
+        logger.warning(f"INFO | Prochain url: {nextUrl}")
         startURL = nextUrl
+    logger.info("[STATUS] Finished. I go to sleep zzzzz")

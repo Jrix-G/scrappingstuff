@@ -18,9 +18,14 @@ import threading
 from groq import Groq
 from dotenv import load_dotenv
 
-from .Greg import callAPI
-from VPN import (changeVPN)
 from logger import logger
+from VPN import changeVPN
+from .Greg import callAPI
+"""
+from scripts.wordsSeach.VPN import changeVPN
+from scripts.wordsSeach.logger import logger
+from scripts.wordsSeach.Ilat.Greg import callAPI
+"""
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../../"))
@@ -70,24 +75,75 @@ vpn_lock = threading.Lock()
 
 HEADERS_LIST = [
     {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "accept-language": "it-IT,it;q=0.9,en;q=0.8",
-        "user-agent": (
-            "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) "
-            "AppleWebKit/605.1.15 (KHTML, like Gecko) "
-            "Version/16.6 Mobile/15E148 Safari/604.1"
-        ),
+        # Chrome Desktop Windows 11
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+        "cache-control": "max-age=0",
+        "upgrade-insecure-requests": "1",
+        "sec-ch-ua": '"Chromium";v="125", "Google Chrome";v="125", ";Not A Brand";v="99"',
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": '"Windows"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
     },
     {
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        # Chrome Mobile iPhone
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
         "accept-language": "en-US,en;q=0.9",
-        "user-agent": (
-            "Mozilla/5.0 (X11; Linux x86_64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/125.0.0.0 Safari/537.36"
-        ),
+        "cache-control": "no-cache",
+        "upgrade-insecure-requests": "1",
+        "sec-ch-ua": '"Chromium";v="125", "Google Chrome";v="125", ";Not A Brand";v="99"',
+        "sec-ch-ua-mobile": "?1",
+        "sec-ch-ua-platform": '"iOS"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1"
     },
+    {
+        # Firefox Desktop Windows
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+        "cache-control": "max-age=0",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1"
+    },
+    {
+        # Safari Desktop macOS
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "accept-language": "en-US,en;q=0.9",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Safari/605.1.15",
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1"
+    },
+    {
+        # Chrome Android
+        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+        "accept-language": "en-US,en;q=0.9",
+        "cache-control": "no-cache",
+        "upgrade-insecure-requests": "1",
+        "sec-ch-ua": '"Chromium";v="125", "Google Chrome";v="125", ";Not A Brand";v="99"',
+        "sec-ch-ua-mobile": "?1",
+        "sec-ch-ua-platform": '"Android"',
+        "sec-fetch-dest": "document",
+        "sec-fetch-mode": "navigate",
+        "sec-fetch-site": "none",
+        "sec-fetch-user": "?1",
+        "user-agent": "Mozilla/5.0 (Linux; Android 14; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
+    }
 ]
+
 
 ua = UserAgent()
 
@@ -110,13 +166,13 @@ def get_random_headers():
     }
 
 def get_pytrends() -> TrendReq:
-    headers = get_random_headers()
+    headers = random.choice(HEADERS_LIST)
     logger.warning(f"[DEBUG] User-Agent utilisé : {headers['user-agent']}")
     return TrendReq(
         hl='fr-FR',
         tz=360,
         retries=5,
-        backoff_factor=0.5,
+        backoff_factor=1,
         requests_args={'headers': headers}
     )
 
@@ -140,18 +196,17 @@ def get_best_trend(product_name, max_attempts=3):
 
     return best_keyword, best_data, True
 
-def importDataFromTrends(name: str, max_retries=3):
+def importDataFromTrends(name: str, max_retries=15):
     for attempt in range(max_retries):
         try:
             pytrends = get_pytrends()
-            pytrends.cookies = {}
             logger.warning(f"[DEBUG] User-Agent utilisé : {pytrends.requests_args['headers']['user-agent']}")
 
             pytrends.build_payload([name], timeframe='now 7-d', geo='FR')
             data = pytrends.interest_over_time()
 
             if data.empty:
-                return ["No data"], 0, stoploss
+                return ["No data"], 0, False
 
             if 'isPartial' in data.columns:
                 data = data.drop(columns=['isPartial'])
@@ -171,8 +226,7 @@ def importDataFromTrends(name: str, max_retries=3):
             logger.warning(f"[IMPORT] Erreur de réseau ou 429 détecté pour '{name}': {e}")
             logger.warning("-> Tentative de changement de VPN + pause avant retry...")
             changeVPN()
-            
-            wait_time = 10 * (attempt + 1)
+            wait_time = 2**attempt + 1
             logger.warning(f"[DEBUG] Attente de {wait_time} secondes avant la prochaine tentative...")
             time.sleep(wait_time)
 

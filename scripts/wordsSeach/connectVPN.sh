@@ -10,12 +10,10 @@ ALLOWED="$AMAZON_IPS,$ALIEXPRESS_IPS,$TRENDS_IPS"
 
 echo "✅ AllowedIPs = $ALLOWED"
 
-# 🔧 Mise à jour de tous les .conf WireGuard
 for conf in $WG_DIR/*.conf; do
     sudo sed -i "s|^AllowedIPs =.*|AllowedIPs = $ALLOWED|" "$conf"
 done
 
-# 🔀 Choix de la config VPN aléatoire
 configs=($(ls $WG_DIR/*.conf 2>/dev/null))
 if [ ${#configs[@]} -eq 0 ]; then
     echo "Aucun fichier .conf trouvé dans $WG_DIR"
@@ -48,5 +46,4 @@ new_config=$(choose_random_config "")
 echo "Connexion avec la config : $new_config"
 sudo wg-quick up "$new_config"
 
-# 🚀 Fix DNS après connexion
 echo -e "nameserver 1.1.1.1\nnameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null

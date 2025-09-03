@@ -5,11 +5,17 @@ import time
 import json
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from fake_useragent import UserAgent
-from VPN import changeVPN
+
+"""
 from logger import logger
+from VPN import changeVPN
 from .Greg import callAPI
+"""
+from scripts.wordsSeach.VPN import changeVPN
+from scripts.wordsSeach.logger import logger
+from scripts.wordsSeach.Ilat.Greg import callAPI
 
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 
@@ -29,7 +35,7 @@ def get_random_user_agent():
 async def fetch_trends_data(playwright, keyword, max_retries=3):
     for attempt in range(max_retries):
         user_agent = get_random_user_agent()
-        browser = await playwright.chromium.launch(headless=True)
+        browser = await playwright.chromium.launch(headless=False)
         context = await browser.new_context(user_agent=user_agent)
         page = await context.new_page()
         logger.warning(f"[DEBUG] User-Agent utilisé : {user_agent}")
@@ -45,10 +51,14 @@ async def fetch_trends_data(playwright, keyword, max_retries=3):
                 f"+%22backend%22%3A+%22IZG%22%2C+%22category%22%3A0%7D%2C+%22userConfig%22%3A+%7B%22userType%22%3A+%22USER_TYPE_SCRAPER%22%7D%7D"
                 f"&token=APP6_UEAAAAAaLhUiGMbOfAOBbXQpMjddmiD8bObJvqK&tz=360"
             )
+            #Problème avec l'objet dans la barre de recherche
+            #await page.goto(f"https://trends.google.com/trends/explore?q={keyword}&geo=FR", timeout=20000)
+            await page.mouse.wheel(0, 500)
+            await asyncio.sleep(random.uniform(1, 3))
+            await page.mouse.move(random.randint(100, 300), random.randint(100, 300))
 
-            await page.goto(url, timeout=15000)
-
-            content = await page.text_content('body')
+            content = await page.evaluate("window.__trendsData")
+            context = await browser.new_context(ignore_https_errors=True)
 
             if content.startswith(")]}'"):
                 content = content[4:]
@@ -60,7 +70,7 @@ async def fetch_trends_data(playwright, keyword, max_retries=3):
             result = []
             score = 0
             for point in timeline_data:
-                date = datetime.utcfromtimestamp(int(point['time'])).strftime('%Y-%m-%d %H:%M:%S')
+                date = datetime.fromtimestamp(int(point['time']), tz=timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
                 value = int(point['value'][0])
                 score += value
                 result.append({
@@ -80,7 +90,7 @@ async def fetch_trends_data(playwright, keyword, max_retries=3):
             await browser.close()
 
             logger.warning("-> Tentative de changement de VPN + pause avant retry...")
-            changeVPN()
+            #changeVPN()
 
             wait_time = 10 * (attempt + 1)
             logger.warning(f"[DEBUG] Attente de {wait_time} secondes avant la prochaine tentative...")
@@ -146,3 +156,20 @@ def productTrendName():
             shutil.move(file_path, os.path.join(products_dir_s, newFileName))
             logger.debug(f"{newFileName} -> Google trend file créé")
 
+if __name__ == "__main__":
+    import asyncio
+
+    keyword = "casque"
+
+    # Crée un event loop et lance l'import
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    result, score = loop.run_until_complete(importDataFromTrends(keyword))
+    loop.close()
+
+    print(f"Keyword: {keyword}")
+    print(f"Score total: {score}")
+    print("Données timeline :")
+    for point in result:
+        print(point)
