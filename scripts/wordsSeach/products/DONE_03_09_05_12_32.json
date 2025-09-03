@@ -1,0 +1,74 @@
+[
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "Mar Plast A62201BI Distributeur de Papier Toilette intercalé Blanc Soft Touch Transparent 215 x 125 x 160 mm",
+            "category": "Commerce, Industrie et Science",
+            "classement": 91409,
+            "region": null,
+            "releaseDate": null,
+            "price": 28.86,
+            "url": "https://www.amazon.fr/Mar-Plast-Distributeur-intercal%C3%A9-Transparent/dp/B00AWIKXCA"
+        }
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "SWIPARO - Rouleaux thermiques 80mm x 80m x 12mm – Bobine papier thermique pour caisse enregistreuse avec imprimante de ticket - Rouleau 80x80x12 (20 Rouleaux)",
+            "category": null,
+            "classement": null,
+            "region": null,
+            "releaseDate": null,
+            "price": 48.99,
+            "url": "https://www.amazon.fr/SWIPARO-thermiques-thermique-enregistreuse-imprimante/dp/B0BXXLND9V/ref=pd_day0fbt_thbs_d_sccl_1/522-7603200-3736619"
+        }
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "SWIPARO - Rouleaux thermiques 80mm x 80m x 12mm – Bobine papier thermique pour caisse enregistreuse avec imprimante de ticket - Rouleau 80x80x12 (20 Rouleaux)",
+            "category": null,
+            "classement": null,
+            "region": null,
+            "releaseDate": null,
+            "price": 48.99,
+            "url": "https://www.amazon.fr/SWIPARO-thermiques-thermique-enregistreuse-imprimante/dp/B0BXXLND9V/ref=pd_day0fbt_d_sccl_1/522-7603200-3736619"
+        }
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "Amazon Basics Papier multiusage A4 80gsm, 2500 pièces, 5 lot de 500, blanc",
+            "category": "Fournitures de bureau",
+            "classement": 12,
+            "region": null,
+            "releaseDate": null,
+            "price": 27.99,
+            "url": "https://www.amazon.fr/AmazonBasics-Papier-multiusage-rames-feuilles/dp/B01FSGVN4M/ref=pd_day0fbt_thbs_d_sccl_2/522-7603200-3736619"
+        }
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "Amazon Basics Papier multiusage A4 80gsm, 2500 pièces, 5 lot de 500, blanc",
+            "category": "Fournitures de bureau",
+            "classement": 12,
+            "region": null,
+            "releaseDate": null,
+            "price": 27.99,
+            "url": "https://www.amazon.fr/AmazonBasics-Papier-multiusage-rames-feuilles/dp/B01FSGVN4M/ref=pd_day0fbt_d_sccl_2/522-7603200-3736619"
+        },
+        "03-09-2025.Ilaw": [
+            {
+                "placeProduct": "Aliexpress",
+                "details": {
+                    "product_name": null,
+                    "product_price": "$1.78",
+                    "product_sold": null,
+                    "product_stars": null,
+                    "url": "https://www.aliexpress.com/ssr/300000512/BundleDeals2?productIds=1005008248016896:12000044371280503&pha_manifest=ssr&_immersiveMode=true&disableNav=YES&sourceName=SEARCHProduct&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005008248016896%7C_p_origin_prod%3A1005007144726230"
+                }
+            }
+        ]
+    }
+]

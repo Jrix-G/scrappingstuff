@@ -1,0 +1,86 @@
+[
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "Jofel - Grand distributeur industriel de rouleaux de papier toilette, distributeur de rouleaux de papier jusqu'à 400m, diamètre max. 260mm, mandrin de 55mm, idéal toilettes publiques, Azur AE55300",
+            "category": null,
+            "classement": null,
+            "region": null,
+            "releaseDate": "15 février 2016",
+            "price": null,
+            "url": "https://www.amazon.fr/Jofel-distributeur-industriel-toilettes-publiques/dp/B01BQED2EE/ref=pd_sbs_d_sccl_2_1/522-7603200-3736619"
+        },
+        "03-09-2025.Ilaw": [
+            {
+                "placeProduct": "Aliexpress",
+                "details": {
+                    "product_name": null,
+                    "product_price": null,
+                    "product_sold": null,
+                    "product_stars": null,
+                    "url": "https://fr.aliexpress.com/item/1005004581749451.html?algo_pvid=70a9c330-c91f-460a-81d8-249926bb2d65&algo_exp_id=70a9c330-c91f-460a-81d8-249926bb2d65-0&pdp_ext_f=%7B%22order%22%3A%2214%22%2C%22eval%22%3A%221%22%7D&pdp_npi=6%40dis%21EUR%2145.86%2141.39%21%21%2152.10%2147.02%21%402101d9ef17568711543566577eb0ed%2112000038020106909%21sea%21FR%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A40764133%3Bm03_new_user%3A-29895%3BpisId%3A5000000183543557&curPageLogUid=gGiquF6xiRZp&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005004581749451%7C_p_origin_prod%3A"
+                }
+            }
+        ]
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "Jofel AH33000 Pliage en Z Distributeur de Serviette en Papier Blanc",
+            "category": null,
+            "classement": null,
+            "region": null,
+            "releaseDate": "16 février 2016",
+            "price": null,
+            "url": "https://www.amazon.fr/Jofel-AH33000-Pliage-Distributeur-Serviette/dp/B007IS442C"
+        }
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "MUNTRADE Essuie-mains pliage en Z - lot de 3000 feuilles en papier essuie mains (20 x 150)",
+            "category": "Commerce, Industrie et Science",
+            "classement": 257,
+            "region": null,
+            "releaseDate": "16 février 2016",
+            "price": null,
+            "url": "https://www.amazon.fr/Essuie-mains-pliage-feuilles-papier-essuie/dp/B09ZF19S8T"
+        },
+        "03-09-2025.Ilaw": [
+            {
+                "placeProduct": "Aliexpress",
+                "details": {
+                    "product_name": null,
+                    "product_price": null,
+                    "product_sold": null,
+                    "product_stars": null,
+                    "url": "https://fr.aliexpress.com/item/1005006081615089.html?algo_pvid=205e66d0-2a78-45ff-a264-124e9487474c&algo_exp_id=205e66d0-2a78-45ff-a264-124e9487474c-0&pdp_ext_f=%7B%22order%22%3A%221%22%2C%22eval%22%3A%221%22%7D&pdp_npi=6%40dis%21USD%2115.82%2115.23%21%21%2115.82%2115.23%21%402101c80017568713728332537e9c3a%2112000035645221876%21sea%21FR%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A32fa4148%3Bm03_new_user%3A-29895&curPageLogUid=CMvev1iH5r2w&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005006081615089%7C_p_origin_prod%3A"
+                }
+            }
+        ]
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "JVD Cleanline Distributeur de Savon ''Gel'' Blanc ABS",
+            "category": null,
+            "classement": null,
+            "region": null,
+            "releaseDate": "2 février 2012",
+            "price": null,
+            "url": "https://www.amazon.fr/JVD-Cleanline-distributeur-Savon-Blanc/dp/B005Y5RKWC"
+        }
+    },
+    {
+        "placeProduct": "Amazon",
+        "details": {
+            "product_name": "JVD Distributeur Jumbo Dévidoir Central Blanc, Convient pour Bobine Papier Format 450 au Diamètre Maxi 205 mm Cylindre dévidoir Central, clé Inclus",
+            "category": null,
+            "classement": null,
+            "region": null,
+            "releaseDate": "21 octobre 2011",
+            "price": null,
+            "url": "https://www.amazon.fr/JVD-Distributeur-bobine-d%C3%A9vidoir-central/dp/B005XYBYBW"
+        }
+    }
+]
