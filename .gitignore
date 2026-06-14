@@ -5,3 +5,9 @@ __pycache__/
 .vercel/
 .config
 data/
+
+# Secrets — ne JAMAIS versionner
+.env
+.env.*
+!.env.example
+*.local
