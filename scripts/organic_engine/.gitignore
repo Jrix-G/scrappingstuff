@@ -1,5 +1,6 @@
 data/
 .cj_token.json
+.reddit_cache/
 __pycache__/
 *.pyc
 .venv/

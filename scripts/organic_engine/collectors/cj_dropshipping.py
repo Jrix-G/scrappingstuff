@@ -134,6 +134,24 @@ class CJClient:
         products = [self._map(item, now) for item in data.get("list", [])]
         return products, total
 
+    def query_product(self, pid: str) -> CJProduct | None:
+        """Re-photographie UN produit déjà connu (prix + listedNum à jour).
+
+        Sert au suivi quotidien : on re-snapshote l'univers persistant pour
+        construire la vélocité réelle dans le temps. ``createTime`` n'est pas
+        renvoyé ici — on conserve celui déjà stocké en base (l'upsert ne
+        l'écrase pas). Renvoie ``None`` si le produit est introuvable/retiré.
+        """
+        url = f"{_BASE}/product/query?pid={urllib.parse.quote(str(pid))}"
+        try:
+            data = self._request("GET", url, headers=self._headers())
+        except CJError:
+            return None  # produit retiré ou momentanément indisponible
+        if not data:
+            return None
+        now = datetime.now(timezone.utc).isoformat()
+        return self._map(data, now)
+
     @staticmethod
     def _map(item: dict, observed_at: str) -> CJProduct:
         """Normalise un item brut CJ en :class:`CJProduct`."""

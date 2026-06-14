@@ -17,6 +17,7 @@ import argparse
 import os
 import sqlite3
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -36,6 +37,11 @@ DB_PATH = Path(__file__).resolve().parent / "data" / "cj.db"
 def init_db() -> sqlite3.Connection:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
+    # Le refresh horaire et l'export nocturne peuvent accéder à la base en même
+    # temps : WAL permet lecture+écriture concurrentes, busy_timeout attend au
+    # lieu d'échouer si la base est momentanément verrouillée.
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA busy_timeout=30000")
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS cj_products (
             pid          TEXT PRIMARY KEY,
@@ -131,6 +137,83 @@ def run_collect(pages: int, page_size: int, keyword: str | None) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Refresh : re-snapshot de l'univers persistant (suivi/vélocité)
+# ---------------------------------------------------------------------------
+
+def run_refresh(max_products: int, min_age_hours: float, delay: float = 1.0) -> None:
+    """Re-photographie les produits DÉJÀ en base (prix + listedNum à jour).
+
+    C'est ce qui crée le vrai suivi dans le temps : chaque produit analysé les
+    jours précédents reçoit un nouveau snapshot quotidien → vélocité réelle.
+
+    - ``min_age_hours`` : on ne re-snapshote pas un produit déjà vu récemment
+      (évite les doublons quand la découverte vient déjà de le capter).
+    - ``max_products``  : plafond pour borner la durée (priorité aux produits
+      vus le plus anciennement, pour que tout l'univers tourne au fil des jours).
+    """
+    email = os.environ.get("CJ_EMAIL", "")
+    api_key = os.environ.get("CJ_API_KEY", "")
+    try:
+        client = CJClient(email, api_key, page_delay=delay)
+        client.authenticate()
+    except CJError as exc:
+        print(f"✗ Échec CJ (refresh) : {exc}")
+        sys.exit(1)
+
+    conn = init_db()
+    cutoff = datetime.now(timezone.utc).timestamp() - min_age_hours * 3600
+    # Produits dont le dernier snapshot est trop ancien (ou inexistant),
+    # les plus anciennement rafraîchis d'abord.
+    rows = conn.execute(
+        """
+        SELECT p.pid, MAX(s.observed_at) AS last_snap
+        FROM cj_products p
+        LEFT JOIN cj_snapshots s ON s.pid = p.pid
+        GROUP BY p.pid
+        ORDER BY last_snap ASC
+        """
+    ).fetchall()
+
+    stale = []
+    for pid, last_snap in rows:
+        if last_snap is None:
+            stale.append(pid)
+            continue
+        try:
+            ts = datetime.fromisoformat(last_snap).timestamp()
+        except ValueError:
+            ts = 0
+        if ts < cutoff:
+            stale.append(pid)
+
+    targets = stale[:max_products]
+    total = len(targets)
+    print(f"Refresh : {total} produits à re-snapshoter "
+          f"(univers={len(rows)}, plafond={max_products}, âge mini={min_age_hours}h)")
+
+    done = snaps = gone = 0
+    for i, pid in enumerate(targets, 1):
+        product = client.query_product(pid)
+        if product is None:
+            gone += 1
+        else:
+            _, s = store(conn, [product])
+            snaps += s
+            done += 1
+        if i % 100 == 0 or i == total:
+            print(f"  {i}/{total}  (ok={done}, snapshots={snaps}, introuvables={gone})", flush=True)
+        if i < total:
+            time.sleep(delay)
+    conn.close()
+
+    print(f"\n{'='*60}")
+    print(f"  Re-snapshotés       : {done}")
+    print(f"  Snapshots ajoutés   : {snaps}")
+    print(f"  Produits introuvables : {gone} (retirés du catalogue CJ ?)")
+    print(f"{'='*60}")
+
+
+# ---------------------------------------------------------------------------
 # Scoring depuis l'historique
 # ---------------------------------------------------------------------------
 
@@ -202,10 +285,18 @@ def main() -> None:
     parser.add_argument("--keyword", type=str, default=None, help="Filtre par mot-clé produit")
     parser.add_argument("--score", action="store_true", help="Scorer la base au lieu de collecter")
     parser.add_argument("--top", type=int, default=20, help="Nb de produits à afficher au scoring")
+    parser.add_argument("--refresh", action="store_true",
+                        help="Re-snapshoter l'univers existant (suivi/vélocité) au lieu de collecter")
+    parser.add_argument("--max-refresh", type=int, default=5000,
+                        help="Plafond de produits re-snapshotés par run")
+    parser.add_argument("--refresh-min-age-hours", type=float, default=20.0,
+                        help="N'actualise pas un produit déjà vu depuis moins de N heures")
     args = parser.parse_args()
 
     if args.score:
         run_score(args.top)
+    elif args.refresh:
+        run_refresh(args.max_refresh, args.refresh_min_age_hours)
     else:
         run_collect(args.pages, args.page_size, args.keyword)
 
