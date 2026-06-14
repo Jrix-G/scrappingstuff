@@ -1,0 +1,36 @@
+# Mots-clés à collecter — un par ligne, # pour commenter
+# Chaque mot-clé × nb_pages = produits collectés (60 produits/page)
+
+ecouteurs bluetooth
+montre connectee
+lampe led
+coque telephone
+bracelet fitness
+chargeur sans fil
+tapis de yoga
+resistance elastique
+brosse a dents electrique
+humidificateur
+projector portable
+camera surveillance
+drone mini
+robot aspirateur
+station meteo
+enceinte bluetooth
+support telephone voiture
+cables usb-c
+lunettes soleil
+masque sommeil
+gourde isotherme
+sac a dos sport
+trottinette electrique accessoires
+clavier gaming
+souris sans fil
+hub usb
+adaptateur hdmi
+batterie externe
+filtre cafe reutilisable
+grille pain mini
+machine cafe capsules
+plante artificielle
+cadre photo numerique

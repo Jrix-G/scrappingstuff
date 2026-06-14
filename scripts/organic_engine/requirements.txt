@@ -1,0 +1,13 @@
+# Cœur scientifique
+numpy>=1.26          # algèbre, régressions, statistiques robustes
+
+# Signal de demande (vélocité réelle en 1 appel)
+pytrends>=4.9         # Google Trends (série historique)
+# Reddit : AUCUNE dépendance — flux RSS public via urllib stdlib (cf. REDDIT_SETUP.md)
+
+# API (optionnel — le moteur s'importe sans)
+fastapi>=0.110
+uvicorn>=0.27
+
+# Tests
+pytest>=8.0

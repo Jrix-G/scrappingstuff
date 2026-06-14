@@ -1,0 +1,7 @@
+# Côté local (orchestrateur)
+httpx==0.27.0       # appels HTTP async vers Vercel
+rich==13.7.1        # affichage progress bar + tableau
+
+# Côté Vercel (api/scrape.py)
+# Aucune dépendance — uniquement la stdlib Python (urllib, json, re)
+# Vercel installe automatiquement ce qui est dans ce fichier UNIQUEMENT pour le local

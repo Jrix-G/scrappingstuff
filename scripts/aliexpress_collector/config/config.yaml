@@ -1,0 +1,36 @@
+# ---------------------------------------------------------------------------
+# Configuration centrale du collecteur AliExpress.
+# Toutes les valeurs sont surchargeables par variable d'environnement,
+# préfixe AEC_ (ex: AEC_TARGET_URL, AEC_MAX_PRODUCTS). Voir config/settings.py
+# ---------------------------------------------------------------------------
+
+# URL de départ (page de listing AliExpress). C'est le seul paramètre obligatoire.
+target_url: "https://fr.aliexpress.com/w/wholesale-ecouteurs-bluetooth.html"
+
+# Nombre max de produits à collecter par exécution (0 = illimité).
+max_products: 40
+
+# Visiter la fiche produit individuelle pour enrichir les données
+# (variantes, description, vendeur). Plus lent mais beaucoup plus riche.
+# Si false : on se contente des données déjà présentes dans le listing.
+enrich_product_pages: true
+
+# Politesse / anti-détection -------------------------------------------------
+locale: "fr-FR"
+timezone: "Europe/Paris"
+headless: false                 # false = fenêtre visible (plus humain, recommandé)
+min_delay_seconds: 5.0          # délai mini entre deux requêtes produit
+max_delay_seconds: 11.0         # délai maxi (jitter aléatoire entre les deux)
+listing_scroll_steps: 8         # nombre de scrolls pour charger le listing
+nav_timeout_seconds: 45
+
+# Stockage -------------------------------------------------------------------
+# backend: "auto" choisit SQLite (recommandé pour l'historique/vélocité),
+# "sqlite" ou "json" pour forcer.
+storage_backend: "auto"
+storage_path: "data/aliexpress.db"        # pour sqlite
+json_export_path: "data/products.json"    # export JSON optionnel/miroir
+
+# Journalisation -------------------------------------------------------------
+log_level: "INFO"
+log_file: "logs/collector.log"

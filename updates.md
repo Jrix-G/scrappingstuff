@@ -1,0 +1,45 @@
+# updates.md — Journal des modifications
+
+Ce fichier doit être lu à l'ouverture de chaque session et mis à jour après chaque modification du projet.
+Format : `YYYY-MM-DD HH:MM | fichier(s) concerné(s) | description`
+
+---
+
+## Historique
+
+| Date & heure | Fichier(s) | Description |
+|---|---|---|
+| 2026-06-10 00:00 | `Plan.md` | Création du rapport d'analyse initial : architecture, viabilité, gaps critiques, roadmap 3 phases |
+| 2026-06-10 00:00 | `AGENTS.md` | Création des règles et rôles pour les agents IA intervenant sur le projet |
+| 2026-06-10 00:00 | `updates.md` | Création du journal de modifications |
+| 2026-06-10 01:30 | `testlanding/` | Création landing page Next.js 14 (Tandor) : Spline 3D, GSAP ScrollTrigger, Lenis, Framer Motion, Tailwind. Sections Hero/Metrics/Problem/Features/FinalCTA. Build + smoke test HTTP 200 OK |
+| 2026-06-10 01:30 | `testlanding/PSYCHOLOGY.md` | Analyse psychologie de persuasion (couleurs, formes, Cialdini, arc émotionnel du scroll, wording) — guide le design |
+| 2026-06-10 01:30 | `testlanding/package.json` | Next bumpé 14.2.5 → 14.2.33 (vuln critique corrigée) |
+| 2026-06-10 02:15 | `testlanding/` | Refonte direction artistique → éditorial/Swiss luxe. Suppression Spline (placeholder cassé) + halos flous + centrage. Ajout grille asymétrique, typo XXL, header, graphe live SVG animé (LiveChart : organique cyan vs pub violette). `prefers-reduced-motion` géré. Build + render HTTP 200 OK |
+| 2026-06-10 03:00 | `testlanding/` | Refonte 2 (réfs wiiseto/Plausible) → sombre épuré Apple. Palette de marque violet/cyan → teal→vert. Typo Syne → Poppins (arrondie). LiveChart : barre d'onglets Reddit/TikTok/Google (dashboard), accent teal unique. Plus d'espace négatif, zéro glow. Build + render HTTP 200 OK |
+| 2026-06-11 00:00 | `scrapa/` → `frontend/` | Renommage complet via git mv. Suppression des dossiers hors sujet : `testlanding/`, `graphs/` (mots de dictionnaire), `node_modules/` racine, `package.json` racine, `data.json` (26Mo Wikipedia), `main.py`, `proxy_rotatifs.py`, `videoge.py`, `proxys.txt`, `aliexpress_products.csv`, `Projet (1).zip`. Structure racine réduite à : `backend/`, `frontend/`, `scripts/`, docs. |
+| 2026-06-11 00:00 | `frontend/src/Pages/Home.tsx` | Remplacement complet de la homepage. Port JSX de la landing Tandor (zip `Projet (1).zip`) : Nav fixe FR/EN, Hero parallax 3 variants, social proof marquee, velocity timeline SVG animé, features grid sparkbars, dashboard browser 3D tilt, how it works, testimonials, pricing toggle mensuel/annuel, FAQ accordion, CTA final, footer. JS landing.js porté en `useEffect`. |
+| 2026-06-11 00:00 | `frontend/src/Styles/base.css`, `sections.css` | Ajout des CSS du design system Tandor (tokens, layout, nav, animations reveal, sections). Styles hero variants ajoutés en fin de sections.css. |
+| 2026-06-11 00:00 | `frontend/public/index.html` | Remplacement fonts Poppins + p5.js par Hanken Grotesk, JetBrains Mono, Instrument Serif (Google Fonts). Titre mis à jour : "Tandor — Détecte les produits gagnants avant tout le monde". |
+| 2026-06-11 00:00 | `frontend/src/App.tsx` | Suppression import Bootstrap global (conflictait avec base.css du nouveau design). |
+| 2026-06-11 12:00 | `frontend/public/index.html` | Suppression Bootstrap CSS CDN + Bootstrap JS CDN. Corrige police incorrecte et surlignage bleu sur les liens (Bootstrap écrasait Hanken Grotesk et les styles `a {}` de base.css). |
+| 2026-06-12 18:10 | `.gitignore`, `scripts/vercel_collector/INSTALL.md` | Ajout des ignores Python/Vercel locaux et remplacement de l'installation pip système par un venv local pour éviter l'erreur PEP 668. |
+| 2026-06-12 18:13 | `scripts/vercel_collector/vercel.json` | Suppression du champ `runtime` invalide pour laisser Vercel détecter automatiquement la fonction Python. |
+| 2026-06-12 18:14 | `scripts/vercel_collector/.config` | Enregistrement de l'URL production Vercel locale pour lancer le collecteur sans ressaisie. |
+| 2026-06-12 18:15 | `scripts/vercel_collector/.venv`, `scripts/vercel_collector/.vercel`, `scripts/vercel_collector/data/` | Création des artefacts locaux ignorés pour installer les dépendances, lier le projet Vercel et tester le collecteur. |
+| 2026-06-13 00:00 | `scripts/organic_engine/scoring/sellability.py` | Nouveau : moteur de vendabilité financière (« verdict de trader »). Marge nette après CPA (gate dur), bande de prix d'impulsion (log-gaussienne), saturation (`listedNum`), fraîcheur (`createTime`). Score 0–100 par moyenne géométrique pondérée + verdict BUY/WATCH/PASS explicable. |
+| 2026-06-13 00:00 | `scripts/organic_engine/signals/seasonality.py` | Nouveau : 8 profils saisonniers (été/hiver/Noël/Halloween/St-Valentin/rentrée/fitness janvier/jardin), appariement par mots-clés, multiplicateur mensuel normalisé (moy=1,0). |
+| 2026-06-13 00:00 | `scripts/organic_engine/analyze.py` | Nouveau runner : vendabilité × saisonnalité sur `cj.db`, top classé + exemple détaillé + export JSON frontend. Sur 1000 produits : 176 BUY (marge nette moy. 23,6 €). |
+| 2026-06-13 00:00 | `scripts/organic_engine/collectors/google_trends.py`, `reddit_mentions.py` | Nouveaux collecteurs de vélocité réelle (série historique en 1 appel). Google Trends testé live OK (93 pts/3 mois). |
+| 2026-06-13 01:00 | `scripts/organic_engine/collectors/reddit_mentions.py`, `REDDIT_SETUP.md` | Réécriture Reddit en flux RSS public (SANS clé) : l'API legacy + endpoints .json sont bloqués (403). RSS `search.rss` servi → titres+dates → série de mentions hebdo. Multi-sub en 1 requête, cache 6h, backoff 429. Zéro dépendance (urllib+xml stdlib). Testé live OK. |
+| 2026-06-13 02:00 | `DASHBOARD_SPEC.md` | Cahier des charges UX/UI complet du dashboard (design system, 14 pages, 11 visualisations, animations, états, responsive), ancré sur le contrat de données réel du backend. |
+| 2026-06-13 03:00 | `scripts/organic_engine/export_dashboard.py` | Exporteur : cj.db → analyse réelle + enrichissement Trends/Reddit du top N → mapping catégories → `frontend/src/dashboard/products.json`. 12 produits réels exportés. |
+| 2026-06-13 03:00 | `frontend/src/dashboard/{app.css,data.ts,charts.ts,controller.ts,products.json}` | Intégration du dashboard (zip HTML/CSS/JS) converti en modules : app.css scopé sous `.tandor-dash` (cohabite avec la landing), JS porté en TS (IIFE→`mountDashboard()`). |
+| 2026-06-13 03:00 | `frontend/src/Pages/Dashboard.tsx`, `frontend/src/App.tsx` | Composant React (squelette JSX + useEffect montant le contrôleur) + route `/dashboard`. Build CRA OK. Rendu runtime vérifié (jsdom) : 12 produits réels affichés, 4 KPIs, flux + nav. |
+| 2026-06-13 00:00 | `scripts/organic_engine/enrich.py` | Nouveau : croise vendabilité CJ + vélocité Google Trends via le moteur d'accélération. Pipeline organique de bout en bout validé. |
+| 2026-06-13 00:00 | `scripts/organic_engine/tests/test_sellability.py` | 10 nouveaux tests (vendabilité + saisonnalité). Suite totale : 28 verts. |
+| 2026-06-14 00:00 | `scripts/organic_engine/export_dashboard.py` | Refactor : logique de build extraite en `build_records(limit, geo, no_enrich)` (réutilisable). `main()` écrit désormais 2 sorties : le JSON bundlé du front + un cache horodaté `data/dashboard_export.json` (forme `{meta, products}`) servi par l'API. |
+| 2026-06-14 00:00 | `scripts/organic_engine/api/server.py` | Nouveau : API de prod FastAPI servie depuis le Pi. Lit le cache (aucun appel réseau par requête), CORS configurable (`TANDOR_CORS_ORIGINS`). Endpoints `/api/health`, `/api/meta` (fraîcheur), `/api/products` (filtres cat/verdict/min_score, tri score Tandor), `/api/product/{id}`. |
+| 2026-06-14 00:00 | `scripts/organic_engine/run_daily.py` | Nouveau : job quotidien (cron Pi). Enchaîne collecte CJ (tolérante aux pannes) → rebuild du cache. Démarre l'historique de vélocité dès J+1. |
+| 2026-06-14 00:00 | `frontend/src/dashboard/data.ts`, `frontend/src/Pages/Dashboard.tsx` | Front : fetch optionnel de l'API (`REACT_APP_API_URL`) avant montage → injecte `window.__TANDOR_BASE__`, lu par data.ts ; fallback automatique sur le JSON bundlé si l'API est injoignable. tsc OK. |
+| 2026-06-14 00:00 | `scripts/organic_engine/DEPLOY_PI.md` | Nouveau : guide de déploiement Pi (venv, cron `daily.sh`, service systemd uvicorn, tunnel Cloudflare, branchement front local). |

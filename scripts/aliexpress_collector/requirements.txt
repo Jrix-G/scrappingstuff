@@ -1,0 +1,10 @@
+# Cœur
+playwright==1.44.0      # navigation + interception réseau JSON
+PyYAML==6.0.1           # lecture de la configuration
+
+# Confort (optionnels mais recommandés)
+colorlog==6.8.2         # logs console colorés (dégrade gracieusement si absent)
+
+# Développement / tests
+pytest==8.2.0
+pytest-asyncio==0.23.7
