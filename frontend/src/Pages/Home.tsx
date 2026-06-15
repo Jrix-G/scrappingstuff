@@ -282,7 +282,7 @@ const Home: React.FC = () => {
               <button data-lang="fr">FR</button>
               <button data-lang="en">EN</button>
             </div>
-            <a href="#" className="nav-login" data-fr="Se connecter" data-en="Log in">Se connecter</a>
+            <a href="/login" className="nav-login" data-fr="Se connecter" data-en="Log in">Se connecter</a>
             <a href="#pricing" className="btn btn-primary" data-fr="Essayer Tandor" data-en="Try Tandor">Essayer Tandor</a>
             <button className="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
           </div>
@@ -293,7 +293,7 @@ const Home: React.FC = () => {
           <a href="#dashboard" data-fr="Produit" data-en="Product">Produit</a>
           <a href="#pricing" data-fr="Tarifs" data-en="Pricing">Tarifs</a>
           <a href="#faq" data-fr="FAQ" data-en="FAQ">FAQ</a>
-          <a href="#" data-fr="Se connecter" data-en="Log in">Se connecter</a>
+          <a href="/login" data-fr="Se connecter" data-en="Log in">Se connecter</a>
         </div>
       </nav>
 

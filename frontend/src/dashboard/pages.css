@@ -1,0 +1,485 @@
+/* ============================================================
+   TANDOR DASHBOARD — pages.css
+   Component styles for the 12 inner pages. Scoped under
+   .tandor-dash so it sits cleanly on top of app.css (which owns
+   the shell + Home). Reuses the same tokens — no new colours.
+   ============================================================ */
+
+/* ---------- chart entrance keyframes ----------
+   Entrance reveals for bars / points / donut / spider are driven by
+   the Web Animations API in charts-ext.js (NOT CSS animation), so the
+   element's resting style stays the final visible state — html-to-image
+   captures and PDF/PPTX exports render the chart fully drawn. We only
+   keep the transform-box/origin here plus the line-draw keyframe. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lcDraw { from { stroke-dashoffset: var(--len, 0); } to { stroke-dashoffset: 0; } }
+}
+.tandor-dash .bc-bar { transform-box: fill-box; transform-origin: bottom; }
+.tandor-dash .dn-seg { transform-box: fill-box; transform-origin: center; }
+.tandor-dash .sp-poly { transform-box: fill-box; transform-origin: center; }
+.tandor-dash .lc-axis, .tandor-dash .sp-axis { font-family: var(--font-mono); font-size: 9.5px; fill: var(--text-tertiary); }
+.tandor-dash .dn-c-n { font-family: var(--font-mono); font-weight: 700; font-size: 22px; fill: var(--text-primary); }
+.tandor-dash .dn-c-s { font-family: var(--font-mono); font-size: 9.5px; fill: var(--text-tertiary); letter-spacing: .06em; text-transform: uppercase; }
+.tandor-dash .mini-bars { width: 100%; height: 60px; }
+
+/* ============================================================
+   shared page helpers
+   ============================================================ */
+.tandor-dash .breadcrumb { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-tertiary); margin-bottom: 10px; }
+.tandor-dash .breadcrumb a:hover { color: var(--text-secondary); }
+.tandor-dash .breadcrumb svg { width: 13px; height: 13px; }
+.tandor-dash .page-head .count { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-tertiary); }
+.tandor-dash .page-head { align-items: flex-start; }
+.tandor-dash .page-head > div:first-child { min-width: 0; }
+.tandor-dash .page-head .page-title { white-space: nowrap; }
+.tandor-dash .page-head .tbar { flex: 0 0 auto; }
+@media (max-width: 640px) { .tandor-dash .page-head .page-title { white-space: normal; } }
+
+.tandor-dash .section-row { display: grid; gap: 18px; margin-bottom: 18px; }
+.tandor-dash .grid-2 { grid-template-columns: 1fr 1fr; }
+.tandor-dash .grid-3 { grid-template-columns: repeat(3, 1fr); }
+.tandor-dash .grid-21 { grid-template-columns: 2fr 1fr; align-items: start; }
+.tandor-dash .grid-12 { grid-template-columns: 1fr 2fr; align-items: start; }
+
+/* buttons */
+.tandor-dash .btn-pri { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 36px; padding: 0 15px; border-radius: var(--r-sm); background: var(--text-primary); color: var(--bg-base); font-size: 13px; font-weight: 600; transition: transform .18s var(--ease), box-shadow .18s; white-space: nowrap; }
+.tandor-dash .btn-pri:hover { transform: translateY(-1px); box-shadow: var(--elev-2); }
+.tandor-dash .btn-pri:active { transform: scale(.985); }
+.tandor-dash .btn-pri svg { width: 15px; height: 15px; }
+.tandor-dash .btn-signal { background: linear-gradient(135deg, var(--signal), var(--signal-strong)); color: #fff; box-shadow: var(--elev-signal); }
+.tandor-dash .btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 7px; height: 36px; padding: 0 13px; border-radius: var(--r-sm); border: 1px solid var(--border-subtle); background: var(--surface-1); color: var(--text-secondary); font-size: 12.5px; font-weight: 600; transition: background .15s, color .15s, border-color .15s; white-space: nowrap; }
+.tandor-dash .btn-ghost:hover { background: var(--surface-2); color: var(--text-primary); border-color: var(--border-strong); }
+.tandor-dash .btn-ghost.on { background: var(--signal-tint); color: var(--signal-strong); border-color: color-mix(in oklab, var(--signal) 32%, var(--border-subtle)); }
+.tandor-dash .btn-ghost svg { width: 15px; height: 15px; }
+.tandor-dash .btn-danger { color: var(--red); border-color: color-mix(in oklab, var(--red) 30%, var(--border-subtle)); background: var(--surface-1); }
+.tandor-dash .btn-danger:hover { background: color-mix(in oklab, var(--red) 8%, var(--surface-1)); color: var(--red); }
+.tandor-dash .btn-sm { height: 30px; padding: 0 11px; font-size: 12px; }
+
+/* input / select */
+.tandor-dash .inp { height: 36px; padding: 0 12px; border-radius: var(--r-sm); border: 1px solid var(--border-subtle); background: var(--surface-1); font-size: 13px; color: var(--text-primary); width: 100%; transition: border-color .18s, box-shadow .18s; }
+.tandor-dash .inp:focus { outline: none; border-color: var(--signal); box-shadow: 0 0 0 3px color-mix(in oklab, var(--signal) 16%, transparent); }
+.tandor-dash .inp::placeholder { color: var(--text-tertiary); }
+.tandor-dash textarea.inp { height: auto; padding: 9px 12px; resize: vertical; min-height: 64px; line-height: 1.5; font-family: var(--font-sans); }
+.tandor-dash .field { display: flex; flex-direction: column; gap: 6px; }
+.tandor-dash .field-lbl { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.tandor-dash .field-hint { font-size: 11.5px; color: var(--text-tertiary); }
+
+/* switch */
+.tandor-dash .switch { width: 38px; height: 22px; border-radius: var(--r-full); background: var(--border-strong); position: relative; cursor: pointer; transition: background .2s var(--ease); flex: none; }
+.tandor-dash .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: var(--elev-1); transition: transform .2s var(--ease); }
+.tandor-dash .switch.on { background: var(--signal); }
+.tandor-dash .switch.on::after { transform: translateX(16px); }
+
+/* search input w/ icon */
+.tandor-dash .search-inp { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: var(--r-sm); border: 1px solid var(--border-subtle); background: var(--surface-1); transition: border-color .18s, box-shadow .18s; }
+.tandor-dash .search-inp:focus-within { border-color: var(--signal); box-shadow: 0 0 0 3px color-mix(in oklab, var(--signal) 16%, transparent); }
+.tandor-dash .search-inp svg { width: 15px; height: 15px; color: var(--text-tertiary); flex: none; }
+.tandor-dash .search-inp input { border: none; outline: none; background: none; font-size: 13px; flex: 1; color: var(--text-primary); }
+
+/* ============================================================
+   TOOLBAR + FILTER CHIPS  (Discovery)
+   ============================================================ */
+.tandor-dash .tbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.tandor-dash .tbar .search-inp { min-width: 220px; flex: 1; max-width: 360px; }
+.tandor-dash .tbar-spacer { flex: 1; }
+.tandor-dash .seg-view { display: inline-flex; padding: 3px; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--r-sm); }
+.tandor-dash .seg-view button { width: 32px; height: 28px; display: grid; place-items: center; border-radius: 6px; color: var(--text-tertiary); }
+.tandor-dash .seg-view button svg { width: 16px; height: 16px; }
+.tandor-dash .seg-view button.on { background: var(--surface-1); color: var(--text-primary); box-shadow: var(--elev-1); }
+.tandor-dash .sel-wrap { position: relative; }
+.tandor-dash .sel { height: 36px; padding: 0 32px 0 12px; border-radius: var(--r-sm); border: 1px solid var(--border-subtle); background: var(--surface-1); font-size: 12.5px; font-weight: 600; color: var(--text-secondary); cursor: pointer; appearance: none; -webkit-appearance: none; }
+.tandor-dash .sel:focus { outline: none; border-color: var(--signal); }
+.tandor-dash .sel-wrap::after { content: ""; position: absolute; right: 12px; top: 50%; width: 8px; height: 8px; border-right: 1.6px solid var(--text-tertiary); border-bottom: 1.6px solid var(--text-tertiary); transform: translateY(-65%) rotate(45deg); pointer-events: none; }
+
+.tandor-dash .chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; min-height: 26px; }
+.tandor-dash .fchip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 6px 0 10px; border-radius: var(--r-full); background: var(--signal-tint); color: var(--signal-strong); font-size: 12px; font-weight: 600; }
+.tandor-dash .fchip button { width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center; color: var(--signal-strong); }
+.tandor-dash .fchip button:hover { background: color-mix(in oklab, var(--signal) 18%, transparent); }
+.tandor-dash .fchip button svg { width: 11px; height: 11px; }
+.tandor-dash .chips .clear-all { font-size: 12px; font-weight: 600; color: var(--text-tertiary); padding: 4px 6px; border-radius: var(--r-sm); }
+.tandor-dash .chips .clear-all:hover { color: var(--text-primary); background: var(--surface-2); }
+
+/* ============================================================
+   FILTER RAIL  (Discovery left rail)
+   ============================================================ */
+.tandor-dash .layout-rail { display: grid; grid-template-columns: 248px 1fr; gap: 20px; align-items: start; }
+.tandor-dash .flt-rail { position: sticky; top: 14px; }
+.tandor-dash .flt-card { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-lg); box-shadow: var(--elev-1); overflow: hidden; }
+.tandor-dash .flt-sec { padding: 14px 16px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .flt-sec:first-child { border-top: none; }
+.tandor-dash .flt-sec-h { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 11px; letter-spacing: -.01em; }
+.tandor-dash .flt-sec-h .cnt { font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; color: var(--text-tertiary); }
+.tandor-dash .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.tandor-dash .pill { height: 28px; padding: 0 11px; border-radius: var(--r-full); border: 1px solid var(--border-subtle); background: var(--surface-1); font-size: 11.5px; font-weight: 600; color: var(--text-secondary); display: inline-flex; align-items: center; gap: 6px; transition: all .14s; }
+.tandor-dash .pill:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.tandor-dash .pill.on { background: var(--signal-tint); color: var(--signal-strong); border-color: color-mix(in oklab, var(--signal) 30%, var(--border-subtle)); }
+.tandor-dash .pill .pdot { width: 7px; height: 7px; border-radius: 50%; }
+.tandor-dash .chk-list { display: flex; flex-direction: column; gap: 2px; }
+.tandor-dash .chk { display: flex; align-items: center; gap: 9px; padding: 6px 4px; border-radius: var(--r-sm); cursor: pointer; font-size: 12.5px; color: var(--text-secondary); }
+.tandor-dash .chk:hover { background: var(--surface-2); }
+.tandor-dash .chk .box { width: 16px; height: 16px; border-radius: 5px; border: 1.6px solid var(--border-strong); display: grid; place-items: center; flex: none; transition: all .14s; }
+.tandor-dash .chk .box svg { width: 11px; height: 11px; color: #fff; opacity: 0; }
+.tandor-dash .chk.on .box { background: var(--signal); border-color: var(--signal); }
+.tandor-dash .chk.on .box svg { opacity: 1; }
+.tandor-dash .chk .chk-cnt { margin-left: auto; font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); }
+.tandor-dash .chk .chk-dot { width: 8px; height: 8px; border-radius: 2px; flex: none; }
+.tandor-dash .range-wrap { padding-top: 4px; }
+.tandor-dash .range-val { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-secondary); margin-bottom: 9px; }
+.tandor-dash .range-val b { color: var(--signal-strong); font-weight: 600; }
+.tandor-dash input[type=range].rng { -webkit-appearance: none; appearance: none; width: 100%; height: 5px; border-radius: var(--r-full); background: var(--bg-sunken); outline: none; }
+.tandor-dash input[type=range].rng::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--surface-1); border: 2px solid var(--signal); box-shadow: var(--elev-1); cursor: pointer; transition: transform .12s; }
+.tandor-dash input[type=range].rng::-webkit-slider-thumb:hover { transform: scale(1.12); }
+.tandor-dash input[type=range].rng::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--surface-1); border: 2px solid var(--signal); cursor: pointer; }
+.tandor-dash .flt-foot { padding: 12px 16px; border-top: 1px solid var(--border-subtle); display: flex; gap: 8px; }
+.tandor-dash .flt-foot .btn-ghost { flex: 1; }
+
+/* ============================================================
+   DATA GRID  (Discovery table)
+   ============================================================ */
+.tandor-dash .dg-wrap { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-lg); box-shadow: var(--elev-1); overflow: hidden; }
+.tandor-dash .dg { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tandor-dash .dg thead th { position: sticky; top: 0; background: var(--bg-sunken); z-index: 2; text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; padding: 11px 14px; border-bottom: 1px solid var(--border-subtle); white-space: nowrap; cursor: pointer; user-select: none; }
+.tandor-dash .dg thead th.num { text-align: right; }
+.tandor-dash .dg thead th .sort-ar { display: inline-block; margin-left: 4px; opacity: 0; transition: opacity .14s; }
+.tandor-dash .dg thead th:hover { color: var(--text-secondary); }
+.tandor-dash .dg thead th.sorted { color: var(--signal-strong); }
+.tandor-dash .dg thead th.sorted .sort-ar { opacity: 1; }
+.tandor-dash .dg tbody tr { border-bottom: 1px solid var(--border-subtle); cursor: pointer; transition: background .12s; }
+.tandor-dash .dg tbody tr:last-child { border-bottom: none; }
+.tandor-dash .dg tbody tr:hover { background: var(--surface-2); }
+.tandor-dash .dg td { padding: 10px 14px; vertical-align: middle; white-space: nowrap; }
+.tandor-dash .dg td.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.tandor-dash .dg .cell-prod { display: flex; align-items: center; gap: 11px; }
+.tandor-dash .dg .cell-prod .thumb { width: 36px; height: 36px; }
+.tandor-dash .dg .cp-name { font-weight: 600; font-size: 13px; letter-spacing: -.01em; }
+.tandor-dash .dg .cp-sub { font-size: 11px; color: var(--text-tertiary); font-family: var(--font-mono); margin-top: 1px; }
+.tandor-dash .dg .score-cell { display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.tandor-dash .dg .score-cell b { font-family: var(--font-mono); font-weight: 600; min-width: 22px; text-align: right; }
+.tandor-dash .dg .mini-ring { width: 26px; height: 26px; }
+.tandor-dash .dg .vel { font-family: var(--font-mono); font-weight: 600; }
+.tandor-dash .dg .vel.up { color: var(--buy); }
+.tandor-dash .dg .vel.down { color: var(--pass); }
+.tandor-dash .dg .row-spark { width: 60px; height: 22px; opacity: .8; }
+.tandor-dash .dg-skel td { padding: 13px 14px; }
+.tandor-dash .sk { background: linear-gradient(90deg, var(--bg-sunken) 0%, var(--surface-2) 50%, var(--bg-sunken) 100%); background-size: 200% 100%; border-radius: 6px; height: 14px; }
+@media (prefers-reduced-motion: no-preference) { .tandor-dash .sk { animation: shimmer 1.4s linear infinite; } @keyframes shimmer { to { background-position: -200% 0; } } }
+
+/* pagination */
+.tandor-dash .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; }
+.tandor-dash .pager .pinfo { font-family: var(--font-mono); font-size: 12px; color: var(--text-tertiary); }
+.tandor-dash .pager .pbtns { display: flex; gap: 6px; align-items: center; }
+.tandor-dash .pager .pbtn { width: 30px; height: 30px; border-radius: var(--r-sm); border: 1px solid var(--border-subtle); background: var(--surface-1); display: grid; place-items: center; color: var(--text-secondary); font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; transition: all .14s; }
+.tandor-dash .pager .pbtn:hover:not(:disabled) { border-color: var(--border-strong); color: var(--text-primary); }
+.tandor-dash .pager .pbtn.on { background: var(--text-primary); color: var(--bg-base); border-color: var(--text-primary); }
+.tandor-dash .pager .pbtn svg { width: 15px; height: 15px; }
+.tandor-dash .pager .pbtn:disabled { opacity: .4; cursor: default; }
+
+/* product cards grid (Discovery card view + Saved) */
+.tandor-dash .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 16px; }
+.tandor-dash .pcard { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-md); box-shadow: var(--elev-1); overflow: hidden; cursor: pointer; transition: box-shadow .2s var(--ease), transform .2s var(--ease); display: flex; flex-direction: column; }
+.tandor-dash .pcard:hover { box-shadow: var(--elev-2); transform: translateY(-2px); }
+.tandor-dash .pcard-media { height: 124px; position: relative; overflow: hidden; }
+.tandor-dash .pcard-media .ph-stripe { position: absolute; inset: 0; transition: transform .3s var(--ease); }
+.tandor-dash .pcard:hover .pcard-media .ph-stripe { transform: scale(1.04); }
+.tandor-dash .pcard-phase { position: absolute; left: 9px; top: 9px; }
+.tandor-dash .pcard-ring { position: absolute; right: 9px; top: 9px; width: 40px; height: 40px; display: grid; place-items: center; }
+.tandor-dash .pcard-ring b { position: absolute; font-family: var(--font-mono); font-weight: 700; font-size: 12px; }
+.tandor-dash .pcard-body { padding: 12px 13px 13px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+.tandor-dash .pcard-name { font-size: 13.5px; font-weight: 600; letter-spacing: -.01em; line-height: 1.25; }
+.tandor-dash .pcard-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); }
+.tandor-dash .pcard-gauges { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 12px; }
+.tandor-dash .pcard-g { display: flex; align-items: center; justify-content: space-between; gap: 6px; font-size: 10.5px; color: var(--text-tertiary); }
+.tandor-dash .pcard-kpi { display: flex; align-items: center; justify-content: space-between; padding-top: 9px; border-top: 1px solid var(--border-subtle); margin-top: auto; }
+.tandor-dash .pcard-kpi .mg-margin { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; }
+.tandor-dash .pcard-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tandor-dash .icon-btn { width: 28px; height: 28px; border-radius: var(--r-sm); border: 1px solid var(--border-subtle); background: var(--surface-1); display: grid; place-items: center; color: var(--text-tertiary); transition: all .14s; }
+.tandor-dash .icon-btn:hover { color: var(--text-primary); border-color: var(--border-strong); background: var(--surface-2); }
+.tandor-dash .icon-btn svg { width: 15px; height: 15px; }
+.tandor-dash .icon-btn.on { color: var(--signal); border-color: color-mix(in oklab, var(--signal) 30%, var(--border-subtle)); background: var(--signal-tint); }
+.tandor-dash .icon-btn.on svg { fill: var(--signal); }
+
+/* ============================================================
+   PRODUCT DETAIL DRAWER
+   ============================================================ */
+.tandor-dash + .pd-drawer, .pd-drawer { width: min(440px, 94vw); display: flex; flex-direction: column; }
+.pd-drawer .pd-h { display: flex; align-items: center; gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--border-subtle); }
+.pd-drawer .pd-h-meta { flex: 1; min-width: 0; }
+.pd-drawer .pd-h-name { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.pd-drawer .pd-h-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+.pd-drawer .pd-body { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 18px; }
+.pd-drawer .pd-hero { display: flex; gap: 16px; align-items: center; }
+.pd-drawer .pd-ring { position: relative; width: 96px; height: 96px; flex: none; display: grid; place-items: center; }
+.pd-drawer .pd-ring-c { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center; }
+.pd-drawer .pd-ring-n { font-size: 28px; line-height: 1; }
+.pd-drawer .pd-ring-c .micro { font-size: 8.5px; margin-top: 3px; }
+.pd-drawer .pd-facts { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.pd-drawer .pd-fact { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; }
+.pd-drawer .pd-fact > span { color: var(--text-tertiary); }
+.pd-drawer .pd-fact > b { font-weight: 600; font-size: 12.5px; }
+.pd-drawer .pd-econ { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pd-drawer .pd-econ-tile { padding: 10px 12px; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--r-sm); display: flex; flex-direction: column; gap: 4px; }
+.pd-drawer .pd-econ-tile.hot { background: var(--signal-tint); border-color: color-mix(in oklab, var(--signal) 26%, var(--border-subtle)); }
+.pd-drawer .pd-econ-tile b { font-size: 14px; font-weight: 600; }
+.pd-drawer .pd-sec-t { font-size: 12.5px; font-weight: 700; margin-bottom: 11px; }
+.pd-drawer .pd-gauge { display: grid; grid-template-columns: 86px 1fr 28px; align-items: center; gap: 10px; margin-bottom: 8px; }
+.pd-drawer .pd-g-l { font-size: 12px; color: var(--text-secondary); }
+.pd-drawer .pd-g-v { font-size: 12px; font-weight: 600; text-align: right; }
+.pd-drawer .pd-charts { display: flex; flex-direction: column; gap: 14px; }
+.pd-drawer .pd-chart-h { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.pd-drawer .pd-chart .spark { width: 100%; height: 60px; }
+.pd-drawer .pd-reason { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; margin-bottom: 12px; }
+.pd-drawer .pd-contribs { display: flex; flex-direction: column; gap: 7px; }
+.pd-drawer .pd-contrib { display: grid; grid-template-columns: 78px 1fr; align-items: center; gap: 10px; }
+.pd-drawer .pd-c-l { font-size: 11.5px; color: var(--text-tertiary); }
+.pd-drawer .pd-c-track { position: relative; height: 8px; background: var(--bg-sunken); border-radius: var(--r-full); }
+.pd-drawer .pd-c-track::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--border-strong); }
+.pd-drawer .pd-c-track i { position: absolute; top: 0; bottom: 0; border-radius: var(--r-full); }
+.pd-drawer .pd-foot { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; padding: 12px 18px; border-top: 1px solid var(--border-subtle); }
+.pd-drawer .pd-foot .btn-ghost, .pd-drawer .pd-foot .btn-pri { padding: 0 8px; gap: 5px; font-size: 11.5px; flex-direction: column; height: auto; padding: 9px 4px; }
+.pd-drawer .pd-foot svg { width: 16px; height: 16px; }
+
+/* ============================================================
+   RADAR PAGE
+   ============================================================ */
+.tandor-dash .radar-page-box { width: 100%; height: 460px; position: relative; }
+.tandor-dash .radar-detail { position: sticky; top: 14px; }
+.tandor-dash .rd-empty { padding: 40px 22px; text-align: center; }
+.tandor-dash .rd-hero { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-bottom: 1px solid var(--border-subtle); }
+.tandor-dash .rd-hero .pd-ring { position: relative; width: 76px; height: 76px; flex: none; display: grid; place-items: center; }
+.tandor-dash .rd-hero .pd-ring b { position: absolute; font-family: var(--font-mono); font-weight: 700; font-size: 21px; }
+.tandor-dash .rd-quad-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border-subtle); border: 1px solid var(--border-subtle); border-radius: var(--r-md); overflow: hidden; margin: 0; }
+.tandor-dash .rd-quad { padding: 9px 12px; background: var(--surface-1); font-size: 11px; }
+.tandor-dash .rd-quad.target { background: var(--signal-tint); }
+.tandor-dash .rd-quad .q-n { font-family: var(--font-mono); font-size: 18px; font-weight: 700; }
+.tandor-dash .rd-quad .q-l { color: var(--text-tertiary); margin-top: 1px; }
+
+/* ============================================================
+   TRENDS PAGE
+   ============================================================ */
+.tandor-dash .kw-chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tandor-dash .kw-chip { display: inline-flex; align-items: center; gap: 7px; height: 30px; padding: 0 6px 0 11px; border-radius: var(--r-full); border: 1px solid var(--border-subtle); background: var(--surface-1); font-size: 12.5px; font-weight: 600; }
+.tandor-dash .kw-chip .kw-dot { width: 9px; height: 9px; border-radius: 50%; }
+.tandor-dash .kw-chip button { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; color: var(--text-tertiary); }
+.tandor-dash .kw-chip button:hover { background: var(--surface-2); color: var(--text-primary); }
+.tandor-dash .kw-chip button svg { width: 11px; height: 11px; }
+.tandor-dash .kw-add { height: 30px; padding: 0 12px; border-radius: var(--r-full); border: 1px dashed var(--border-strong); background: none; font-size: 12px; font-weight: 600; color: var(--text-tertiary); display: inline-flex; align-items: center; gap: 5px; }
+.tandor-dash .kw-add:hover { color: var(--signal-strong); border-color: var(--signal); }
+.tandor-dash .kw-add svg { width: 13px; height: 13px; }
+.tandor-dash .big-chart { width: 100%; height: 320px; }
+.tandor-dash .vel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.tandor-dash .vel-card { padding: 13px 15px; border: 1px solid var(--border-subtle); border-radius: var(--r-md); background: var(--surface-1); box-shadow: var(--elev-1); }
+.tandor-dash .vel-card .vc-h { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; margin-bottom: 9px; }
+.tandor-dash .vel-card .vc-dot { width: 9px; height: 9px; border-radius: 50%; }
+.tandor-dash .vel-card .vc-rows { display: flex; flex-direction: column; gap: 5px; }
+.tandor-dash .vel-card .vc-row { display: flex; align-items: center; justify-content: space-between; font-size: 11.5px; color: var(--text-tertiary); }
+.tandor-dash .vel-card .vc-row b { font-family: var(--font-mono); font-weight: 600; color: var(--text-primary); }
+.tandor-dash .vel-card .vc-row b.up { color: var(--buy); } .tandor-dash .vel-card .vc-row b.down { color: var(--pass); }
+.tandor-dash .accel-box, .tandor-dash .chart-h-box { width: 100%; height: 180px; }
+.tandor-dash .legend { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.tandor-dash .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-secondary); cursor: pointer; }
+.tandor-dash .legend-item .ldot { width: 10px; height: 10px; border-radius: 3px; }
+.tandor-dash .legend-item.off { opacity: .4; }
+
+/* ============================================================
+   REDDIT PAGE
+   ============================================================ */
+.tandor-dash .kpi-mono-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 18px; }
+.tandor-dash .sub-list { display: flex; flex-direction: column; }
+.tandor-dash .sub-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 11px 18px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .sub-row:first-child { border-top: none; }
+.tandor-dash .sub-name { display: flex; align-items: center; gap: 9px; font-size: 13px; font-weight: 600; }
+.tandor-dash .sub-name .r-badge { width: 22px; height: 22px; border-radius: 6px; background: var(--reddit); color: #fff; display: grid; place-items: center; font-family: var(--font-mono); font-size: 10px; font-weight: 700; flex: none; }
+.tandor-dash .sub-bar { width: 100%; margin-top: 5px; height: 5px; border-radius: var(--r-full); background: var(--bg-sunken); overflow: hidden; }
+.tandor-dash .sub-bar i { display: block; height: 100%; border-radius: var(--r-full); background: var(--reddit); opacity: .85; }
+.tandor-dash .sub-val { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; }
+.tandor-dash .post-item { display: flex; gap: 12px; padding: 13px 18px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .post-item:first-child { border-top: none; }
+.tandor-dash .post-sub { font-family: var(--font-mono); font-size: 11px; color: var(--reddit); font-weight: 600; flex: none; }
+.tandor-dash .post-body { flex: 1; min-width: 0; }
+.tandor-dash .post-title { font-size: 13px; font-weight: 500; line-height: 1.4; }
+.tandor-dash .post-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+.tandor-dash .post-link { color: var(--text-tertiary); flex: none; align-self: center; }
+.tandor-dash .post-link:hover { color: var(--signal-strong); }
+.tandor-dash .post-link svg { width: 15px; height: 15px; }
+
+/* ============================================================
+   MY SPACE — watchlists / alerts / saved
+   ============================================================ */
+.tandor-dash .wl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.tandor-dash .wl-card { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-lg); box-shadow: var(--elev-1); padding: 16px 17px; cursor: pointer; transition: box-shadow .2s var(--ease), transform .2s var(--ease); }
+.tandor-dash .wl-card:hover { box-shadow: var(--elev-2); transform: translateY(-2px); }
+.tandor-dash .wl-card.new { border-style: dashed; box-shadow: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--text-tertiary); min-height: 150px; }
+.tandor-dash .wl-card.new:hover { color: var(--signal-strong); border-color: var(--signal); }
+.tandor-dash .wl-card.new svg { width: 22px; height: 22px; }
+.tandor-dash .wl-h { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.tandor-dash .wl-swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.tandor-dash .wl-name { font-size: 14px; font-weight: 700; letter-spacing: -.01em; flex: 1; }
+.tandor-dash .wl-tag { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-tertiary); background: var(--bg-sunken); padding: 2px 7px; border-radius: var(--r-full); }
+.tandor-dash .wl-stats { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.tandor-dash .wl-stat .ws-n { font-family: var(--font-mono); font-size: 21px; font-weight: 600; letter-spacing: -.02em; }
+.tandor-dash .wl-stat .ws-l { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+.tandor-dash .wl-spark { width: 96px; height: 34px; }
+.tandor-dash .wl-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--border-subtle); font-size: 11.5px; color: var(--text-tertiary); }
+.tandor-dash .wl-trend { font-family: var(--font-mono); font-weight: 600; }
+.tandor-dash .wl-trend.up { color: var(--buy); } .tandor-dash .wl-trend.down { color: var(--pass); }
+
+.tandor-dash .alert-rule { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; padding: 15px 18px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .alert-rule:first-child { border-top: none; }
+.tandor-dash .ar-nl { font-size: 13.5px; line-height: 1.5; }
+.tandor-dash .ar-nl .tok { font-weight: 600; color: var(--signal-strong); background: var(--signal-tint); padding: 1px 7px; border-radius: var(--r-sm); font-family: var(--font-mono); font-size: 12px; }
+.tandor-dash .ar-nl .tok.metric { color: var(--text-primary); background: var(--bg-sunken); }
+.tandor-dash .ar-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); margin-top: 7px; display: flex; gap: 14px; }
+.tandor-dash .ar-right { display: flex; align-items: center; gap: 12px; }
+.tandor-dash .ar-chan { display: flex; gap: 5px; }
+.tandor-dash .ar-chan span { width: 26px; height: 26px; border-radius: var(--r-sm); background: var(--bg-sunken); display: grid; place-items: center; color: var(--text-tertiary); }
+.tandor-dash .ar-chan span svg { width: 14px; height: 14px; }
+.tandor-dash .ar-chan span.on { background: var(--signal-tint); color: var(--signal-strong); }
+.tandor-dash .log-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 14px; padding: 11px 18px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .log-row:first-child { border-top: none; }
+.tandor-dash .log-ico { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #fff; flex: none; }
+.tandor-dash .log-ico svg { width: 15px; height: 15px; }
+.tandor-dash .log-t { font-size: 13px; } .tandor-dash .log-t b { font-weight: 700; }
+.tandor-dash .log-time { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); }
+
+/* rule builder */
+.tandor-dash .builder { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px 18px; }
+.tandor-dash .builder .b-lbl { font-size: 13px; color: var(--text-tertiary); font-weight: 600; }
+.tandor-dash .builder .sel, .tandor-dash .builder .inp { width: auto; min-width: 120px; }
+.tandor-dash .nl-preview { margin: 0 18px 16px; padding: 13px 15px; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--r-md); font-size: 13px; line-height: 1.5; }
+
+/* ============================================================
+   SETTINGS / BILLING / ACCOUNT  (forms)
+   ============================================================ */
+.tandor-dash .settings-layout { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: start; }
+.tandor-dash .set-nav { position: sticky; top: 14px; display: flex; flex-direction: column; gap: 2px; }
+.tandor-dash .set-nav a { display: flex; align-items: center; gap: 10px; padding: 8px 11px; border-radius: var(--r-sm); font-size: 13px; font-weight: 500; color: var(--text-secondary); transition: background .12s, color .12s; }
+.tandor-dash .set-nav a svg { width: 16px; height: 16px; }
+.tandor-dash .set-nav a:hover { background: var(--surface-2); color: var(--text-primary); }
+.tandor-dash .set-nav a.on { background: var(--surface-2); color: var(--text-primary); font-weight: 600; }
+.tandor-dash .set-nav a.on svg { color: var(--signal); }
+.tandor-dash .set-stack { display: flex; flex-direction: column; gap: 18px; }
+.tandor-dash .set-card { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-lg); box-shadow: var(--elev-1); overflow: hidden; scroll-margin-top: 14px; }
+.tandor-dash .set-card-h { padding: 16px 20px 13px; border-bottom: 1px solid var(--border-subtle); }
+.tandor-dash .set-card-h .ttl { font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.tandor-dash .set-card-h .sub { font-size: 12px; color: var(--text-tertiary); margin-top: 3px; }
+.tandor-dash .set-body { padding: 6px 20px; }
+.tandor-dash .set-pad { padding: 18px 20px; }
+.tandor-dash .set-line { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 15px 0; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .set-line:first-child { border-top: none; }
+.tandor-dash .set-line .sl-l { font-size: 13.5px; font-weight: 600; }
+.tandor-dash .set-line .sl-s { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; max-width: 460px; line-height: 1.5; }
+.tandor-dash .set-line .sl-ctl { flex: none; display: flex; align-items: center; gap: 10px; }
+.tandor-dash .set-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 18px 20px; }
+.tandor-dash .seg-inline { display: inline-flex; padding: 3px; background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--r-full); }
+.tandor-dash .seg-inline button { padding: 6px 14px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary); border-radius: var(--r-full); transition: color .15s, background .15s; }
+.tandor-dash .seg-inline button.on { background: var(--surface-1); color: var(--text-primary); box-shadow: var(--elev-1); }
+.tandor-dash .set-foot { padding: 14px 20px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: 10px; background: var(--bg-sunken); }
+
+/* CPA impact widget */
+.tandor-dash .cpa-impact { display: grid; grid-template-columns: 1fr 200px; gap: 20px; padding: 18px 20px; align-items: center; }
+.tandor-dash .cpa-witness { background: var(--bg-sunken); border: 1px solid var(--border-subtle); border-radius: var(--r-md); padding: 14px; }
+.tandor-dash .cpa-wit-name { font-size: 12.5px; font-weight: 600; margin-bottom: 9px; }
+.tandor-dash .cpa-wit-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; padding: 4px 0; }
+.tandor-dash .cpa-wit-row span { color: var(--text-tertiary); } .tandor-dash .cpa-wit-row b { font-family: var(--font-mono); font-weight: 600; }
+.tandor-dash .cpa-wit-verdict { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+
+/* billing */
+.tandor-dash .plan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.tandor-dash .plan-card { border: 1px solid var(--border-subtle); border-radius: var(--r-lg); padding: 20px; background: var(--surface-1); box-shadow: var(--elev-1); display: flex; flex-direction: column; gap: 14px; position: relative; }
+.tandor-dash .plan-card.cur { border-color: var(--signal); box-shadow: var(--elev-signal); }
+.tandor-dash .plan-card .pc-tag { position: absolute; top: -10px; left: 20px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: #fff; background: var(--signal); padding: 3px 9px; border-radius: var(--r-full); }
+.tandor-dash .plan-card .pc-name { font-size: 15px; font-weight: 700; }
+.tandor-dash .plan-card .pc-price { font-family: var(--font-mono); font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
+.tandor-dash .plan-card .pc-price small { font-size: 13px; color: var(--text-tertiary); font-weight: 500; }
+.tandor-dash .plan-card .pc-feats { display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--text-secondary); }
+.tandor-dash .plan-card .pc-feat { display: flex; align-items: center; gap: 8px; }
+.tandor-dash .plan-card .pc-feat svg { width: 15px; height: 15px; color: var(--buy); flex: none; }
+.tandor-dash .usage-row { display: flex; flex-direction: column; gap: 7px; padding: 14px 0; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .usage-row:first-child { border-top: none; }
+.tandor-dash .usage-h { display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+.tandor-dash .usage-h b { font-family: var(--font-mono); }
+.tandor-dash .usage-bar { height: 7px; border-radius: var(--r-full); background: var(--bg-sunken); overflow: hidden; }
+.tandor-dash .usage-bar i { display: block; height: 100%; border-radius: var(--r-full); background: linear-gradient(90deg, var(--signal), var(--signal-strong)); }
+.tandor-dash .usage-bar i.warn { background: linear-gradient(90deg, var(--watch), var(--amber)); }
+.tandor-dash .inv-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tandor-dash .inv-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; padding: 10px 20px; border-bottom: 1px solid var(--border-subtle); }
+.tandor-dash .inv-table td { padding: 12px 20px; border-bottom: 1px solid var(--border-subtle); }
+.tandor-dash .inv-table tr:last-child td { border-bottom: none; }
+.tandor-dash .inv-table .num { font-family: var(--font-mono); text-align: right; }
+.tandor-dash .pay-card { display: flex; align-items: center; gap: 14px; padding: 16px 20px; }
+.tandor-dash .pay-brand { width: 44px; height: 30px; border-radius: 6px; background: linear-gradient(135deg, var(--text-primary), oklch(0.4 0.03 264)); display: grid; place-items: center; color: #fff; font-family: var(--font-mono); font-size: 10px; font-weight: 700; flex: none; }
+
+.tandor-dash .status-pill { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em; text-transform: uppercase; font-weight: 600; padding: 3px 8px; border-radius: var(--r-full); }
+.tandor-dash .status-pill.paid { background: color-mix(in oklab, var(--buy) 14%, var(--surface-1)); color: oklch(0.42 0.13 152); }
+.tandor-dash .status-pill.active { background: var(--signal-tint); color: var(--signal-strong); }
+
+/* api key row */
+.tandor-dash .key-row { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .key-row:first-child { border-top: none; }
+.tandor-dash .key-mono { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-secondary); background: var(--bg-sunken); padding: 6px 10px; border-radius: var(--r-sm); border: 1px solid var(--border-subtle); flex: 1; letter-spacing: .02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tandor-dash .danger-zone { border-color: color-mix(in oklab, var(--red) 28%, var(--border-subtle)); }
+.tandor-dash .danger-zone .set-card-h { background: color-mix(in oklab, var(--red) 5%, var(--surface-1)); }
+
+/* avatar large */
+.tandor-dash .avatar-lg { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--signal), var(--signal-strong)); color: #fff; font-weight: 700; font-size: 24px; display: grid; place-items: center; flex: none; box-shadow: var(--elev-1); }
+
+/* ============================================================
+   ANALYTICS / MARKET SIGNALS extras
+   ============================================================ */
+.tandor-dash .stat-tile { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-md); box-shadow: var(--elev-1); padding: 15px 16px; }
+.tandor-dash .stat-tile .st-l { display: flex; align-items: center; gap: 7px; }
+.tandor-dash .stat-tile .st-ico { width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; background: var(--signal-tint); color: var(--signal-strong); }
+.tandor-dash .stat-tile .st-ico svg { width: 14px; height: 14px; }
+.tandor-dash .stat-tile .st-v { font-family: var(--font-mono); font-weight: 600; font-size: 1.7rem; letter-spacing: -.02em; margin: 11px 0 4px; }
+.tandor-dash .stat-tile .st-sub { font-size: 11.5px; color: var(--text-tertiary); }
+.tandor-dash .anom-row { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 14px; padding: 11px 18px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .anom-row:first-child { border-top: none; }
+.tandor-dash .anom-z { font-family: var(--font-mono); font-weight: 700; font-size: 15px; }
+.tandor-dash .corro-badge { font-family: var(--font-mono); font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: var(--r-full); }
+.tandor-dash .corro-badge.ok { background: var(--signal-tint); color: var(--signal-strong); }
+.tandor-dash .corro-badge.iso { background: var(--bg-sunken); color: var(--text-tertiary); }
+.tandor-dash .corr-matrix { display: grid; gap: 3px; }
+.tandor-dash .corr-cell { aspect-ratio: 1; border-radius: 5px; display: grid; place-items: center; font-family: var(--font-mono); font-size: 11px; font-weight: 600; }
+.tandor-dash .past-row { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 14px; padding: 12px 18px; border-top: 1px solid var(--border-subtle); }
+.tandor-dash .past-row:first-child { border-top: none; }
+.tandor-dash .past-spark { width: 90px; height: 30px; }
+.tandor-dash .delta-big { font-family: var(--font-mono); font-weight: 700; font-size: 14px; }
+.tandor-dash .delta-big.up { color: var(--buy); } .tandor-dash .delta-big.down { color: var(--pass); }
+
+/* ============================================================
+   EMPTY STATE  (line-art)
+   ============================================================ */
+.tandor-dash .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 56px 24px; }
+.tandor-dash .empty .e-art { width: 64px; height: 64px; border-radius: var(--r-lg); border: 1.5px solid var(--border-subtle); display: grid; place-items: center; color: var(--text-tertiary); margin-bottom: 18px; background: var(--bg-sunken); }
+.tandor-dash .empty .e-art svg { width: 28px; height: 28px; stroke-width: 1.5; }
+.tandor-dash .empty .e-t { font-size: 15px; font-weight: 700; }
+.tandor-dash .empty .e-s { font-size: 13px; color: var(--text-tertiary); margin-top: 6px; max-width: 340px; line-height: 1.55; }
+.tandor-dash .empty .e-actions { margin-top: 18px; display: flex; gap: 10px; }
+
+/* tag pills (small) */
+.tandor-dash .tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: var(--r-full); background: var(--bg-sunken); color: var(--text-secondary); }
+.tandor-dash .tag .tdot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* note block (Saved) */
+.tandor-dash .note-block { background: var(--signal-tint); border: 1px solid color-mix(in oklab, var(--signal) 22%, var(--border-subtle)); border-radius: var(--r-sm); padding: 9px 11px; font-size: 12px; color: var(--text-secondary); line-height: 1.5; display: flex; gap: 8px; }
+.tandor-dash .note-block svg { width: 14px; height: 14px; color: var(--signal-strong); flex: none; margin-top: 2px; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  .tandor-dash .layout-rail { grid-template-columns: 1fr; }
+  .tandor-dash .flt-rail { position: static; }
+  .tandor-dash .grid-21, .tandor-dash .grid-12, .tandor-dash .grid-2, .tandor-dash .grid-3, .tandor-dash .plan-cards { grid-template-columns: 1fr; }
+  .tandor-dash .settings-layout { grid-template-columns: 1fr; }
+  .tandor-dash .set-nav { position: static; flex-direction: row; flex-wrap: wrap; }
+  .tandor-dash .cpa-impact { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .tandor-dash .dg-scroll { overflow-x: auto; }
+  .tandor-dash .dg { min-width: 720px; }
+  .tandor-dash .tbar .search-inp { max-width: none; }
+  .pd-drawer { width: 100vw; }
+  .tandor-dash .radar-page-box { height: 360px; }
+  .tandor-dash .set-grid2 { grid-template-columns: 1fr; }
+}

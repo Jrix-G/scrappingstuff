@@ -157,6 +157,15 @@ export function mountDashboard() {
   ];
   const FOOT_NAV = [['settings', 'n_settings'], ['card', 'n_billing'], ['user', 'n_account']];
 
+  /* clé de navigation → route React (les pages internes vivent sur leurs routes) */
+  const ROUTE_BY_KEY = {
+    n_home: '/dashboard', n_discovery: '/discovery', n_radar: '/radar', n_trends: '/trends',
+    n_reddit: '/reddit', n_market: '/market', n_analytics: '/analytics', n_saved: '/saved',
+    n_watch: '/watchlists', n_alerts: '/alerts', n_settings: '/settings', n_billing: '/billing',
+    n_account: '/account',
+  };
+  const goTo = (key) => { const r = ROUTE_BY_KEY[key]; if (r) window.location.assign(r); };
+
   function renderSidebar() {
     const s = S();
     let h = '';
@@ -171,6 +180,7 @@ export function mountDashboard() {
     $('#sbNav').innerHTML = h;
     $$('#sbNav .sb-item').forEach((a) => a.addEventListener('click', () => {
       if (a.classList.contains('on')) return;
+      if (ROUTE_BY_KEY[a.dataset.key]) { goTo(a.dataset.key); return; }
       toast(`${a.dataset.key && s[a.dataset.key]} · ${s.soon}`);
     }));
 
@@ -179,7 +189,7 @@ export function mountDashboard() {
       <div class="sb-plan-usage">${s.plan_usage('1,240', '2,000')}</div>
       <div class="sb-plan-bar"><i style="width:62%"></i></div>
       <button class="sb-up">${s.upgrade}</button>`;
-    $('#sbPlan .sb-up').addEventListener('click', () => toast(`${s.upgrade} · ${s.soon}`));
+    $('#sbPlan .sb-up').addEventListener('click', () => goTo('n_billing'));
   }
 
   /* ============================================================
@@ -281,7 +291,7 @@ export function mountDashboard() {
       </div>
       <div class="feed-list">${rows}</div>`;
     $('#feedPanel .panel-link svg').style.width = '13px';
-    $('#feedPanel .panel-link').addEventListener('click', () => toast(`${s.n_discovery} · ${s.soon}`));
+    $('#feedPanel .panel-link').addEventListener('click', () => goTo('n_discovery'));
     $$('#feedPanel .feed-row').forEach((r) => r.addEventListener('click', () => {
       const p = P.find((x) => x.id === r.dataset.id);
       toast(`${p.name} · ${s.open_detail} · ${s.soon}`);
@@ -379,6 +389,7 @@ export function mountDashboard() {
     closeAll();
     if (i.type === 'product') toast(`${i.label} · ${s.open_detail} · ${s.soon}`);
     else if (i.type === 'action' && i.act === 'density') { setDensity(density === 'comfort' ? 'compact' : 'comfort'); }
+    else if (i.type === 'page' && ROUTE_BY_KEY[i.key]) { goTo(i.key); }
     else toast(`${i.label} · ${s.soon}`);
   }
   function openCmdk() {
@@ -454,6 +465,7 @@ export function mountDashboard() {
     $$('#avatarPop .pop-item').forEach((it) => it.addEventListener('click', () => {
       const a = it.dataset.act; closeAll();
       if (a === 'lang') setLang(lang === 'fr' ? 'en' : 'fr');
+      else if (ROUTE_BY_KEY['n_' + a]) goTo('n_' + a);
       else toast(`${s['n_' + a]} · ${s.soon}`);
     }));
     $$('#avatarPop .pop-item svg').forEach((sv) => sv.style.width = '16px');
@@ -471,7 +483,7 @@ export function mountDashboard() {
     const s = S();
     const tabs = [['home', 'n_home', true], ['compass', 'n_discovery'], ['radar', 'n_radar'], ['bookmark', 'n_saved'], ['bell', 'n_alerts']];
     $('#tabbar').innerHTML = tabs.map(([icn, key, on]) => `<button class="tab${on ? ' on' : ''}" data-key="${key}">${ic(icn)}<span>${s[key]}</span></button>`).join('');
-    $$('#tabbar .tab').forEach((t) => t.addEventListener('click', () => { if (!t.classList.contains('on')) toast(`${s[t.dataset.key]} · ${s.soon}`); }));
+    $$('#tabbar .tab').forEach((t) => t.addEventListener('click', () => { if (t.classList.contains('on')) return; if (ROUTE_BY_KEY[t.dataset.key]) { goTo(t.dataset.key); return; } toast(`${s[t.dataset.key]} · ${s.soon}`); }));
   }
 
   /* ============================================================
