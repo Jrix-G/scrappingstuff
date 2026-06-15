@@ -46,6 +46,10 @@ def main() -> int:
     ap.add_argument("--refresh-min-age-hours", type=float, default=20.0,
                     help="Ne pas re-snapshoter un produit vu depuis moins de N heures")
     ap.add_argument("--no-enrich", action="store_true", help="Export sans Trends/Reddit")
+    ap.add_argument("--no-demand", action="store_true",
+                    help="Sauter le snapshot demande marché (ventes AliExpress)")
+    ap.add_argument("--demand-top", type=int, default=40,
+                    help="Nb de produits BUY dont on suit la demande marché")
     args = ap.parse_args()
 
     _log("=== Job quotidien Tandor : démarrage ===")
@@ -75,6 +79,22 @@ def main() -> int:
             _log(f"⚠ Refresh en erreur : {exc}. On continue.")
     else:
         _log("Refresh sauté (--no-refresh).")
+
+    # --- Étape 2.5 : snapshot demande marché (ventes AliExpress) ------------
+    # Empile une photo quotidienne des ventes par mot-clé des meilleurs BUY ;
+    # dès le 2e jour, le moteur en tire la vélocité (cf. collect_demand.py).
+    if not args.no_demand:
+        try:
+            from collect_demand import keywords_from_buys, run_collect as run_demand
+            kws = keywords_from_buys(args.demand_top)
+            _log(f"Demande marché : {len(kws)} mots-clés (ventes AliExpress) …")
+            run_demand(kws, delay=2.0)
+        except SystemExit:
+            _log("⚠ Demande marché interrompue. On continue.")
+        except Exception as exc:  # noqa: BLE001 - le job ne doit pas mourir ici
+            _log(f"⚠ Demande marché en erreur : {exc}. On continue.")
+    else:
+        _log("Demande marché sautée (--no-demand).")
 
     # --- Étape 3 : rebuild du cache produit ---------------------------------
     from export_dashboard import build_records, OUT, CACHE

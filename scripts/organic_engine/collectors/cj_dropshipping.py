@@ -21,6 +21,7 @@ Aucune dépendance externe : urllib (stdlib) uniquement.
 from __future__ import annotations
 
 import json
+import re
 import time
 import urllib.error
 import urllib.request
@@ -36,7 +37,13 @@ _TOKEN_TTL_SECONDS = 12 * 24 * 3600
 
 @dataclass(slots=True)
 class CJProduct:
-    """Produit CJ normalisé (snapshot à un instant)."""
+    """Produit CJ normalisé (snapshot à un instant).
+
+    Les champs « dossier » (préfixe libre ci-dessous) ne sont renvoyés que par
+    ``product/query`` (re-photo d'un produit précis), PAS par ``product/list``
+    (découverte) : ils valent donc ``None`` lors d'une collecte de découverte et
+    ne sont remplis qu'au refresh. Voir :class:`CJClient.query_product`.
+    """
 
     pid: str
     name: str | None
@@ -46,6 +53,21 @@ class CJProduct:
     listed_num: int | None       # nb de vendeurs (saturation offre / adoption)
     create_time: str | None      # date de création (âge produit)
     observed_at: str             # ISO-8601 UTC du snapshot
+    # --- Dossier qualitatif (product/query uniquement) ---------------------
+    suggest_price: float | None = None   # prix retail conseillé par CJ (≫ heuristique)
+    description: str | None = None        # copy marketing (HTML brut)
+    video: str | None = None              # URL vidéo produit (réutilisable en pub)
+    images: str | None = None             # galerie multi-images (JSON liste d'URLs)
+    variants: str | None = None           # variantes distillées (JSON compact)
+    material: str | None = None           # matériau principal
+    weight: float | None = None           # poids d'expédition (g)
+    supplier: str | None = None           # nom du fournisseur
+
+    @property
+    def has_detail(self) -> bool:
+        """Vrai si ce snapshot porte le dossier riche (vient de product/query)."""
+        return any((self.suggest_price, self.description, self.video,
+                    self.images, self.variants, self.supplier))
 
 
 class CJError(Exception):
@@ -154,7 +176,12 @@ class CJClient:
 
     @staticmethod
     def _map(item: dict, observed_at: str) -> CJProduct:
-        """Normalise un item brut CJ en :class:`CJProduct`."""
+        """Normalise un item brut CJ en :class:`CJProduct`.
+
+        Gère indifféremment les payloads ``product/list`` (champs dossier absents)
+        et ``product/query`` (dossier complet) : tout champ riche manquant reste
+        à ``None``.
+        """
         def _to_float(v):
             try:
                 return float(str(v).split("--")[0].split("-")[0].strip())
@@ -176,7 +203,73 @@ class CJClient:
             listed_num=_to_int(item.get("listedNum")),
             create_time=item.get("createTime"),
             observed_at=observed_at,
+            # --- Dossier riche (présent seulement via product/query) -----
+            suggest_price=_to_float(item.get("suggestSellPrice")),
+            description=CJClient._clean_text(item.get("description")),
+            video=item.get("productVideo") or None,
+            images=CJClient._images_json(item),
+            variants=CJClient._variants_json(item.get("variants")),
+            material=CJClient._first_of(item.get("materialNameEnSet")
+                                        or item.get("materialNameEn")),
+            weight=_to_float(item.get("productWeight")),
+            supplier=item.get("supplierName") or None,
         )
+
+    # -- Helpers d'extraction du dossier riche ------------------------------
+    @staticmethod
+    def _clean_text(html: str | None, limit: int = 600) -> str | None:
+        """Dégrossit la description HTML CJ en texte court lisible."""
+        if not html:
+            return None
+        text = re.sub(r"<[^>]+>", " ", str(html))          # retire les balises
+        text = re.sub(r"&[a-z#0-9]+;", " ", text)          # entités HTML
+        text = re.sub(r"\s+", " ", text).strip()
+        return text[:limit] or None
+
+    @staticmethod
+    def _first_of(value) -> str | None:
+        """Premier élément d'une liste CJ (ou la valeur scalaire), nettoyé."""
+        if isinstance(value, list):
+            return str(value[0]) if value else None
+        return str(value) if value else None
+
+    @staticmethod
+    def _images_json(item: dict) -> str | None:
+        """Sérialise la galerie d'images (productImageSet) en JSON liste d'URLs."""
+        imgs = item.get("productImageSet")
+        if isinstance(imgs, str):
+            try:
+                imgs = json.loads(imgs)
+            except (json.JSONDecodeError, ValueError):
+                imgs = [imgs]
+        if not isinstance(imgs, list) or not imgs:
+            return None
+        urls = [str(u) for u in imgs if u][:8]             # plafonné (poids)
+        return json.dumps(urls) if urls else None
+
+    @staticmethod
+    def _variants_json(variants) -> str | None:
+        """Distille les variantes en JSON compact : nb, options, plage de prix.
+
+        On ne stocke PAS le brut (volumineux, redondant) : seulement ce qui aide
+        à décider — combien de déclinaisons, lesquelles, et l'amplitude de prix.
+        """
+        if not isinstance(variants, list) or not variants:
+            return None
+        options = [v.get("variantKey") for v in variants if v.get("variantKey")]
+        prices = []
+        for v in variants:
+            try:
+                prices.append(float(v.get("variantSellPrice")))
+            except (TypeError, ValueError):
+                continue
+        distilled = {
+            "count": len(variants),
+            "options": [str(o) for o in options][:12],
+            "price_min": round(min(prices), 2) if prices else None,
+            "price_max": round(max(prices), 2) if prices else None,
+        }
+        return json.dumps(distilled, ensure_ascii=False)
 
     def iter_catalog(self, max_pages: int, page_size: int = 50, category_keyword: str | None = None):
         """Itère sur le catalogue, page par page, avec délai poli entre les pages."""

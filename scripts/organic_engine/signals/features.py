@@ -17,8 +17,10 @@ from .timeseries import TrendFeatures, extract_trend
 # direction = +1 : une hausse est positive (ventes, mentions...).
 # direction = -1 : une hausse est négative (Amazon BSR : rang bas = mieux).
 SIGNALS: dict[str, int] = {
-    "sales": +1,            # ventes (CJ / AliExpress)
+    "sales": +1,            # ventes réelles (AliExpress tradeDesc / CJ)
     "cj_listings": +1,      # nb de vendeurs CJ listant le produit (adoption offre)
+    # NB: "ebay_listings" retiré (compte eBay banni) — collecteur ebay_browse.py
+    # gardé dormant sur disque, à réactiver ici si un autre compte eBay apparaît.
     "google_trends": +1,    # volume de recherche
     "reddit": +1,           # mentions Reddit
     "tiktok": +1,           # vues / posts TikTok

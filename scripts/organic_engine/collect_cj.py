@@ -60,6 +60,20 @@ def init_db() -> sqlite3.Connection:
             PRIMARY KEY (pid, observed_at)
         );
         CREATE INDEX IF NOT EXISTS idx_snap_pid ON cj_snapshots(pid, observed_at);
+        -- Dossier qualitatif par produit (1 ligne/pid), rempli au refresh via
+        -- product/query. Séparé de cj_products car absent de la passe découverte.
+        CREATE TABLE IF NOT EXISTS cj_details (
+            pid           TEXT PRIMARY KEY,
+            suggest_price REAL,
+            description   TEXT,
+            video         TEXT,
+            images        TEXT,
+            variants      TEXT,
+            material      TEXT,
+            weight        REAL,
+            supplier      TEXT,
+            updated_at    TEXT
+        );
     """)
     conn.commit()
     return conn
@@ -85,6 +99,28 @@ def store(conn: sqlite3.Connection, products: list[CJProduct]) -> tuple[int, int
                VALUES (?,?,?,?)""",
             (p.pid, p.observed_at, p.price, p.listed_num),
         )
+        # Dossier riche : présent uniquement via product/query (refresh). On ne
+        # touche cj_details QUE si le snapshot le porte, pour ne jamais écraser un
+        # dossier déjà connu avec les None d'une passe découverte.
+        if p.has_detail:
+            conn.execute(
+                """INSERT INTO cj_details
+                       (pid, suggest_price, description, video, images, variants,
+                        material, weight, supplier, updated_at)
+                   VALUES (?,?,?,?,?,?,?,?,?,?)
+                   ON CONFLICT(pid) DO UPDATE SET
+                       suggest_price=excluded.suggest_price,
+                       description=excluded.description,
+                       video=excluded.video,
+                       images=excluded.images,
+                       variants=excluded.variants,
+                       material=excluded.material,
+                       weight=excluded.weight,
+                       supplier=excluded.supplier,
+                       updated_at=excluded.updated_at""",
+                (p.pid, p.suggest_price, p.description, p.video, p.images,
+                 p.variants, p.material, p.weight, p.supplier, now),
+            )
         new_products += int(is_new)
         snaps += 1
     conn.commit()

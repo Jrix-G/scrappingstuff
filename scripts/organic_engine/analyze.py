@@ -71,24 +71,31 @@ def analyze(month: int) -> list[dict]:
         return []
 
     conn = sqlite3.connect(DB_PATH)
-    # Dernier snapshot connu de chaque produit (prix + vendeurs les plus récents).
+    # Dernier snapshot connu de chaque produit (prix + vendeurs les plus récents),
+    # enrichi du dossier qualitatif (cj_details) quand il est disponible.
     rows = conn.execute(
         """
         SELECT p.pid, p.name, p.category, p.image, p.create_time,
-               s.price, s.listed_num
+               s.price, s.listed_num,
+               d.suggest_price, d.description, d.video, d.images,
+               d.variants, d.material, d.weight, d.supplier
         FROM cj_products p
         JOIN cj_snapshots s ON s.pid = p.pid
         JOIN (SELECT pid, MAX(observed_at) AS mx FROM cj_snapshots GROUP BY pid) last
              ON last.pid = s.pid AND last.mx = s.observed_at
+        LEFT JOIN cj_details d ON d.pid = p.pid
         """
     ).fetchall()
     conn.close()
 
     out: list[dict] = []
-    for pid, name, category, image, create_time, price, listed_num in rows:
+    for (pid, name, category, image, create_time, price, listed_num,
+         suggest_price, description, video, images,
+         variants, material, weight, supplier) in rows:
         age = _age_days(create_time)
         sell: SellabilityResult = score_sellability(
             product_id=pid, cost_eur=price, listed_num=listed_num, age_days=age,
+            retail_override=suggest_price,
         )
         season = seasonality_for(f"{name or ''} {category or ''}", month)
         season_factor = _clamp(season.multiplier, *_SEASON_CLAMP)
@@ -106,6 +113,16 @@ def analyze(month: int) -> list[dict]:
             "seasonality": season.as_dict(),
             "season_factor": round(season_factor, 2),
             "rank_score": round(final, 1),
+            # Dossier qualitatif (None tant que le produit n'a pas été re-photographié).
+            "suggest_price_eur": round(suggest_price, 2) if suggest_price else None,
+            "description": description,
+            "video": video,
+            "images": images,
+            "variants": variants,
+            "material": material,
+            "weight_g": weight,
+            "supplier": supplier,
+            "has_detail": bool(suggest_price or description or supplier),
         })
         out.append(rec)
 

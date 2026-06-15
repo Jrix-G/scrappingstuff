@@ -66,6 +66,39 @@ def z_to_100(z: float) -> int:
     return int(max(0, min(100, round((z + 2.0) / 4.0 * 100))))
 
 
+def _build_dossier(r: dict) -> dict:
+    """Assemble la fiche produit qualitative (CJ product/query) pour le front.
+
+    Parse les champs JSON stockés (galerie, variantes) et expose proprement le
+    dossier. Tout est dégradable : si le produit n'a pas encore été re-photographié,
+    les champs valent ``None`` et ``hasDetail`` vaut ``False``.
+    """
+    def _load(raw, default):
+        if not raw:
+            return default
+        try:
+            return json.loads(raw)
+        except (json.JSONDecodeError, ValueError, TypeError):
+            return default
+
+    images = _load(r.get("images"), [])
+    variants = _load(r.get("variants"), {})
+    return {
+        "hasDetail": bool(r.get("has_detail")),
+        "priceFromCJ": r.get("suggest_price_eur") is not None,
+        "suggestPrice": r.get("suggest_price_eur"),
+        "description": r.get("description"),
+        "video": r.get("video"),
+        "images": images,
+        "imageCount": len(images),
+        "variantCount": variants.get("count") if isinstance(variants, dict) else None,
+        "variantOptions": variants.get("options") if isinstance(variants, dict) else None,
+        "material": r.get("material"),
+        "weightG": r.get("weight_g"),
+        "supplier": r.get("supplier"),
+    }
+
+
 def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], int]:
     """Construit la liste de produits à la forme BASE du dashboard.
 
@@ -79,21 +112,30 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
     total_in_db = len(records)
     top = records[:limit]
 
-    # Enrichissement organique réel (Trends + Reddit) sur le top.
+    # Enrichissement organique réel (Trends + Reddit live + demande marché snapshotée)
+    # sur le top. C'EST le chemin de prod (run_daily) : il doit consommer les mêmes
+    # sources que enrich.py, sinon les snapshots eBay/AliExpress ne compteraient jamais.
     organic_by_id: dict[str, dict] = {}
     if not no_enrich:
-        population = []
-        for i, r in enumerate(top):
-            kw = keyword_from_name(r["name"])
-            print(f"  [{i+1}/{len(top)}] « {kw} » → Trends + Reddit ...", flush=True)
-            trends_sig = trends_raw_signal(kw, geo=geo)
-            reddit_sig = reddit_raw_signal(kw)
-            raws = [s for s in (trends_sig, reddit_sig) if s.values]
-            pf = build_product_features(
-                r["product_id"], raws,
-                age_days=r.get("age_days"), seller_count=r.get("listed_num"),
-            )
-            population.append(pf)
+        from collect_demand import init_db as demand_db, demand_raw_signals
+        conn = demand_db()
+        try:
+            population = []
+            for i, r in enumerate(top):
+                kw = keyword_from_name(r["name"])
+                print(f"  [{i+1}/{len(top)}] « {kw} » → Trends + Reddit + marché ...", flush=True)
+                trends_sig = trends_raw_signal(kw, geo=geo)
+                reddit_sig = reddit_raw_signal(kw)
+                raws = [s for s in (trends_sig, reddit_sig) if s.values]
+                # Historique demande (eBay/AliExpress) si déjà snapshoté ≥2 fois.
+                raws += demand_raw_signals(conn, kw)
+                pf = build_product_features(
+                    r["product_id"], raws,
+                    age_days=r.get("age_days"), seller_count=r.get("listed_num"),
+                )
+                population.append(pf)
+        finally:
+            conn.close()
         results = {res.product_id: res for res in score_population(population)}
         pfs = {pf.product_id: pf for pf in population}
         for pid, res in results.items():
@@ -105,6 +147,9 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
                            if c.source == "google_trends"), 50)
             rscore = next((z_to_100(c.z_velocity) for c in res.contributions
                            if c.source == "reddit"), 50)
+            # Ventes AliExpress : None tant qu'il n'y a pas ≥2 snapshots (≠ 50 neutre).
+            sscore = next((z_to_100(c.z_velocity) for c in res.contributions
+                           if c.source == "sales"), None)
             organic_by_id[pid] = {
                 "organic": round(res.organic_score),
                 "phase": res.phase.value,
@@ -113,7 +158,24 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
                 "volatility": round(tr.volatility if tr else 0.3, 2),
                 "trendsScore": tscore,
                 "redditScore": rscore,
+                "salesScore": sscore,
             }
+
+    # Niveau ABSOLU de ventes AliExpress par produit (validation demande dès le 1er
+    # snapshot, indépendamment de la vélocité). Pure lecture DB, aucun appel réseau.
+    sold_by_id: dict[str, dict] = {}
+    try:
+        from collect_demand import init_db as demand_db, latest_sales_level
+        dconn = demand_db()
+        try:
+            for r in top:
+                lvl = latest_sales_level(dconn, keyword_from_name(r["name"]))
+                if lvl:
+                    sold_by_id[r["product_id"]] = lvl
+        finally:
+            dconn.close()
+    except Exception:
+        pass  # demande indisponible -> champs None, dégradation propre
 
     # Construction des enregistrements à la forme BASE du dashboard.
     out = []
@@ -130,6 +192,7 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
                 "volatility": 0.3,
                 "trendsScore": round(min(100, sell)),
                 "redditScore": round(min(100, sell * 0.8)),
+                "salesScore": None,
             }
         season = r.get("seasonality", {})
         out.append({
@@ -150,10 +213,18 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
             "net": round(r["net_after_cpa_eur"], 1),
             "redditScore": enr["redditScore"],
             "trendsScore": enr["trendsScore"],
+            "salesScore": enr.get("salesScore"),
+            # Ventes réelles AliExpress (niveau absolu, type de produit) — None tant
+            # qu'aucun snapshot ; se remplit dès la 1re collecte (cron nocturne).
+            "aliExpressSold": (sold_by_id.get(pid) or {}).get("maxSold"),
+            "aliExpressMedianSold": (sold_by_id.get(pid) or {}).get("medianSold"),
             "seasonPeak": season.get("peak_month") or 6,
             "seasonMult": round(season.get("multiplier", 1.0), 2),
             "reason": {"en": r["reason"], "fr": r["reason"]},
             "detectedHrs": i + 1,  # ordre du flux (proxy : par score)
+            # Dossier qualitatif (CJ product/query) : enrichit la fiche produit.
+            # `null`/`priceFromCJ:false` tant que le produit n'a pas été re-photographié.
+            "dossier": _build_dossier(r),
         })
 
     return out, total_in_db

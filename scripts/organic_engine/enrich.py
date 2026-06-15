@@ -20,6 +20,7 @@ Dépendances live : pytrends (Google Trends), praw (Reddit, optionnel).
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import time
 from pathlib import Path
@@ -39,35 +40,78 @@ _STOP = {
     "of", "to", "in", "a", "an", "portable", "multifunctional", "versatile",
     "professional", "high", "quick", "soft", "outdoor", "indoor", "home", "kids",
     "men", "women", "womens", "mens", "small", "large", "quiet", "rechargeable",
+    "plus", "size", "style", "fashion", "fashionable", "casual", "premium",
 }
 
+# Séparateurs qui introduisent la partie DÉCORATIVE d'un titre CJ (couleur, motif,
+# specs) : le cœur du produit est AVANT eux. Ex. « Swimsuit With Palm Tree Print ».
+_SPLIT_TOKENS = {"with", "for"}
 
-def keyword_from_name(name: str, n_words: int = 3) -> str:
-    """Dérive un mot-clé de recherche court et signifiant depuis un titre produit."""
-    tokens = [t.strip(",.;:()").lower() for t in (name or "").split()]
-    kept = [t for t in tokens if t and t not in _STOP and not t.isdigit()]
-    return " ".join(kept[:n_words]) if kept else (name or "")[:30]
+# Jeton d'unité/mesure (nombre + suffixe éventuel) : bruit pur. Ex. 7200mah, 50mm.
+_UNIT_RE = re.compile(r"^\d+(\.\d+)?(mah|mm|cm|ml|kg|g|w|v|in|inch|ft|m|l|oz|pcs|pc|x)?$")
+
+
+def keyword_from_name(name: str, n_words: int = 2) -> str:
+    """Dérive un mot-clé de recherche depuis un titre produit CJ.
+
+    Les titres CJ suivent le schéma « [adjectifs] NOM-PRODUIT[, ou 'with'] décoration » :
+    la tête nominale (ce qu'on veut réellement chercher sur Trends/Reddit) est à la
+    FIN du groupe principal, pas au début. On isole donc le groupe principal (avant
+    la 1re virgule ou un séparateur décoratif) puis on garde ses derniers mots
+    signifiants. Ex. « Mens Fashionable Casual Breathable Beach Sandals » → « beach
+    sandals » (et non « fashionable casual breathable », qui ne matche rien).
+    """
+    raw = (name or "").strip()
+    if not raw:
+        return ""
+    # 1) Couper la queue décorative : 1re virgule, puis 1er séparateur ('with'/'for').
+    head = raw.split(",")[0]
+    tokens: list[str] = []
+    for tok in head.lower().split():
+        t = tok.strip(",.;:()/-")
+        if t in _SPLIT_TOKENS:
+            break  # tout ce qui suit décrit (couleur, motif…), pas le produit
+        tokens.append(t)
+    # 2) Nettoyer : retirer vides, mots vides, nombres purs et unités de mesure.
+    kept = [t for t in tokens
+            if t and t not in _STOP and not t.isdigit() and not _UNIT_RE.match(t)]
+    if not kept:
+        return raw[:30]
+    # 3) Tête nominale = les derniers mots signifiants du groupe principal.
+    return " ".join(kept[-n_words:])
 
 
 def enrich(keywords_and_meta: list[dict], geo: str, delay: float) -> list[dict]:
-    """Pour chaque produit, récupère Trends, calcule les dynamiques réelles."""
-    population = []
-    index = {}
-    for i, rec in enumerate(keywords_and_meta):
-        kw = rec["keyword"]
-        print(f"  [{i+1}/{len(keywords_and_meta)}] « {kw} » → Google Trends + Reddit ...", flush=True)
-        # Deux sources INDÉPENDANTES : leur accord active la corroboration du moteur.
-        trends_sig: RawSignal = trends_raw_signal(kw, geo=geo)
-        reddit_sig: RawSignal = reddit_raw_signal(kw)
-        raws = [s for s in (trends_sig, reddit_sig) if s.values]
-        pf = build_product_features(
-            rec["product_id"], raws,
-            age_days=rec.get("age_days"),
-            seller_count=rec.get("listed_num"),
-        )
-        population.append(pf)
-        index[rec["product_id"]] = rec
-        time.sleep(delay)  # politesse anti rate-limit Google
+    """Pour chaque produit, croise demande live (Trends/Reddit) et demande marché.
+
+    Les séries eBay (annonces actives) et AliExpress (ventes) sont relues depuis
+    l'historique de snapshots (``collect_demand.py``) : plus il y a de jours de
+    collecte, plus leur vélocité pèse dans le scoring.
+    """
+    from collect_demand import init_db as demand_db, demand_raw_signals
+    conn = demand_db()
+    try:
+        population = []
+        index = {}
+        for i, rec in enumerate(keywords_and_meta):
+            kw = rec["keyword"]
+            print(f"  [{i+1}/{len(keywords_and_meta)}] « {kw} » → Trends + Reddit + marché ...", flush=True)
+            # Sources INDÉPENDANTES : leur accord active la corroboration du moteur.
+            trends_sig: RawSignal = trends_raw_signal(kw, geo=geo)
+            reddit_sig: RawSignal = reddit_raw_signal(kw)
+            raws = [s for s in (trends_sig, reddit_sig) if s.values]
+            # Historique demande marché (eBay/AliExpress) si déjà snapshoté ≥2 fois.
+            raws += demand_raw_signals(conn, kw)
+            pf = build_product_features(
+                rec["product_id"], raws,
+                age_days=rec.get("age_days"),
+                seller_count=rec.get("listed_num"),
+            )
+            population.append(pf)
+            index[rec["product_id"]] = rec
+            time.sleep(delay)  # politesse anti rate-limit Google
+    finally:
+        conn.close()
 
     results = score_population(population)
     merged = []

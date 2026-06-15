@@ -208,10 +208,19 @@ def score_sellability(
     listed_num: int | None,
     age_days: float | None,
     cfg: SellabilityConfig = DEFAULT_SELLABILITY,
+    retail_override: float | None = None,
 ) -> SellabilityResult:
-    """Calcule le verdict de vendabilité d'un produit depuis un snapshot CJ."""
+    """Calcule le verdict de vendabilité d'un produit depuis un snapshot CJ.
+
+    ``retail_override`` : prix retail conseillé par CJ (``suggestSellPrice``).
+    Quand il est disponible et crédible (> coût), on l'utilise À LA PLACE de
+    l'heuristique de markup — c'est une vraie donnée fournisseur, pas une estimation.
+    """
     cost = float(cost_eur) if cost_eur and cost_eur > 0 else 0.0
-    retail = estimated_retail(cost) if cost > 0 else 0.0
+    if retail_override and retail_override > cost > 0:
+        retail = float(retail_override)
+    else:
+        retail = estimated_retail(cost) if cost > 0 else 0.0
     gross = retail - cost
     margin_pct = (gross / retail) if retail > 0 else 0.0
     net_after_cpa = gross - cfg.cpa_eur
