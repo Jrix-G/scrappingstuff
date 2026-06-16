@@ -60,6 +60,12 @@ def init_db() -> sqlite3.Connection:
             PRIMARY KEY (pid, observed_at)
         );
         CREATE INDEX IF NOT EXISTS idx_snap_pid ON cj_snapshots(pid, observed_at);
+        -- Curseur de pagination : mémorise la prochaine page à scraper pour que
+        -- chaque run quotidien explore une tranche fraîche du catalogue CJ.
+        CREATE TABLE IF NOT EXISTS collect_cursor (
+            key    TEXT PRIMARY KEY,
+            value  INTEGER NOT NULL
+        );
         -- Dossier qualitatif par produit (1 ligne/pid), rempli au refresh via
         -- product/query. Séparé de cj_products car absent de la passe découverte.
         CREATE TABLE IF NOT EXISTS cj_details (
@@ -145,23 +151,50 @@ def run_collect(pages: int, page_size: int, keyword: str | None) -> None:
         sys.exit(1)
 
     conn = init_db()
+
+    # Lit le curseur de pagination (ou démarre à la page 1 au tout premier run).
+    row = conn.execute("SELECT value FROM collect_cursor WHERE key='next_page'").fetchone()
+    start_page = row[0] if row else 1
+
+    print(f"Découverte : pages {start_page} → {start_page + pages - 1} "
+          f"(~{pages * page_size} produits)")
+
     total_new = total_snaps = 0
     catalog_total = 0
+    last_page = start_page
     try:
-        for page, products, total in client.iter_catalog(pages, page_size, keyword):
+        for page, products, total in client.iter_catalog(pages, page_size, keyword, start_page):
             catalog_total = total
+            last_page = page
             new, snaps = store(conn, products)
             total_new += new
             total_snaps += snaps
-            print(f"  page {page:>3} : {len(products):>3} produits  "
+            print(f"  page {page:>5} : {len(products):>3} produits  "
                   f"(+{new} nouveaux)  [catalogue total CJ : {total:,}]")
     except CJError as exc:
         print(f"\n⚠ Interruption API : {exc} (données déjà enregistrées)")
     finally:
         in_db = conn.execute("SELECT COUNT(*) FROM cj_products").fetchone()[0]
-        conn.close()
+
+    # Avance le curseur pour le prochain run ; repart de la page 1 si on a
+    # fait le tour complet du catalogue.
+    next_page = last_page + 1
+    if catalog_total > 0:
+        max_page = (catalog_total // page_size) + 1
+        if next_page > max_page:
+            next_page = 1
+            print(f"  ↻ Curseur remis à 1 (catalogue épuisé après page {last_page})")
+    conn.execute(
+        "INSERT INTO collect_cursor(key, value) VALUES('next_page', ?) "
+        "ON CONFLICT(key) DO UPDATE SET value=excluded.value",
+        (next_page,),
+    )
+    conn.commit()
+    conn.close()
 
     print(f"\n{'='*60}")
+    print(f"  Pages scrapées      : {start_page} → {last_page}")
+    print(f"  Prochain run        : page {next_page}")
     print(f"  Snapshots pris      : {total_snaps}")
     print(f"  Nouveaux produits   : {total_new}")
     print(f"  Produits en base    : {in_db:,}")

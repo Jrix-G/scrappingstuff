@@ -4,15 +4,21 @@ Google Trends renvoie une série temporelle (intérêt relatif 0–100) sur plus
 EN UN SEUL APPEL : la vélocité et l'accélération sont donc calculables immédiatement,
 sans attendre l'historique de snapshots. Sortie : un :class:`RawSignal` ``"google_trends"``.
 
-Dépendance : ``pytrends`` (``pip install pytrends``). ATTENTION : l'API non officielle de
-Google Trends renvoie fréquemment des HTTP 429 (rate-limit) depuis les IP datacenter.
-Le collecteur réessaie avec backoff puis renvoie une série vide en cas d'échec — le
-moteur dégrade alors proprement (confiance abaissée) sans planter.
+Dépendance : ``pytrends`` (``pip install pytrends``). L'API non officielle renvoie des
+HTTP 429 dès qu'on tape trop vite depuis une même IP. Deux garde-fous ici :
+  • **cache disque (TTL)** : un mot-clé déjà vu n'est jamais re-tiré (dédup automatique
+    entre produits qui partagent le mot-clé, et réutilisation d'un run à l'autre) ;
+  • **intervalle mini entre appels réseau** : on espace les requêtes (les hits de cache
+    sont instantanés et ne comptent pas), ce qui évite la rafale qui déclenche le 429.
+En cas d'échec persistant, on renvoie une série vide — le moteur dégrade proprement.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 import time
+from pathlib import Path
 
 try:
     from pytrends.request import TrendReq  # type: ignore
@@ -20,9 +26,39 @@ try:
 except ImportError:
     _HAS_PYTRENDS = False
 
+_CACHE_DIR = Path(__file__).resolve().parent.parent / ".trends_cache"
+_CACHE_TTL_SECONDS = 7 * 24 * 3600     # 7 j : une courbe 3 mois ne bouge pas en une semaine
+_MIN_REQUEST_INTERVAL = 10.0           # Trends est strict : ≥10 s entre deux appels réseau
+_last_request_ts = 0.0
+
 
 class TrendsError(Exception):
     """Erreur d'accès à Google Trends."""
+
+
+def _cache_path(key: str) -> Path:
+    return _CACHE_DIR / f"{hashlib.sha256(key.encode()).hexdigest()[:20]}.json"
+
+
+def _cache_get(key: str):
+    p = _cache_path(key)
+    if not p.exists():
+        return None
+    try:
+        if time.time() - p.stat().st_mtime > _CACHE_TTL_SECONDS:
+            return None
+        d = json.loads(p.read_text())
+        return d["ts"], d["vals"], d["meta"]
+    except Exception:
+        return None
+
+
+def _cache_put(key: str, ts: list[float], vals: list[float], meta: dict) -> None:
+    try:
+        _CACHE_DIR.mkdir(parents=True, exist_ok=True)
+        _cache_path(key).write_text(json.dumps({"ts": ts, "vals": vals, "meta": meta}))
+    except Exception:
+        pass  # cache best-effort
 
 
 def fetch_interest(
@@ -40,14 +76,26 @@ def fetch_interest(
     if not _HAS_PYTRENDS:
         raise TrendsError("pytrends non installé. → pip install pytrends")
 
+    cache_key = f"{keyword}|{timeframe}|{geo}"
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        return cached
+
+    global _last_request_ts
     last_exc: Exception | None = None
     for attempt in range(retries):
+        wait = _MIN_REQUEST_INTERVAL - (time.time() - _last_request_ts)
+        if wait > 0:
+            time.sleep(wait)
         try:
             pt = TrendReq(hl="fr-FR", tz=0, timeout=(10, 25))
             pt.build_payload([keyword], timeframe=timeframe, geo=geo)
             df = pt.interest_over_time()
+            _last_request_ts = time.time()
             if df is None or df.empty or keyword not in df:
-                return [], [], {"keyword": keyword, "points": 0}
+                result = ([], [], {"keyword": keyword, "points": 0})
+                _cache_put(cache_key, *result)  # mot-clé sans couverture : on s'en souvient
+                return result
             series = df[keyword].tolist()
             dates = df.index.tolist()
             t0 = dates[0]
@@ -55,10 +103,13 @@ def fetch_interest(
             values = [float(v) for v in series]
             meta = {"keyword": keyword, "points": len(values),
                     "timeframe": timeframe, "geo": geo or "WW"}
-            return timestamps, values, meta
+            result = (timestamps, values, meta)
+            _cache_put(cache_key, *result)
+            return result
         except Exception as exc:  # 429, réseau, parsing
+            _last_request_ts = time.time()
             last_exc = exc
-            time.sleep(2 ** attempt * 1.5)  # backoff 1.5s, 3s, 6s
+            time.sleep(2 ** attempt * 3.0)  # backoff 3s, 6s, 12s (les 429 n'entrent pas en cache)
     raise TrendsError(f"Google Trends indisponible après {retries} essais : {last_exc}")
 
 

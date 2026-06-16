@@ -271,14 +271,21 @@ class CJClient:
         }
         return json.dumps(distilled, ensure_ascii=False)
 
-    def iter_catalog(self, max_pages: int, page_size: int = 50, category_keyword: str | None = None):
+    def iter_catalog(
+        self,
+        max_pages: int,
+        page_size: int = 50,
+        category_keyword: str | None = None,
+        start_page: int = 1,
+    ):
         """Itère sur le catalogue, page par page, avec délai poli entre les pages."""
-        for page in range(1, max_pages + 1):
+        end_page = start_page + max_pages  # exclusif
+        for page in range(start_page, end_page):
             products, total = self.fetch_page(page, page_size, category_keyword)
             if not products:
                 break
             yield page, products, total
-            if page < max_pages:
+            if page < end_page - 1:
                 time.sleep(self._page_delay)
 
 
