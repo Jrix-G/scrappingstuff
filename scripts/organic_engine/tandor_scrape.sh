@@ -4,17 +4,25 @@
 # Première fois : sudo bash tandor_scrape.sh
 # Ensuite        : se relance tout seul chaque soir à 20h via cron
 #
-# Ce qu'il fait automatiquement :
-#   1. Installation (une seule fois) : namespace VPN, helpers, sudoers
-#   2. Ajout au cron à 20h (une seule fois)
-#   3. Rotation des VPN WireGuard + scraping AliExpress / Trends / TikTok
-#      sur l'ensemble des mots-clés de l'univers CJ (~3400 keywords)
+# Stratégie :
+#   AliExpress + TikTok → IP maison d'abord (fonctionne, IPs VPN blacklistées)
+#                       → fallback VPN automatique si l'IP maison se fait ban
+#   Google Trends       → rotation VPN (Trends tolère mieux les IPs datacenter)
+#
+# Calibrage : ~400 keywords/nuit = rattrape la croissance (~300 nouveaux/nuit)
+# Pacing intégré : 8s AliExpress, 15s TikTok, 10s Trends → ~5-6h pour 400 keywords
 
 set -uo pipefail
 
 ENGINE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PY="$ENGINE/.venv/bin/python3"
+WG_DIR="/etc/wireguard"
 LOG="$HOME/tandor-scrape.log"
 CRON_HOUR=20
+BATCH_SIZE=400        # keywords/nuit — couvre la croissance de l'univers
+COOLDOWN_BLOCKED=90   # secondes entre rotations VPN
+COOLDOWN_BATCH=10
+MAX_ROTATIONS=20
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 
@@ -23,14 +31,8 @@ log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG"; }
 if [[ ! -x /usr/local/bin/tandor-vpn-up ]]; then
     if [[ $EUID -ne 0 ]]; then
         echo
-        echo "  ┌─────────────────────────────────────────────────────┐"
-        echo "  │  Premier lancement — setup requis                   │"
-        echo "  │  Lance cette commande UNE SEULE FOIS :              │"
-        echo "  │                                                     │"
-        echo "  │    sudo bash $ENGINE/tandor_scrape.sh  │"
-        echo "  │                                                     │"
-        echo "  │  Ensuite tout est automatique via cron.             │"
-        echo "  └─────────────────────────────────────────────────────┘"
+        echo "  Premier lancement — lance cette commande UNE SEULE FOIS :"
+        echo "    sudo bash $ENGINE/tandor_scrape.sh"
         echo
         exit 1
     fi
@@ -41,55 +43,121 @@ fi
 
 # ── 2. CRON (s'auto-ajoute si absent) ────────────────────────────────────────
 
-CRON_CMD="$CRON_HOUR 20 * * * bash $ENGINE/tandor_scrape.sh >> $LOG 2>&1"
-CRON_MARK="tandor_scrape"
-
-# Récupère l'utilisateur réel (même si lancé via sudo)
 REAL_USER="${SUDO_USER:-$USER}"
-
+CRON_MARK="tandor_scrape"
 if ! crontab -u "$REAL_USER" -l 2>/dev/null | grep -q "$CRON_MARK"; then
-    ( crontab -u "$REAL_USER" -l 2>/dev/null; echo "0 $CRON_HOUR * * * bash $ENGINE/tandor_scrape.sh >> $LOG 2>&1  # $CRON_MARK" ) \
-        | crontab -u "$REAL_USER" -
-    log "Cron ajouté : tous les soirs à ${CRON_HOUR}h pour $REAL_USER"
+    ( crontab -u "$REAL_USER" -l 2>/dev/null
+      echo "0 $CRON_HOUR * * * bash $ENGINE/tandor_scrape.sh >> $LOG 2>&1  # $CRON_MARK"
+    ) | crontab -u "$REAL_USER" -
+    log "Cron ajouté : tous les soirs à ${CRON_HOUR}h"
 fi
 
-# ── 3. SCRAPING (rotation VPN + tous les mots-clés) ──────────────────────────
+# ── Helper : rotation VPN pour un target donné (fallback) ────────────────────
 
-log "=== Démarrage scraping (rotation VPN + AliExpress + Trends + TikTok) ==="
-log "Univers cible : ~3400 mots-clés | VPN : $(ls /etc/wireguard/*.conf 2>/dev/null | wc -l) configs"
+run_with_vpn_rotation() {
+    local target="$1"
+    log "  Fallback VPN pour '$target' — rotation des configs"
 
-WG_DIR="/etc/wireguard"
-PY="$ENGINE/.venv/bin/python3"
-NETNS="tandor-vpn"
-WG_IF="wg-tnd"
+    mapfile -t ALL_CONFIGS < <(ls "$WG_DIR"/*.conf 2>/dev/null | shuf)
+    # 2 passages sur les 14 configs = 28 slots max
+    local CONFIGS=("${ALL_CONFIGS[@]}" "${ALL_CONFIGS[@]}")
 
-COOLDOWN_BLOCKED=90
-COOLDOWN_BATCH=10
-MAX_ROTATIONS=20   # peut dépasser 14 (revient au début si tout bloqué une fois)
+    local rotations=0
+    local idx=0
 
-cleanup() { sudo /usr/local/bin/tandor-vpn-down >> "$LOG" 2>&1 || true; }
-trap cleanup EXIT
+    cleanup_vpn() { sudo /usr/local/bin/tandor-vpn-down >> "$LOG" 2>&1 || true; }
+    trap cleanup_vpn EXIT
 
-# Mélange aléatoire des configs, avec possibilité de faire 2 tours si nécessaire
-mapfile -t ALL_CONFIGS < <(ls "$WG_DIR"/*.conf 2>/dev/null)
-CONFIGS=()
-for c in "${ALL_CONFIGS[@]}"; do CONFIGS+=("$c"); done
-for c in "${ALL_CONFIGS[@]}"; do CONFIGS+=("$c"); done  # 2 passages = 28 slots max
-# Re-mélanger
-mapfile -t CONFIGS < <(printf '%s\n' "${CONFIGS[@]}" | shuf)
+    while [[ $rotations -lt $MAX_ROTATIONS ]] && [[ $idx -lt ${#CONFIGS[@]} ]]; do
+        local CONF="${CONFIGS[$idx]}"
+        local NAME
+        NAME=$(basename "$CONF" .conf)
+        log "  → VPN $NAME (slot $((rotations+1))/$MAX_ROTATIONS)"
+
+        sudo /usr/local/bin/tandor-vpn-down >> "$LOG" 2>&1 || true
+        if ! sudo /usr/local/bin/tandor-vpn-up "$CONF" >> "$LOG" 2>&1; then
+            log "    ✗ Montage échoué — config suivante"
+            ((idx++)) || true
+            continue
+        fi
+        sleep 3
+
+        while true; do
+            sudo /usr/local/bin/tandor-vpn-exec-warmer \
+                --target "$target" \
+                --batch 40 \
+                --max-keywords 4000 \
+                >> "$LOG" 2>&1
+            local ec=$?
+            case $ec in
+                0) log "  ✓ Cache '$target' complet via VPN"; sudo /usr/local/bin/tandor-vpn-down >> "$LOG" 2>&1 || true; return 0 ;;
+                2) log "    ⚠ IP $NAME bloquée — rotation dans ${COOLDOWN_BLOCKED}s"; break ;;
+                1) sleep $COOLDOWN_BATCH ;;
+                *) break ;;
+            esac
+        done
+
+        sudo /usr/local/bin/tandor-vpn-down >> "$LOG" 2>&1 || true
+        sleep $COOLDOWN_BLOCKED
+        ((rotations++)) || true
+        ((idx++)) || true
+    done
+    log "  Fallback VPN '$target' terminé ($rotations rotations)"
+}
+
+# ── 3a. ALIEXPRESS — IP maison, fallback VPN ─────────────────────────────────
+
+log "=== [1/3] AliExpress (IP maison) ==="
+"$PY" "$ENGINE/vpn_warmer.py" \
+    --target aliexpress \
+    --batch "$BATCH_SIZE" \
+    --max-keywords 4000 \
+    >> "$LOG" 2>&1
+ali_exit=$?
+
+if [[ $ali_exit -eq 2 ]]; then
+    log "  ⚠ IP maison bannie sur AliExpress → fallback VPN"
+    run_with_vpn_rotation "aliexpress"
+else
+    log "  ✓ AliExpress OK (exit $ali_exit)"
+fi
+
+# ── 3b. TIKTOK — IP maison, fallback VPN ─────────────────────────────────────
+
+log "=== [2/3] TikTok (IP maison) ==="
+"$PY" "$ENGINE/vpn_warmer.py" \
+    --target tiktok \
+    --batch "$BATCH_SIZE" \
+    --max-keywords 4000 \
+    >> "$LOG" 2>&1
+tiktok_exit=$?
+
+if [[ $tiktok_exit -eq 2 ]]; then
+    log "  ⚠ IP maison bannie sur TikTok → fallback VPN"
+    run_with_vpn_rotation "tiktok"
+else
+    log "  ✓ TikTok OK (exit $tiktok_exit)"
+fi
+
+# ── 3c. TRENDS — rotation VPN directe ────────────────────────────────────────
+
+log "=== [3/3] Google Trends (rotation VPN) ==="
+
+mapfile -t ALL_CONFIGS < <(ls "$WG_DIR"/*.conf 2>/dev/null | shuf)
+CONFIGS=("${ALL_CONFIGS[@]}" "${ALL_CONFIGS[@]}")
+
+cleanup_final() { sudo /usr/local/bin/tandor-vpn-down >> "$LOG" 2>&1 || true; }
+trap cleanup_final EXIT
 
 rotations=0
 config_idx=0
-total_configs=${#CONFIGS[@]}
 
-while [[ $rotations -lt $MAX_ROTATIONS ]] && [[ $config_idx -lt $total_configs ]]; do
+while [[ $rotations -lt $MAX_ROTATIONS ]] && [[ $config_idx -lt ${#CONFIGS[@]} ]]; do
     CONF="${CONFIGS[$config_idx]}"
     NAME=$(basename "$CONF" .conf)
     log "→ VPN $NAME (slot $((rotations+1))/$MAX_ROTATIONS)"
 
-    # Nettoyage avant montage
     sudo /usr/local/bin/tandor-vpn-down >> "$LOG" 2>&1 || true
-
     if ! sudo /usr/local/bin/tandor-vpn-up "$CONF" >> "$LOG" 2>&1; then
         log "  ✗ Montage échoué — config suivante"
         ((config_idx++)) || true
@@ -97,32 +165,18 @@ while [[ $rotations -lt $MAX_ROTATIONS ]] && [[ $config_idx -lt $total_configs ]
     fi
     sleep 3
 
-    # Boucle de batches sur cette IP
     while true; do
         sudo /usr/local/bin/tandor-vpn-exec-warmer \
-            --target all \
+            --target trends \
             --batch 40 \
             --max-keywords 4000 \
             >> "$LOG" 2>&1
-        exit_code=$?
-
-        case $exit_code in
-            0)
-                log "✓ Tout le cache est chaud — scraping terminé"
-                exit 0
-                ;;
-            2)
-                log "  ⚠ IP $NAME bloquée — cooldown ${COOLDOWN_BLOCKED}s"
-                break
-                ;;
-            1)
-                log "  → Batch suivant dans ${COOLDOWN_BATCH}s"
-                sleep $COOLDOWN_BATCH
-                ;;
-            *)
-                log "  ✗ Erreur inattendue (exit $exit_code) — config suivante"
-                break
-                ;;
+        ec=$?
+        case $ec in
+            0) log "✓ Trends complet — terminé"; exit 0 ;;
+            2) log "  ⚠ IP $NAME bloquée — cooldown ${COOLDOWN_BLOCKED}s"; break ;;
+            1) log "  → Batch suivant dans ${COOLDOWN_BATCH}s"; sleep $COOLDOWN_BATCH ;;
+            *) break ;;
         esac
     done
 
@@ -132,4 +186,4 @@ while [[ $rotations -lt $MAX_ROTATIONS ]] && [[ $config_idx -lt $total_configs ]
     ((config_idx++)) || true
 done
 
-log "=== Scraping terminé ($rotations rotations) ==="
+log "=== Scraping nuit terminé ($rotations rotations VPN) ==="

@@ -99,6 +99,11 @@ def _trends_fresh(keyword: str) -> bool:
     return _cache_get(f"{keyword}|today 3-m|") is not None
 
 
+def _tiktok_fresh(keyword: str) -> bool:
+    from collectors.tiktok_trending import _cache_get, _to_hashtag
+    return _cache_get(_to_hashtag(keyword)) is not None
+
+
 # ─── Fonctions de collecte ───────────────────────────────────────────────────
 
 def _warm_ali(keyword: str) -> str:
@@ -133,11 +138,26 @@ def _warm_trends(keyword: str) -> str:
         return "error"
 
 
+def _warm_tiktok(keyword: str) -> str:
+    """'hit' | 'fetched' | 'blocked' | 'error'"""
+    if _tiktok_fresh(keyword):
+        return "hit"
+    from collectors.tiktok_trending import fetch_hashtag
+    try:
+        result = fetch_hashtag(keyword)
+        if result.blocked:
+            return "blocked"
+        return "fetched"
+    except Exception as exc:
+        print(f"[warmer]   tiktok erreur : {exc}", flush=True)
+        return "error"
+
+
 # ─── Main ────────────────────────────────────────────────────────────────────
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Tandor VPN cache-warmer")
-    parser.add_argument("--target", choices=["aliexpress", "trends", "all"], default="all")
+    parser.add_argument("--target", choices=["aliexpress", "trends", "tiktok", "all"], default="all")
     parser.add_argument("--max-keywords", type=int, default=1000,
                         help="Taille max de l'univers de mots-clés à considérer")
     parser.add_argument("--batch", type=int, default=30,
@@ -153,6 +173,7 @@ def main() -> int:
 
     do_ali    = args.target in ("aliexpress", "all")
     do_trends = args.target in ("trends", "all")
+    do_tiktok = args.target in ("tiktok", "all")
 
     print(f"[warmer] Lecture des mots-clés ({db_path.name}) ...", flush=True)
     keywords = _universe_keywords(db_path, args.max_keywords)
@@ -161,7 +182,9 @@ def main() -> int:
     # Filtrer les mots-clés qui ont encore au moins une source non cachée
     uncached = [
         kw for kw in keywords
-        if (do_ali and not _ali_fresh(kw)) or (do_trends and not _trends_fresh(kw))
+        if (do_ali    and not _ali_fresh(kw))
+        or (do_trends and not _trends_fresh(kw))
+        or (do_tiktok and not _tiktok_fresh(kw))
     ]
     print(f"[warmer] Non cachés : {len(uncached)}", flush=True)
 
@@ -195,6 +218,17 @@ def main() -> int:
                 blocked_streak += 1
                 if blocked_streak >= 2:
                     print("[warmer] Trends bloqué — rotation VPN demandée", flush=True)
+                    return EXIT_BLOCKED
+            elif status in ("fetched", "hit"):
+                blocked_streak = 0
+
+        if do_tiktok:
+            status = _warm_tiktok(kw)
+            print(f"[warmer]   tiktok     → {status}", flush=True)
+            if status == "blocked":
+                blocked_streak += 1
+                if blocked_streak >= 2:
+                    print("[warmer] TikTok bloqué — rotation VPN demandée", flush=True)
                     return EXIT_BLOCKED
             elif status in ("fetched", "hit"):
                 blocked_streak = 0
