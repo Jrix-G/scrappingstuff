@@ -1,0 +1,16 @@
+[Unit]
+Description=Tandor Demand Runner (Amazon velocity + AliExpress confirmation, 24/7)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=albator
+WorkingDirectory=/home/albator/scrappingstuff/scripts/organic_engine
+ExecStart=/home/albator/scrappingstuff/scripts/organic_engine/.venv/bin/python3 /home/albator/scrappingstuff/scripts/organic_engine/demand_runner.py
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/albator/tandor-demand.log
+StandardError=append:/home/albator/tandor-demand.log
+
+[Install]
+WantedBy=multi-user.target

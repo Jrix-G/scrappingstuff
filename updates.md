@@ -5,6 +5,18 @@ Format : `YYYY-MM-DD HH:MM | fichier(s) concerné(s) | description`
 
 ---
 
+## ⚠️ ÉTAT ACTUEL (2026-06-17) — SIGNAL DEMANDE REFONDU
+
+1. **NOUVEAU : runner demande 24/7 Amazon + AliExpress** — `screen -r demand`, log `cat /home/albator/tandor-demand.log`.
+   - `demand_runner.py` scrape Amazon « bought in past month » (vélocité 30 j) au rythme 5–10 s/produit, priorise la pile (couverture max puis vélocité), et confirme les TOP produits sur AliExpress (~260/jour, sous le mur x5sec).
+   - Fichiers : `collectors/amazon_demand.py`, `demand_queue.py`, `demand_runner.py`. Service systemd : `tandor-demand.service` (à activer avec sudo pour persistance reboot).
+   - Capacité : ~5000 recherches Amazon/jour, **univers complet (3514 mots-clés / 6158 produits) enrichi en <16 h**.
+2. **Amazon > AliExpress comme signal demande** : vélocité 30 j fraîche, ~40 produits/req, pas de mur de rate-limit (vs AliExpress ~250/jour). AliExpress reste complément sourcing sur les tops.
+3. **Diagnostic AliExpress figé** : blocage x5sec = rate-limit par IP (~3-4 req/`af`/ puis ~30 min), PAS fingerprint. Plafond ~250/jour/IP, structurel. Archives/infra gratuite/SERP = dead-ends testés. Outils diag : `_ali_probe.py`, `_mtop_search_test.py`.
+4. **Cron 20h `tandor_scrape.sh`** : log réparé `/root/` → `/home/albator/`. (Le scraping AliExpress massif nocturne est désormais redondant avec le runner demande — à arbitrer.)
+
+---
+
 ## Historique
 
 | Date & heure | Fichier(s) | Description |
