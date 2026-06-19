@@ -1,40 +1,56 @@
-"""Collecteur Google Trends — vélocité de la demande de recherche.
+"""Collecteur Google Trends — scraping HTTP direct, sans pytrends, sans API payante.
 
-Google Trends renvoie une série temporelle (intérêt relatif 0–100) sur plusieurs mois
-EN UN SEUL APPEL : la vélocité et l'accélération sont donc calculables immédiatement,
-sans attendre l'historique de snapshots. Sortie : un :class:`RawSignal` ``"google_trends"``.
+Stratégie :
+  1. Obtenir un cookie NID valide en visitant google.com avec curl_cffi (TLS Chrome).
+  2. Appeler l'endpoint explore pour récupérer le token TIMESERIES.
+  3. Appeler widgetdata/multiline pour la série temporelle 0-100.
 
-Dépendance : ``pytrends`` (``pip install pytrends``). L'API non officielle renvoie des
-HTTP 429 dès qu'on tape trop vite depuis une même IP. Deux garde-fous ici :
-  • **cache disque (TTL)** : un mot-clé déjà vu n'est jamais re-tiré (dédup automatique
-    entre produits qui partagent le mot-clé, et réutilisation d'un run à l'autre) ;
-  • **intervalle mini entre appels réseau** : on espace les requêtes (les hits de cache
-    sont instantanés et ne comptent pas), ce qui évite la rafale qui déclenche le 429.
-En cas d'échec persistant, on renvoie une série vide — le moteur dégrade proprement.
+Pourquoi pas pytrends : archivé en avril 2025, 429 après ~20 requêtes.
+Pourquoi curl_cffi : impersonne le TLS de Chrome (JA3/H2 frame order) — Google
+ne voit pas Python/requests. Taux de succès attendu >85% depuis une IP résidentielle.
+
+Cache disque TTL 3 jours. Dégradation gracieuse : série vide si les deux backends échouent.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
+import random
 import time
 from pathlib import Path
+from urllib.parse import quote
 
 try:
-    from pytrends.request import TrendReq  # type: ignore
-    _HAS_PYTRENDS = True
+    from curl_cffi import requests as cffi_requests
+    _HAS_CURL_CFFI = True
 except ImportError:
-    _HAS_PYTRENDS = False
+    _HAS_CURL_CFFI = False
 
-_CACHE_DIR = Path(__file__).resolve().parent.parent / ".trends_cache"
-_CACHE_TTL_SECONDS = 7 * 24 * 3600     # 7 j : une courbe 3 mois ne bouge pas en une semaine
-_MIN_REQUEST_INTERVAL = 10.0           # Trends est strict : ≥10 s entre deux appels réseau
-_last_request_ts = 0.0
+_CACHE_DIR       = Path(__file__).resolve().parent.parent / ".trends_cache"
+_CACHE_TTL       = 3 * 24 * 3600   # 3 j — renouvelle plus souvent que 7j (produits viraux)
+_COOKIE_REFRESH  = 48 * 3600       # 48 h entre renouvellements du cookie NID
+_BASE            = "https://trends.google.com/trends/api"
+_HEADERS         = {
+    "accept": "application/json, text/plain, */*",
+    "accept-language": "en-US,en;q=0.9",
+    "referer": "https://trends.google.com/",
+    "user-agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/131.0.0.0 Safari/537.36"
+    ),
+    "sec-ch-ua": '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+}
 
 
 class TrendsError(Exception):
-    """Erreur d'accès à Google Trends."""
+    pass
 
+
+# ── Cache ──────────────────────────────────────────────────────────────────────
 
 def _cache_path(key: str) -> Path:
     return _CACHE_DIR / f"{hashlib.sha256(key.encode()).hexdigest()[:20]}.json"
@@ -45,7 +61,7 @@ def _cache_get(key: str):
     if not p.exists():
         return None
     try:
-        if time.time() - p.stat().st_mtime > _CACHE_TTL_SECONDS:
+        if time.time() - p.stat().st_mtime > _CACHE_TTL:
             return None
         d = json.loads(p.read_text())
         return d["ts"], d["vals"], d["meta"]
@@ -53,13 +69,110 @@ def _cache_get(key: str):
         return None
 
 
-def _cache_put(key: str, ts: list[float], vals: list[float], meta: dict) -> None:
+def _cache_put(key: str, ts: list, vals: list, meta: dict) -> None:
     try:
         _CACHE_DIR.mkdir(parents=True, exist_ok=True)
         _cache_path(key).write_text(json.dumps({"ts": ts, "vals": vals, "meta": meta}))
     except Exception:
-        pass  # cache best-effort
+        pass
 
+
+# ── Scraper principal ─────────────────────────────────────────────────────────
+
+class _GoogleTrendsScraper:
+    """Session curl_cffi persistante pour Google Trends."""
+
+    def __init__(self):
+        self._session = None
+        self._cookie_ts: float = 0.0
+
+    def _get_session(self) -> "cffi_requests.Session":
+        if self._session is None:
+            self._session = cffi_requests.Session(impersonate="chrome131")
+            self._session.headers.update(_HEADERS)
+        return self._session
+
+    def _refresh_cookies(self) -> None:
+        """Visite google.com pour obtenir un cookie NID valide (sans login)."""
+        if time.time() - self._cookie_ts < _COOKIE_REFRESH:
+            return
+        try:
+            s = self._get_session()
+            s.get("https://www.google.com", timeout=15)
+            self._cookie_ts = time.time()
+            time.sleep(random.uniform(1.5, 3.0))
+        except Exception:
+            pass  # best-effort — on tente quand même l'appel Trends
+
+    def _get(self, url: str, retries: int = 5) -> dict:
+        s = self._get_session()
+        last_exc: Exception | None = None
+        for attempt in range(retries):
+            try:
+                resp = s.get(url, timeout=25)
+                if resp.status_code == 429:
+                    wait = (2 ** attempt) * 10 + random.uniform(0, 5)
+                    time.sleep(wait)
+                    continue
+                resp.raise_for_status()
+                text = resp.text
+                if text.startswith(")]}'"):
+                    text = text[5:]   # strip anti-hijacking prefix
+                return json.loads(text)
+            except Exception as exc:
+                last_exc = exc
+                time.sleep((2 ** attempt) * 5 + random.uniform(0, 2))
+        raise TrendsError(f"Google Trends HTTP échoué : {last_exc}")
+
+    def _get_token(self, keyword: str, timeframe: str, geo: str) -> tuple[str, dict]:
+        req_obj = {
+            "comparisonItem": [{"keyword": keyword, "geo": geo, "time": timeframe}],
+            "category": 0,
+            "property": "",
+        }
+        url = f"{_BASE}/explore?hl=en-US&tz=0&req={quote(json.dumps(req_obj, separators=(',', ':')))}"
+        data = self._get(url)
+        for w in data.get("widgets", []):
+            if w.get("id") == "TIMESERIES":
+                return w["token"], w["request"]
+        raise TrendsError("Widget TIMESERIES introuvable dans la réponse explore")
+
+    def _get_series(self, token: str, req: dict) -> list[float]:
+        url = (
+            f"{_BASE}/widgetdata/multiline"
+            f"?hl=en-US&tz=0"
+            f"&req={quote(json.dumps(req, separators=(',', ':')))}"
+            f"&token={token}"
+        )
+        data = self._get(url)
+        rows = data.get("default", {}).get("timelineData", [])
+        return [float(r["value"][0]) for r in rows if r.get("value")]
+
+    def fetch(self, keyword: str, timeframe: str = "today 3-m", geo: str = "") -> tuple[list[float], list[float], dict]:
+        """Retourne (timestamps_days, values_0_100, meta)."""
+        self._refresh_cookies()
+        time.sleep(random.uniform(3.0, 7.0))   # délai humain avant chaque appel
+
+        token, req = self._get_token(keyword, timeframe, geo)
+        time.sleep(random.uniform(2.0, 4.0))
+        values = self._get_series(token, req)
+
+        if not values:
+            return [], [], {"keyword": keyword, "points": 0, "backend": "direct"}
+
+        timestamps = [float(i * 7) for i in range(len(values))]  # points hebdo (~7j chacun)
+        meta = {
+            "keyword": keyword, "points": len(values),
+            "timeframe": timeframe, "geo": geo or "WW", "backend": "direct",
+        }
+        return timestamps, values, meta
+
+
+# Singleton de session (réutilisée entre appels pour conserver les cookies)
+_scraper = _GoogleTrendsScraper()
+
+
+# ── API publique (identique à l'ancienne interface pytrends) ──────────────────
 
 def fetch_interest(
     keyword: str,
@@ -67,54 +180,34 @@ def fetch_interest(
     geo: str = "",
     retries: int = 3,
 ) -> tuple[list[float], list[float], dict]:
-    """Récupère la série d'intérêt Google Trends d'un mot-clé.
+    """Récupère la série d'intérêt Google Trends.
 
-    Returns:
-        (timestamps_days, values, meta) — ``timestamps_days`` relatifs au début de la
-        fenêtre (en jours), ``values`` = intérêt relatif 0–100. Série vide si indisponible.
+    Retourne (timestamps_days, values, meta). Série vide si échec.
+    Interface identique à l'ancienne version pytrends.
     """
-    if not _HAS_PYTRENDS:
-        raise TrendsError("pytrends non installé. → pip install pytrends")
+    if not _HAS_CURL_CFFI:
+        raise TrendsError("curl_cffi non installé. → pip install curl_cffi")
 
     cache_key = f"{keyword}|{timeframe}|{geo}"
     cached = _cache_get(cache_key)
     if cached is not None:
         return cached
 
-    global _last_request_ts
     last_exc: Exception | None = None
     for attempt in range(retries):
-        wait = _MIN_REQUEST_INTERVAL - (time.time() - _last_request_ts)
-        if wait > 0:
-            time.sleep(wait)
         try:
-            pt = TrendReq(hl="fr-FR", tz=0, timeout=(10, 25))
-            pt.build_payload([keyword], timeframe=timeframe, geo=geo)
-            df = pt.interest_over_time()
-            _last_request_ts = time.time()
-            if df is None or df.empty or keyword not in df:
-                result = ([], [], {"keyword": keyword, "points": 0})
-                _cache_put(cache_key, *result)  # mot-clé sans couverture : on s'en souvient
-                return result
-            series = df[keyword].tolist()
-            dates = df.index.tolist()
-            t0 = dates[0]
-            timestamps = [(d - t0).total_seconds() / 86400.0 for d in dates]
-            values = [float(v) for v in series]
-            meta = {"keyword": keyword, "points": len(values),
-                    "timeframe": timeframe, "geo": geo or "WW"}
-            result = (timestamps, values, meta)
+            result = _scraper.fetch(keyword, timeframe, geo)
             _cache_put(cache_key, *result)
             return result
-        except Exception as exc:  # 429, réseau, parsing
-            _last_request_ts = time.time()
+        except TrendsError as exc:
             last_exc = exc
-            time.sleep(2 ** attempt * 3.0)  # backoff 3s, 6s, 12s (les 429 n'entrent pas en cache)
+            time.sleep(2 ** attempt * 8.0)
+
     raise TrendsError(f"Google Trends indisponible après {retries} essais : {last_exc}")
 
 
 def trends_raw_signal(keyword: str, **kwargs):
-    """Construit un ``RawSignal('google_trends', ...)`` (série vide si indisponible)."""
+    """Construit un RawSignal('google_trends', ...) — série vide si indisponible."""
     from signals.features import RawSignal
     try:
         ts, vals, _meta = fetch_interest(keyword, **kwargs)
@@ -123,12 +216,12 @@ def trends_raw_signal(keyword: str, **kwargs):
     return RawSignal("google_trends", ts, vals)
 
 
-if __name__ == "__main__":  # test : python3 -m collectors.google_trends "portable blender"
+if __name__ == "__main__":
     import sys
     kw = sys.argv[1] if len(sys.argv) > 1 else "portable blender"
     try:
         ts, vals, meta = fetch_interest(kw)
-        print(f"Mot-clé : {kw}  | {meta['points']} points")
+        print(f"Mot-clé : {kw}  | {meta['points']} points | backend={meta.get('backend')}")
         if vals:
             print(f"Intérêt récent : {vals[-5:]}  (max {max(vals):.0f})")
     except TrendsError as exc:

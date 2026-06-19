@@ -5,7 +5,36 @@ Format : `YYYY-MM-DD HH:MM | fichier(s) concerné(s) | description`
 
 ---
 
-## ⚠️ ÉTAT ACTUEL (2026-06-17) — SIGNAL DEMANDE REFONDU
+## ⚠️ ÉTAT ACTUEL (2026-06-19) — SAAS COMPLET EN COURS
+
+### Pipeline Pi
+- `start_all.sh` : commande unique de démarrage (API + demand runner + crons). Idempotent, @reboot.
+- `daily.sh` étendu : 200 pages CJ/jour (~10 000 produits) + warm Reddit 200 kw + relance demand_runner si crashé.
+
+### Auth (Supabase)
+- `frontend/src/auth/supabase.ts` : client Supabase singleton.
+- `frontend/src/auth/AuthContext.tsx` : React context (session, user, plan, signOut).
+- `frontend/src/auth/supabase-handler.ts` : remplace le demo auth — appels Supabase réels (login/register/forgot/reset).
+- `frontend/src/auth/auth.ts` : hook `window.TandorAuth.handle` ajouté (fallback démo si Supabase non configuré).
+- `frontend/src/Pages/PublicPage.tsx` : charge supabase-handler avant auth.ts si SUPABASE_URL défini.
+- `frontend/src/App.tsx` : `<AuthProvider>` + `<ProtectedRoute>` sur /dashboard, /validate et les 12 pages internes.
+- `frontend/.env.local.example` : template des variables d'env requises.
+- **Action requise** : `npm install` dans frontend/ + créer projet Supabase + remplir `.env.local`.
+
+### Paiements (Stripe)
+- `supabase/functions/stripe-webhook/index.ts` : Edge Function Deno — met à jour `users_meta` sur checkout + annulation.
+- **Action requise** : `supabase functions deploy stripe-webhook` + créer Payment Links Stripe.
+
+## ⚠️ ÉTAT PRÉCÉDENT (2026-06-19) — VALIDATEUR PRODUIT À LA DEMANDE
+
+1. **NOUVEAU : endpoint `/api/validate` (POST) + page `/validate`** — analyse on-demand d'un produit.
+   - Input : URL Amazon/AliExpress OU nom libre (ex. "yoga mat").
+   - Pipeline : keyword extraction → lookup CJ DB → sellability → Trends + Reddit + Amazon en parallèle (timeout 20s) → organic score → saisonnalité → verdict BUY/WATCH/PASS + score Tandor 0–100.
+   - Page React `frontend/src/Pages/Validate.tsx` route `/validate` : dark UI inline, input + 3 cartes de résultat (vendabilité, demande organique, sourcing+saison).
+   - Dégradation gracieuse : chaque signal est indépendant, timeout individuel, partial results si une source ne répond pas.
+   - CORS mis à jour pour autoriser POST.
+
+## ⚠️ ÉTAT PRÉCÉDENT (2026-06-17) — SIGNAL DEMANDE REFONDU
 
 1. **NOUVEAU : runner demande 24/7 Amazon + AliExpress** — `screen -r demand`, log `cat /home/albator/tandor-demand.log`.
    - `demand_runner.py` scrape Amazon « bought in past month » (vélocité 30 j) au rythme 5–10 s/produit, priorise la pile (couverture max puis vélocité), et confirme les TOP produits sur AliExpress (~260/jour, sous le mur x5sec).

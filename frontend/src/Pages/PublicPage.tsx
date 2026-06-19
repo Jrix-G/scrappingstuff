@@ -18,7 +18,14 @@ export default function PublicPage({ html, className, auth }: { html: string; cl
     (async () => {
       await import('../auth/public');
       if (cancelled) return;
-      if (auth) await import('../auth/auth');
+      if (auth) {
+        // Le handler Supabase doit être chargé AVANT auth.ts pour que
+        // window.TandorAuth soit défini quand auth.ts enregistre les listeners.
+        if (process.env.REACT_APP_FIREBASE_API_KEY) {
+          await import('../auth/supabase-handler'); // contient le handler Firebase
+        }
+        await import('../auth/auth');
+      }
     })();
     return () => { cancelled = true; };
   }, [html, auth]);

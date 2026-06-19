@@ -1,9 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './auth/AuthContext';
 import Home from './Pages/Home';
 import Home_by from './Pages/Home_by';
 import Dashboard from './Pages/Dashboard';
 import DashPage from './Pages/DashPage';
+import Validate from './Pages/Validate';
 import PublicPage from './Pages/PublicPage';
 import * as loginHtml from './auth/html/login';
 import * as registerHtml from './auth/html/register';
@@ -27,27 +29,36 @@ const settings = () => import('./dashboard/page-settings').then((m) => ({ mount:
 const billing = () => import('./dashboard/page-billing').then((m) => ({ mount: m.mountBilling }));
 const account = () => import('./dashboard/page-account').then((m) => ({ mount: m.mountAccount }));
 
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
+
 function App() {
   return (
+    <AuthProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/homeby" element={<Home_by />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/validate" element={<ProtectedRoute><Validate /></ProtectedRoute>} />
 
-        {/* 12 pages internes du dashboard (shell partagé) */}
-        <Route path="/discovery" element={<DashPage loader={discovery} />} />
-        <Route path="/radar" element={<DashPage loader={radar} />} />
-        <Route path="/trends" element={<DashPage loader={trends} />} />
-        <Route path="/reddit" element={<DashPage loader={reddit} />} />
-        <Route path="/market" element={<DashPage loader={market} />} />
-        <Route path="/analytics" element={<DashPage loader={analytics} />} />
-        <Route path="/saved" element={<DashPage loader={saved} />} />
-        <Route path="/watchlists" element={<DashPage loader={watchlists} />} />
-        <Route path="/alerts" element={<DashPage loader={alerts} />} />
-        <Route path="/settings" element={<DashPage loader={settings} />} />
-        <Route path="/billing" element={<DashPage loader={billing} />} />
-        <Route path="/account" element={<DashPage loader={account} />} />
+        {/* 12 pages internes du dashboard (shell partagé, protégées) */}
+        <Route path="/discovery"  element={<ProtectedRoute><DashPage loader={discovery} /></ProtectedRoute>} />
+        <Route path="/radar"      element={<ProtectedRoute><DashPage loader={radar} /></ProtectedRoute>} />
+        <Route path="/trends"     element={<ProtectedRoute><DashPage loader={trends} /></ProtectedRoute>} />
+        <Route path="/reddit"     element={<ProtectedRoute><DashPage loader={reddit} /></ProtectedRoute>} />
+        <Route path="/market"     element={<ProtectedRoute><DashPage loader={market} /></ProtectedRoute>} />
+        <Route path="/analytics"  element={<ProtectedRoute><DashPage loader={analytics} /></ProtectedRoute>} />
+        <Route path="/saved"      element={<ProtectedRoute><DashPage loader={saved} /></ProtectedRoute>} />
+        <Route path="/watchlists" element={<ProtectedRoute><DashPage loader={watchlists} /></ProtectedRoute>} />
+        <Route path="/alerts"     element={<ProtectedRoute><DashPage loader={alerts} /></ProtectedRoute>} />
+        <Route path="/settings"   element={<ProtectedRoute><DashPage loader={settings} /></ProtectedRoute>} />
+        <Route path="/billing"    element={<ProtectedRoute><DashPage loader={billing} /></ProtectedRoute>} />
+        <Route path="/account"    element={<ProtectedRoute><DashPage loader={account} /></ProtectedRoute>} />
 
         {/* pages publiques (pré-login) */}
         <Route path="/login" element={<PublicPage html={loginHtml.html} className={loginHtml.className} auth />} />
@@ -60,6 +71,7 @@ function App() {
         <Route path="*" element={<Home />} />
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }
 

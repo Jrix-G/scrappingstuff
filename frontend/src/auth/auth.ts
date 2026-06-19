@@ -149,6 +149,20 @@ export {};
       if (!valid) { var firstErr = $(".fld.err input, .chk-line.err", form); if (firstErr) firstErr.focus && firstErr.focus(); return; }
 
       var btn = $(".auth-submit", form);
+
+      // Si supabase-handler.ts est chargé, il prend en charge la soumission réelle.
+      if (window.TandorAuth && typeof window.TandorAuth.handle === "function") {
+        var formData = {
+          email: emailFld ? $("input", emailFld).value.trim() : "",
+          password: pwFld ? $("input", pwFld).value : (pwLogin ? $("input", pwLogin).value : ""),
+          name: nameFld ? $("input", nameFld).value.trim() : "",
+          next: form.dataset.next || "/dashboard",
+        };
+        window.TandorAuth.handle(kind, formData, btn);
+        return;
+      }
+
+      // Démo fallback (pas de Supabase configuré)
       runSubmit(btn, function () {
         var dest = form.dataset.next;
         if (dest) window.location.href = dest;
