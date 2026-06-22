@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# tandor-vpn-exec-burst [args] — Lance ali_burst_worker.py dans le namespace VPN.
+# Jumeau de tandor-vpn-exec-warmer, mais pour le worker burst AliExpress.
+#
+# INSTALLATION (action root du patron, une seule fois) :
+#   sudo install -m 0755 \
+#     /home/albator/scrappingstuff/scripts/organic_engine/deploy/tandor-vpn-exec-burst \
+#     /usr/local/bin/tandor-vpn-exec-burst
+#   # puis ajouter au sudoers (visudo) la ligne NOPASSWD :
+#   #   albator ALL=(root) NOPASSWD: /usr/local/bin/tandor-vpn-exec-burst
+#
+# Le worker dégrade proprement SANS ce wrapper : lancé hors netns il tourne sur
+# l'IP maison (utile en debug). Le wrapper sert juste à le faire passer par le VPN.
+NETNS="tandor-vpn"
+PY="/home/albator/scrappingstuff/scripts/organic_engine/.venv/bin/python3"
+WORKER="/home/albator/scrappingstuff/scripts/organic_engine/ali_burst_worker.py"
+exec ip netns exec "$NETNS" runuser -u albator -- "$PY" "$WORKER" "$@"

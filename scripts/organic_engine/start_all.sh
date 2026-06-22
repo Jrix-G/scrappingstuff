@@ -113,16 +113,17 @@ for i in $(seq 1 $MAX_WAIT); do
 done
 
 # ── 5. Demand runner (Amazon + AliExpress 24/7) ───────────────────────────────
+# Le runner est géré par systemd (tandor-demand.service, Restart=always), qui le
+# démarre aussi au boot via multi-user.target. On NE le lance donc PAS ici, sinon
+# course au boot → deux runners (un non géré par systemd). On se contente de
+# vérifier son état (lecture seule, pas besoin de root).
 
-if pgrep -f "demand_runner.py" >/dev/null; then
-    ok "demand_runner déjà en cours (pas de redémarrage)"
+if systemctl is-active --quiet tandor-demand.service; then
+    ok "demand_runner géré par systemd (actif)"
+elif pgrep -f "demand_runner.py" >/dev/null; then
+    ok "demand_runner en cours (hors systemd)"
 else
-    info "Démarrage du demand runner..."
-    nohup "$VENV/bin/python3" "$ENGINE/demand_runner.py" \
-        >> "$LOG_DIR/tandor-demand.log" 2>&1 &
-    DEMAND_PID=$!
-    echo "$DEMAND_PID" > "$HOME_DIR/.tandor-demand.pid"
-    ok "demand_runner démarré (pid $DEMAND_PID) → log : $LOG_DIR/tandor-demand.log"
+    warn "demand_runner inactif — systemd devrait le relancer (RestartSec=10) ; sinon : sudo systemctl start tandor-demand.service"
 fi
 
 # ── 6. Crons (daily + hourly + scrape nightly + reboot) ──────────────────────
@@ -185,26 +186,10 @@ echo "    Daily     : tail -f $LOG_DIR/tandor-daily.log"
 echo "    Nightly   : tail -f $LOG_DIR/tandor-scrape.log"
 echo ""
 
-# ── 8. Notification Discord ────────────────────────────────────────────────────
-if [[ -n "${DISCORD_WEBHOOK_URL:-}" ]]; then
-    COMPONENTS=""
-    $API_OK    && COMPONENTS="${COMPONENTS}API FastAPI ✓\n" || COMPONENTS="${COMPONENTS}API FastAPI ✗\n"
-    $DEMAND_OK && COMPONENTS="${COMPONENTS}Demand Runner ✓\n" || COMPONENTS="${COMPONENTS}Demand Runner ✗\n"
-    COMPONENTS="${COMPONENTS}Crons (daily/hourly/nightly/reboot) ✓"
-
-    python3 - <<PYEOF
-import os, json, requests, datetime
-url = os.environ["DISCORD_WEBHOOK_URL"]
-embed = {
-    "title": "Tandor Pi — Démarrage",
-    "description": "$(echo -e "$COMPONENTS")",
-    "color": 0xF1C40F,
-    "timestamp": datetime.datetime.utcnow().isoformat(),
-    "footer": {"text": "Raspberry Pi"},
-}
-try:
-    requests.post(url, json={"embeds": [embed]}, timeout=10)
-except Exception as e:
-    print(f"[Discord silenced] {e}")
+# ── 8. Notification Discord (via le bot existant — notify_discord.py) ───────────
+cd "$ENGINE" && "$VENV/bin/python3" - >> "$LOG_DIR/tandor-start.log" 2>&1 <<PYEOF
+import notify_discord as notify
+api = "✅" if $API_OK else "❌"
+dem = "✅" if $DEMAND_OK else "❌"
+notify.send(f"🟢 **Tandor Pi — démarrage** · API {api} · Demand runner {dem} · crons OK", ping=True)
 PYEOF
-fi

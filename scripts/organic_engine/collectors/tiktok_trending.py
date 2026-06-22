@@ -4,13 +4,15 @@ Scrape les pages hashtag TikTok pour extraire le nombre de vues/vidéos d'un
 mot-clé produit. Un hashtag qui explose (#ceilingfan, #robotvacuum) est le
 signe le plus précoce du phénomène « TikTok made me buy it ».
 
-Technique : GET de https://www.tiktok.com/tag/<keyword> — TikTok injecte un
-JSON de réhydratation dans le HTML (balise <script id="__UNIVERSAL_DATA_FOR_REHYDRATION__">)
-qui contient les stats du challenge (viewCount, videoCount). Pas d'API officielle,
-pas de cookies, pas de navigateur. Dégradation gracieuse si TikTok bloque.
+Technique : GET de l'endpoint web-mobile
+https://m.tiktok.com/api/challenge/detail/?challengeName=<tag>&aid=1988 qui
+renvoie directement un JSON {challengeInfo:{statsV2:{viewCount,videoCount}}}.
+Pas d'API officielle, pas de cookies, pas de signature (msToken/X-Bogus), pas de
+navigateur. L'ancienne page /tag/ HTML ne porte plus les stats (SSR déprécié par
+TikTok) — d'où l'abandon. Dégradation gracieuse si TikTok bloque.
 
 Cache : 24 h (un signal viral ne change pas à l'heure).
-Rate-limit : ≥ 15 s entre requêtes réseau (TikTok détecte les rafales).
+Rate-limit : ≥ 2 s entre requêtes réseau (endpoint testé à 100 req/min sans blocage).
 """
 
 from __future__ import annotations
@@ -39,15 +41,14 @@ _UA_MOBILE = (
 
 _CACHE_DIR       = Path(__file__).resolve().parent.parent / ".tiktok_cache"
 _CACHE_TTL       = 24 * 3600     # 24 h : la viralité ne se mesure pas à l'heure
-_MIN_INTERVAL    = 15.0          # secondes entre deux requêtes réseau
+_MIN_INTERVAL    = 2.0           # secondes entre deux requêtes réseau
 _last_req_ts     = 0.0
 
-# Regex de secours si le JSON n'est pas trouvé dans <script>
-_VIEW_RE  = re.compile(r'"viewCount"\s*:\s*(\d+)')
-_VIDEO_RE = re.compile(r'"videoCount"\s*:\s*(\d+)')
+_API_URL = "https://m.tiktok.com/api/challenge/detail/?challengeName={tag}&aid=1988"
 
-# Marqueurs de blocage TikTok
-_BLOCK_MARKERS = ("tiktok.com/login", "verify.tiktok.com", "captcha", "/robot")
+# Regex de secours si le JSON ne parse pas
+_VIEW_RE  = re.compile(r'"viewCount"\s*:\s*"?(\d+)')
+_VIDEO_RE = re.compile(r'"videoCount"\s*:\s*"?(\d+)')
 
 
 class TikTokBlocked(Exception):
@@ -125,73 +126,54 @@ def _fetch_page(hashtag: str) -> str:
     if wait > 0:
         time.sleep(wait)
 
-    url = f"https://www.tiktok.com/tag/{urllib.parse.quote(hashtag)}"
+    url = _API_URL.format(tag=urllib.parse.quote(hashtag))
+    req = urllib.request.Request(url, headers={
+        "User-Agent": _UA_MOBILE,
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate",
+        "Referer": "https://www.tiktok.com/",
+        "Connection": "keep-alive",
+    })
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            raw = resp.read()
+            if "gzip" in (resp.headers.get("Content-Encoding") or ""):
+                raw = gzip.decompress(raw)
+            body = raw.decode("utf-8", "replace")
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            raise TikTokNoData(f"Hashtag #{hashtag} introuvable (HTTP 404)")
+        # 4xx/5xx (429, 403…) = l'IP/endpoint est rejeté → vrai blocage
+        raise TikTokBlocked(f"HTTP {exc.code} sur l'API challenge (#{hashtag})")
+    finally:
+        _last_req_ts = time.time()
 
-    # TikTok sert du HTML différent selon le UA — on essaie mobile d'abord
-    # (pages plus légères, moins de JS anti-bot)
-    for ua in (_UA_MOBILE, _UA_DESKTOP):
-        req = urllib.request.Request(url, headers={
-            "User-Agent": ua,
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Accept-Encoding": "gzip, deflate",
-            "Referer": "https://www.tiktok.com/",
-            "Connection": "keep-alive",
-        })
-        try:
-            with urllib.request.urlopen(req, timeout=20) as resp:
-                raw = resp.read()
-                if "gzip" in (resp.headers.get("Content-Encoding") or ""):
-                    raw = gzip.decompress(raw)
-                body = raw.decode("utf-8", "replace")
-        except urllib.error.HTTPError as exc:
-            if exc.code in (404,):
-                raise TikTokNoData(f"Hashtag #{hashtag} introuvable (HTTP 404)")
-            raise
-        finally:
-            _last_req_ts = time.time()
-
-        if any(m in body for m in _BLOCK_MARKERS) or len(body) < 2000:
-            raise TikTokBlocked(f"Page de blocage/captcha TikTok (hashtag=#{hashtag})")
-
-        if "__UNIVERSAL_DATA_FOR_REHYDRATION__" in body or "viewCount" in body:
-            return body
-
-    raise TikTokNoData(f"Aucune donnée JSON dans la page de #{hashtag}")
+    return body
 
 
 # ── Parsing ───────────────────────────────────────────────────────────────────
 
 def _parse_stats(body: str) -> tuple[int | None, int | None]:
-    """Extrait (viewCount, videoCount) depuis le JSON embarqué TikTok."""
-    # 1) Cherche la balise de réhydratation SSR
-    m = re.search(
-        r'<script[^>]+id=["\']__UNIVERSAL_DATA_FOR_REHYDRATION__["\'][^>]*>(.*?)</script>',
-        body, re.DOTALL
-    )
-    if m:
-        try:
-            data = json.loads(m.group(1))
-            # Navigue dans la structure TikTok (plusieurs niveaux possibles)
-            challenge = (
-                data.get("__DEFAULT_SCOPE__", {})
-                    .get("webapp.challenge-detail", {})
-                    .get("challengeInfo", {})
-                    .get("statsV2") or
-                data.get("__DEFAULT_SCOPE__", {})
-                    .get("webapp.challenge-detail", {})
-                    .get("challengeInfo", {})
-                    .get("stats")
-            )
-            if challenge:
-                return (
-                    _to_int(challenge.get("viewCount") or challenge.get("videoViewCount")),
-                    _to_int(challenge.get("videoCount")),
-                )
-        except (json.JSONDecodeError, AttributeError):
-            pass
+    """Extrait (viewCount, videoCount) depuis le JSON de l'API challenge.
 
-    # 2) Fallback regex sur le HTML brut
+    Réponse type : {"challengeInfo":{"stats":{...},"statsV2":{"viewCount":"...",
+    "videoCount":"..."}},"statusCode":0}. Hashtag inconnu → challengeInfo vide.
+    """
+    # 1) Parse JSON direct (statsV2 = chaînes, stats = entiers selon les cas)
+    try:
+        data = json.loads(body)
+        ci = data.get("challengeInfo") or {}
+        stats = ci.get("statsV2") or ci.get("stats") or {}
+        if stats:
+            return (
+                _to_int(stats.get("viewCount") or stats.get("videoViewCount")),
+                _to_int(stats.get("videoCount")),
+            )
+    except (json.JSONDecodeError, AttributeError):
+        pass
+
+    # 2) Fallback regex si la forme du JSON change
     vm = _VIEW_RE.search(body)
     vim = _VIDEO_RE.search(body)
     return (
@@ -217,7 +199,14 @@ def fetch_hashtag(keyword: str) -> TikTokHashtagStats:
     hashtag = _to_hashtag(keyword)
     cached = _cache_get(hashtag)
     if cached is not None:
-        return TikTokHashtagStats(**cached)
+        # le cache est sérialisé via as_dict() (camelCase) → remappe en champs dataclass
+        return TikTokHashtagStats(
+            keyword=cached.get("keyword", keyword),
+            hashtag=cached.get("hashtag", hashtag),
+            view_count=cached.get("viewCount"),
+            video_count=cached.get("videoCount"),
+            blocked=cached.get("blocked", False),
+        )
 
     try:
         body = _fetch_page(hashtag)

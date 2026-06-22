@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Runner 24/7 du signal demande Tandor.
 
-Boucle principale : scrape Amazon (« bought in past month ») au rythme 5–10 s/produit,
-en priorisant la pile (couverture max puis vélocité). En cadence lente parallèle,
-confirme les TOP produits sur AliExpress (~1 req/5,5 min ≈ 260/jour, sous le mur x5sec).
+Boucle principale : scrape Amazon (« bought in past month ») au rythme 3–6 s/produit,
+en priorisant la pile (couverture max puis vélocité). AliExpress n'est PLUS scrapé ici
+(délégué à un worker dédié single-IP) ; le runner se contente de remplir aliexpress_queue.
 
 Durcissement anti-ban (recherche dédiée 2026) :
 * détection de blocage par le CORPS (captcha Amazon = HTTP 200) + présence des cartes ;
@@ -27,20 +27,34 @@ ENGINE = Path(__file__).resolve().parent
 sys.path.insert(0, str(ENGINE))
 
 import demand_queue as q
+import notify_discord as notify
 from collectors import amazon_demand as amz
 
 # ── Pacing (demandé : 5–10 s aléatoire entre produits Amazon) ────────────────
-PACE_MIN, PACE_MAX = 5.0, 10.0
-BREAK_EVERY = (20, 40)            # break humain toutes les N req
-BREAK_SECONDS = (120, 300)       # durée du break : 2–5 min
+PACE_MIN, PACE_MAX = 3.0, 6.0    # cadence accélérée (ban mesuré ~0,2 %, backoff couvre la dérive)
+BREAK_EVERY = (35, 60)           # break humain toutes les N req (moins fréquent)
+BREAK_SECONDS = (90, 180)        # durée du break : 1,5–3 min
 PERSONA_EVERY = (150, 400)       # rotation d'identité toutes les N req
 COOLDOWNS = [120, 300, 900, 1800, 3600]   # backoff blocage : 2,5,15,30,60 min
-QUIET_HOURS = (2, 6)             # heures creuses locales (ralenti ×3)
+QUIET_HOURS = (2, 6)             # heures creuses locales (léger ralenti ×1.5)
 
-# ── Cadence AliExpress (budget rare, top produits) ───────────────────────────
-ALI_INTERVAL_S = 330             # ~5,5 min → ~260/jour, sous le plafond x5sec
+# ── AliExpress : PLUS scrapé ici ─────────────────────────────────────────────
+# L'ancienne boucle tapait toutes les 5,5 min — PLUS COURT que le cooldown ~30 min
+# d'AliExpress → elle re-déclenchait le ban en boucle et l'IP maison ne guérissait
+# jamais. AliExpress est désormais collecté par un worker dédié (extraction-max +
+# cadence calée sur le cooldown, single-IP). Le runner se contente de REMPLIR
+# aliexpress_queue (via record_amazon → seuil ALI_THRESHOLD).
+
+# ── Heartbeat Discord (preuve de vie même si tout est bloqué) ────────────────
+HEARTBEAT_S = 3600               # un message de synthèse toutes les heures
 
 _RUN = True
+
+
+def _fmt_stats(s: dict) -> str:
+    return (f"{s.get('scraped', 0)}/{s.get('total_keywords', 0)} scrapés · "
+            f"{s.get('hot_products', 0)} hot · "
+            f"{s.get('aliexpress_queued', 0)} ali en file")
 
 
 def _stop(*_):
@@ -59,18 +73,6 @@ def _in_quiet_hours() -> bool:
     return lo <= h < hi
 
 
-def _scrape_aliexpress(keyword: str) -> str:
-    """Confirme un mot-clé sur AliExpress (best-effort). Retourne un libellé de résultat."""
-    try:
-        from collectors.aliexpress_orders import fetch_demand
-        d = fetch_demand(keyword)
-        if d.blocked:
-            return "bloqué"
-        return f"maxSold={d.max_sold} median={d.median_sold}"
-    except Exception as e:
-        return f"err {type(e).__name__}"
-
-
 def main() -> None:
     signal.signal(signal.SIGINT, _stop)
     signal.signal(signal.SIGTERM, _stop)
@@ -79,6 +81,8 @@ def main() -> None:
     q.init_schema(c)
     n = q.rebuild_from_cj(c)
     print(f"[{_ts()}] Démarrage runner demande — {n} mots-clés en file. Stats: {q.stats(c)}", flush=True)
+    notify.send(f"🚀 **Runner demande démarré** — {n} mots-clés en file · {_fmt_stats(q.stats(c))}", ping=True)
+    last_heartbeat = time.time()
 
     sess = amz.make_session()
     consec_blocks = 0
@@ -86,18 +90,14 @@ def main() -> None:
     req_since_persona = 0
     next_break_at = random.randint(*BREAK_EVERY)
     next_persona_at = random.randint(*PERSONA_EVERY)
-    last_ali = 0.0
     done = 0
 
     while _RUN:
-        # ── Cadence AliExpress (top produits) ────────────────────────────────
-        if time.time() - last_ali >= ALI_INTERVAL_S:
-            ali_kw = q.next_aliexpress_keyword(c)
-            if ali_kw:
-                res = _scrape_aliexpress(ali_kw)
-                q.record_aliexpress(c, ali_kw)
-                print(f"[{_ts()}]   ▸ AliExpress « {ali_kw} » → {res}", flush=True)
-            last_ali = time.time()
+        # ── Heartbeat Discord (preuve de vie) ────────────────────────────────
+        if time.time() - last_heartbeat >= HEARTBEAT_S:
+            notify.send(f"💓 **Runner OK** — {done} produits scrapés cette session · "
+                        f"{_fmt_stats(q.stats(c))} · {consec_blocks} blocage(s) consécutif(s)")
+            last_heartbeat = time.time()
 
         # ── Amazon : prochain mot-clé de la pile ─────────────────────────────
         kw = q.next_amazon_keyword(c)
@@ -116,11 +116,15 @@ def main() -> None:
             sleep = base + random.uniform(0, base * 0.5)
             print(f"[{_ts()}] ⚠ BLOQUÉ ×{consec_blocks} sur « {kw} » → cooldown "
                   f"{sleep/60:.1f} min + nouvelle persona", flush=True)
+            if consec_blocks == 1:               # 1er blocage de la série (évite le spam)
+                notify.blocked(kw, source="Amazon")
             sess = amz.make_session()           # identité fraîche
             req_since_persona = 0
             next_persona_at = random.randint(*PERSONA_EVERY)
             if consec_blocks >= 8:               # IP en grande difficulté → longue pause
                 print(f"[{_ts()}] ⚠⚠ blocages répétés — pause 6 h.", flush=True)
+                notify.send("⛔ **Amazon — blocages répétés (×8)** : IP en grande difficulté, "
+                            "pause 6 h du scraping Amazon.", ping=True)
                 time.sleep(6 * 3600)
                 consec_blocks = 0
             else:
@@ -136,7 +140,7 @@ def main() -> None:
                   f"({d.n_with_velocity}/{d.n_results}){flag}", flush=True)
 
         # ── Pacing 5–10 s (×3 en heures creuses) ─────────────────────────────
-        pace = random.uniform(PACE_MIN, PACE_MAX) * (3.0 if _in_quiet_hours() else 1.0)
+        pace = random.uniform(PACE_MIN, PACE_MAX) * (1.5 if _in_quiet_hours() else 1.0)
         time.sleep(pace)
 
         # ── Break humain ─────────────────────────────────────────────────────

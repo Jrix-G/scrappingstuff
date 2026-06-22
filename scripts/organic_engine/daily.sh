@@ -48,13 +48,14 @@ except Exception as e:
 PYEOF
 log "Warm Reddit terminé."
 
-# 3. Vérification demand_runner (relance si crashé)
-if ! pgrep -f "demand_runner.py" >/dev/null; then
-    log "demand_runner non actif → relance..."
-    nohup .venv/bin/python3 "$ENGINE/demand_runner.py" >> "$HOME/tandor-demand.log" 2>&1 &
-    log "demand_runner relancé (pid $!)"
+# 3. Vérification demand_runner (géré par systemd, Restart=always — on ne relance
+#    pas à la main pour éviter un doublon non géré ; on ne fait que constater l'état)
+if systemctl is-active --quiet tandor-demand.service; then
+    log "demand_runner géré par systemd (actif)."
+elif pgrep -f "demand_runner.py" >/dev/null; then
+    log "demand_runner actif (hors systemd)."
 else
-    log "demand_runner actif."
+    log "⚠ demand_runner inactif — systemd devrait le relancer sous 10s."
 fi
 
 # 4. Snapshot time-series (backend Node.js)
@@ -63,47 +64,35 @@ cd "$HOME/scrappingstuff/backend" && npm run --silent snapshot:once >> "$LOG" 2>
 
 log "=== Job quotidien terminé ==="
 
-# 5. Rapport Discord
-if [[ -n "${DISCORD_WEBHOOK_URL:-}" ]]; then
-    python3 - <<PYEOF
-import os, sys, json, requests, datetime, sqlite3
+# 5. Purge du cache HTML > 48h (le signal est déjà en base, le HTML ne sert plus)
+#    Plafonne .amazon_cache pour ne pas saturer les 16 Go libres du Pi.
+find "$ENGINE/.amazon_cache" -name '*.html' -mtime +2 -delete 2>/dev/null
+find "$ENGINE/.aliexpress_cache" -name '*.html' -mtime +2 -delete 2>/dev/null
+log "Purge cache HTML > 48h effectuée."
+
+# 6. Rapport Discord (via le bot existant — notify_discord.py, même salon que le runner)
+cd "$ENGINE" && python3 - >> "$LOG" 2>&1 <<'PYEOF'
+import sqlite3, datetime, os
 from pathlib import Path
+import notify_discord as notify
 
-url = os.environ.get("DISCORD_WEBHOOK_URL", "")
-if not url:
-    sys.exit(0)
-
-# Comptage produits
-db_path = Path(os.environ.get("HOME")) / "scrappingstuff/scripts/organic_engine/data/cj.db"
-collected, new_today, errors = 0, 0, 0
+db = Path.home() / "scrappingstuff/scripts/organic_engine/data/cj.db"
+collected = new_today = 0
+err = ""
 try:
-    con = sqlite3.connect(db_path)
+    con = sqlite3.connect(db)
     collected = con.execute("SELECT COUNT(*) FROM cj_products").fetchone()[0]
     today = datetime.date.today().isoformat()
     new_today = con.execute(
-        "SELECT COUNT(*) FROM cj_products WHERE DATE(created_at) = ?", (today,)
+        "SELECT COUNT(*) FROM cj_products WHERE DATE(created_at)=?", (today,)
     ).fetchone()[0]
     con.close()
 except Exception as e:
-    errors = 1
-
-demand_ok = os.popen("pgrep -f demand_runner.py").read().strip()
-
-embed = {
-    "title": "Rapport Quotidien",
-    "color": 0x2ECC71 if not errors else 0xF39C12,
-    "fields": [
-        {"name": "Produits CJ total",   "value": str(collected), "inline": True},
-        {"name": "Nouveaux aujourd'hui","value": str(new_today),  "inline": True},
-        {"name": "Erreurs",             "value": str(errors),     "inline": True},
-        {"name": "Demand Runner",       "value": "✓ actif" if demand_ok else "✗ inactif", "inline": True},
-    ],
-    "timestamp": datetime.datetime.utcnow().isoformat(),
-    "footer": {"text": "Tandor Pi — cron 04:12"},
-}
-try:
-    requests.post(url, json={"embeds": [embed]}, timeout=10)
-except Exception as e:
-    print(f"[Discord silenced] {e}")
+    err = str(e)
+demand_ok = bool(os.popen("pgrep -f demand_runner.py").read().strip())
+free = os.popen("df -h / | awk 'NR==2{print $4}'").read().strip()
+msg = (f"📊 **Rapport quotidien Tandor** — {collected:,} produits CJ "
+       f"(+{new_today:,} aujourd'hui) · runner {'✅' if demand_ok else '❌'} · {free} dispo"
+       + (f" · ⚠ {err}" if err else ""))
+notify.send(msg, ping=True)   # rapport quotidien = notifiant
 PYEOF
-fi

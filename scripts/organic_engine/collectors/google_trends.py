@@ -216,6 +216,19 @@ def trends_raw_signal(keyword: str, **kwargs):
     return RawSignal("google_trends", ts, vals)
 
 
+# ── 2026-06-21 : bascule no-VPN ──────────────────────────────────────────────
+# L'endpoint widgetdata ci-dessus se fait rate-limiter depuis l'IP maison (VPN
+# abandonné). Le signal est désormais délégué au collecteur autocomplete
+# (suggest_trends : Google Suggest + repli Bing, snapshots quotidiens → features
+# `direction` + `saturation`). Les noms publics (fetch_interest / trends_raw_signal)
+# restent identiques → aucun call site à modifier. Le code widgetdata reste
+# au-dessus comme repli manuel.
+from collectors.suggest_trends import (  # noqa: E402
+    fetch_interest as fetch_interest,
+    trends_raw_signal as trends_raw_signal,
+)
+
+
 if __name__ == "__main__":
     import sys
     kw = sys.argv[1] if len(sys.argv) > 1 else "portable blender"

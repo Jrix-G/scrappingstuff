@@ -27,6 +27,7 @@ from collectors.google_trends import trends_raw_signal
 from collectors.reddit_mentions import reddit_raw_signal
 from signals.features import build_product_features
 from scoring.engine import score_population
+from scoring.loss_risk import assess_loss_risk
 
 OUT = ROOT.parent.parent / "frontend" / "src" / "dashboard" / "products.json"
 # Cache servi par l'API (forme {meta, products}) — source de vérité côté Pi.
@@ -164,14 +165,28 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
     # Niveau ABSOLU de ventes AliExpress par produit (validation demande dès le 1er
     # snapshot, indépendamment de la vélocité). Pure lecture DB, aucun appel réseau.
     sold_by_id: dict[str, dict] = {}
+    # Tendance de la demande par produit (drapeau « déclin »). NOTRE horloge :
+    # sales_snapshots accumulé jour après jour -> extract_trend -> pente log/jour.
+    # Pure lecture DB. Le garde-fou « < 3 points = inconnu » vit dans loss_risk.
+    decline_by_id: dict[str, dict] = {}
     try:
-        from collect_demand import init_db as demand_db, latest_sales_level
+        from collect_demand import init_db as demand_db, latest_sales_level, demand_raw_signals
+        from signals.timeseries import extract_trend
         dconn = demand_db()
         try:
             for r in top:
-                lvl = latest_sales_level(dconn, keyword_from_name(r["name"]))
+                kw = keyword_from_name(r["name"])
+                lvl = latest_sales_level(dconn, kw)
                 if lvl:
                     sold_by_id[r["product_id"]] = lvl
+                for sig in demand_raw_signals(dconn, kw):
+                    if sig.name == "sales":
+                        tf = extract_trend(sig.timestamps_days, sig.values)
+                        decline_by_id[r["product_id"]] = {
+                            "velocity": tf.velocity,
+                            "points": tf.n_points,
+                            "volatility": tf.volatility,
+                        }
         finally:
             dconn.close()
     except Exception:
@@ -195,6 +210,20 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
                 "salesScore": None,
             }
         season = r.get("seasonality", {})
+        # Verdict anti-piège (le pivot Tandor : « ne perds pas d'argent », pas « voici un gagnant »).
+        # Différenciateur vs Minea — exposé en première classe pour l'UI.
+        dec = decline_by_id.get(pid) or {}
+        loss = assess_loss_risk(
+            product_id=pid,
+            net_after_cpa_eur=r.get("net_after_cpa_eur"),
+            gross_margin_eur=r.get("gross_margin_eur"),
+            pct_low_rating=r.get("pct_low_rating"),
+            listed_num=r.get("listed_num"),
+            retail_eur=r.get("retail_eur"),
+            demand_velocity=dec.get("velocity"),
+            demand_points=dec.get("points", 0),
+            demand_volatility=dec.get("volatility"),
+        )
         out.append({
             "id": pid[-7:] if pid else f"P{i}",
             "name": r["name"],
@@ -221,6 +250,13 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
             "seasonPeak": season.get("peak_month") or 6,
             "seasonMult": round(season.get("multiplier", 1.0), 2),
             "reason": {"en": r["reason"], "fr": r["reason"]},
+            # ── Détecteur de pièges à fric (valeur organique, anti-perte) ──────
+            "trapVerdict": loss.verdict,            # TRAP | RISKY | VIABLE
+            "trapHeadline": loss.headline,
+            "lossFlags": [{"name": f.name, "level": f.level, "reason": f.reason}
+                          for f in loss.flags],
+            "breakevenCpa": (round(loss.breakeven_cpa_eur, 1)
+                             if loss.breakeven_cpa_eur is not None else None),
             "detectedHrs": i + 1,  # ordre du flux (proxy : par score)
             # Dossier qualitatif (CJ product/query) : enrichit la fiche produit.
             # `null`/`priceFromCJ:false` tant que le produit n'a pas été re-photographié.

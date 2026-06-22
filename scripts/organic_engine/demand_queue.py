@@ -31,6 +31,8 @@ REFRESH_COLD_H = 168         # froid (<500 ou rien) → 1×/semaine
 HOT_THRESHOLD = 5000
 WARM_THRESHOLD = 500
 ALI_THRESHOLD = 2000         # vélocité Amazon min pour mériter une confirmation AliExpress
+SALES_THRESHOLD = 500        # vélocité Amazon min pour empiler une confirmation eBay/DHgate
+SALES_QUEUES = ("ebay_queue", "dhgate_queue")   # files des sources de ventes secondaires
 
 
 def _now() -> str:
@@ -69,6 +71,24 @@ def init_schema(c: sqlite3.Connection) -> None:
             priority REAL DEFAULT 0,
             last_scraped TEXT,
             scrape_count INTEGER DEFAULT 0
+        );
+
+        CREATE TABLE IF NOT EXISTS ebay_queue (
+            keyword TEXT PRIMARY KEY,
+            enqueued_at TEXT,
+            priority REAL DEFAULT 0,
+            last_scraped TEXT,
+            scrape_count INTEGER DEFAULT 0,
+            blocked_count INTEGER DEFAULT 0
+        );
+
+        CREATE TABLE IF NOT EXISTS dhgate_queue (
+            keyword TEXT PRIMARY KEY,
+            enqueued_at TEXT,
+            priority REAL DEFAULT 0,
+            last_scraped TEXT,
+            scrape_count INTEGER DEFAULT 0,
+            blocked_count INTEGER DEFAULT 0
         );
         """
     )
@@ -160,6 +180,14 @@ def record_amazon(c: sqlite3.Connection, demand) -> None:
             "ON CONFLICT(keyword) DO UPDATE SET priority=excluded.priority",
             (kw, _now(), float(demand.max_bought or 0)),
         )
+    # Passerelle eBay/DHgate : seuil plus bas (volume de confirmation multi-marketplace).
+    if (demand.max_bought or 0) >= SALES_THRESHOLD:
+        for table in SALES_QUEUES:
+            c.execute(
+                f"INSERT INTO {table}(keyword, enqueued_at, priority) VALUES(?,?,?) "
+                "ON CONFLICT(keyword) DO UPDATE SET priority=excluded.priority",
+                (kw, _now(), float(demand.max_bought or 0)),
+            )
     c.commit()
 
 
@@ -181,11 +209,104 @@ def next_aliexpress_keyword(c: sqlite3.Connection, min_age_h: int = 24) -> str |
     return None
 
 
-def record_aliexpress(c: sqlite3.Connection, keyword: str) -> None:
+def record_aliexpress(c: sqlite3.Connection, keyword: str, demand=None) -> None:
+    """Met à jour la file Ali ET persiste un snapshot ventes dans sales_snapshots
+    (table canonique partagée avec collect_demand → lue par le scoring/loss_risk).
+    Sans cela le signal AliExpress du runner 24/7 était totalement jeté."""
+    if demand is not None and not getattr(demand, "blocked", False) and (getattr(demand, "max_sold", 0) or 0) > 0:
+        c.execute(
+            """CREATE TABLE IF NOT EXISTS sales_snapshots (
+                   keyword TEXT, observed_at TEXT, max_sold INTEGER,
+                   median_sold INTEGER, listings INTEGER,
+                   PRIMARY KEY (keyword, observed_at))"""
+        )
+        c.execute(
+            "INSERT OR IGNORE INTO sales_snapshots(keyword, observed_at, max_sold, median_sold, listings) "
+            "VALUES(?,?,?,?,?)",
+            (keyword, _now(), demand.max_sold or 0, demand.median_sold or 0,
+             getattr(demand, "n_results", 0) or 0),
+        )
     c.execute(
         "UPDATE aliexpress_queue SET last_scraped=?, scrape_count=scrape_count+1 WHERE keyword=?",
         (_now(), keyword),
     )
+    c.commit()
+
+
+# ── Sources de ventes secondaires : eBay sold + DHgate sold ──────────────────
+# Même mur de rate-limit par IP qu'AliExpress → workers single-IP disciplinés,
+# alimentant la table canonique sales_snapshots. Files calquées sur aliexpress_queue.
+
+def rebuild_sales_queues(c: sqlite3.Connection) -> dict:
+    """(Re)seed ebay_queue & dhgate_queue depuis les mots-clés Amazon à vélocité.
+
+    Idempotent : conserve l'état (last_scraped, scrape_count) des entrées existantes,
+    n'ajoute/maj que la priorité = dernière vélocité Amazon connue."""
+    rows = c.execute(
+        "SELECT keyword, last_max_bought FROM amazon_queue "
+        "WHERE last_max_bought >= ? ORDER BY last_max_bought DESC",
+        (SALES_THRESHOLD,),
+    ).fetchall()
+    for table in SALES_QUEUES:
+        for kw, mx in rows:
+            c.execute(
+                f"INSERT INTO {table}(keyword, enqueued_at, priority) VALUES(?,?,?) "
+                "ON CONFLICT(keyword) DO UPDATE SET priority=excluded.priority",
+                (kw, _now(), float(mx or 0)),
+            )
+    c.commit()
+    return {t: c.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in SALES_QUEUES}
+
+
+def next_sales_keyword(c: sqlite3.Connection, queue_table: str, min_age_h: int = 48) -> str | None:
+    """Prochain mot-clé d'une file de ventes : jamais scrapé (priorité haute) d'abord,
+    puis re-confirmation due (âge >= min_age_h), par priorité décroissante."""
+    if queue_table not in SALES_QUEUES:
+        raise ValueError(f"file inconnue : {queue_table}")
+    now = datetime.now(timezone.utc)
+    cand = c.execute(
+        f"SELECT keyword, last_scraped FROM {queue_table} ORDER BY priority DESC"
+    ).fetchall()
+    for kw, last in cand:
+        if last is None:
+            return kw
+        try:
+            age_h = (now - datetime.fromisoformat(last)).total_seconds() / 3600
+        except Exception:
+            age_h = 1e9
+        if age_h >= min_age_h:
+            return kw
+    return None
+
+
+def record_sales(c: sqlite3.Connection, queue_table: str, keyword: str, demand) -> None:
+    """Persiste un snapshot ventes (eBay/DHgate) dans sales_snapshots + maj la file.
+
+    demand expose max_sold / median_sold / listings_with_sales / blocked
+    (interface commune EbaySoldDemand & DHgateDemand)."""
+    if queue_table not in SALES_QUEUES:
+        raise ValueError(f"file inconnue : {queue_table}")
+    blocked = getattr(demand, "blocked", False)
+    if not blocked and (getattr(demand, "max_sold", 0) or 0) > 0:
+        c.execute(
+            """CREATE TABLE IF NOT EXISTS sales_snapshots (
+                   keyword TEXT, observed_at TEXT, max_sold INTEGER,
+                   median_sold INTEGER, listings INTEGER,
+                   PRIMARY KEY (keyword, observed_at))"""
+        )
+        c.execute(
+            "INSERT OR IGNORE INTO sales_snapshots(keyword, observed_at, max_sold, median_sold, listings) "
+            "VALUES(?,?,?,?,?)",
+            (keyword, _now(), demand.max_sold or 0, demand.median_sold or 0,
+             getattr(demand, "listings_with_sales", 0) or 0),
+        )
+    if blocked:
+        c.execute(f"UPDATE {queue_table} SET blocked_count=blocked_count+1 WHERE keyword=?", (keyword,))
+    else:
+        c.execute(
+            f"UPDATE {queue_table} SET last_scraped=?, scrape_count=scrape_count+1 WHERE keyword=?",
+            (_now(), keyword),
+        )
     c.commit()
 
 
@@ -197,8 +318,16 @@ def stats(c: sqlite3.Connection) -> dict:
     hot = c.execute(
         "SELECT COUNT(*) FROM amazon_queue WHERE last_max_bought>=?", (HOT_THRESHOLD,)
     ).fetchone()[0]
+    sales = {}
+    for t in SALES_QUEUES:
+        try:
+            tot = c.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0]
+            scr = c.execute(f"SELECT COUNT(*) FROM {t} WHERE scrape_count>0").fetchone()[0]
+            sales[t] = f"{scr}/{tot}"
+        except sqlite3.OperationalError:
+            sales[t] = "n/a"
     return {"total_keywords": total, "scraped": done, "pending": pending,
-            "aliexpress_queued": ali, "hot_products": hot}
+            "aliexpress_queued": ali, "hot_products": hot, **sales}
 
 
 if __name__ == "__main__":  # python3 demand_queue.py  → init + stats
