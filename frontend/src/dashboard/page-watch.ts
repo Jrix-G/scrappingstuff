@@ -1,121 +1,185 @@
 /* eslint-disable */
 // @ts-nocheck
 /* ============================================================
-   TANDOR — page-watch.js   (Watchlists)
-   Themed lists tracked over time: avg score + trend sparkline,
-   member previews, last activity, create / delete management.
-   Persisted in localStorage.
+   TANDOR — page-watch.ts   (Watchlist v1)
+   A real watchlist of PINNED products from the catalogue.
+   For each pinned product we surface its REAL decline status,
+   read from `lossFlags` (the flag whose name === 'déclin'):
+     red   → en déclin
+     amber → déclin soupçonné
+     green → demande stable
+     —     → inconnu
+   Persistence is delegated to ./watchlist (async, Firestore or
+   localStorage). No synthetic lists, no fake sparklines.
    ============================================================ */
+import * as WL from './watchlist';
+
 export function mountWatch() {
   'use strict';
   const Sh = window.Shell, T = window.TANDOR, C = window.Charts, P = T.PRODUCTS;
   const $ = Sh.$, $$ = Sh.$$, ic = Sh.ic;
 
   const STR = {
-    en: { title: 'Watchlists', sub: 'themed lists tracked over time', count: 'lists',
-      members: 'products', avg: 'Avg score', activity: 'last activity', dynamic: 'Dynamic', manual: 'Manual',
-      newl: 'New watchlist', create: 'Create', name_ph: 'Watchlist name', colour: 'Colour', cancel: 'Cancel', open: 'Open',
-      d_ago: 'd ago', h_ago: 'h ago', deleted: 'Watchlist deleted', created: 'Watchlist created' },
-    fr: { title: 'Watchlists', sub: 'listes thématiques suivies dans le temps', count: 'listes',
-      members: 'produits', avg: 'Score moyen', activity: 'dernière activité', dynamic: 'Dynamique', manual: 'Manuelle',
-      newl: 'Nouvelle watchlist', create: 'Créer', name_ph: 'Nom de la watchlist', colour: 'Couleur', cancel: 'Annuler', open: 'Ouvrir',
-      d_ago: 'j', h_ago: 'h', deleted: 'Watchlist supprimée', created: 'Watchlist créée' },
+    en: { title: 'Watchlist', sub: 'pinned products · live decline status', count: 'watched',
+      open: 'Open', remove: 'Remove', removed: 'Removed from watchlist',
+      empty_t: 'No products watched yet', empty_s: 'Pin a product from Discovery to track its demand and get an in-app alert the moment it goes into proven decline.', explore: 'Explore Discovery',
+      st_red: 'In decline', st_amber: 'Decline suspected', st_green: 'Stable demand', st_unknown: 'Status unknown',
+      trap: 'Money trap', risky: 'Risky', viable: 'Viable',
+      score: 'Score', alerts_active: 'active decline alert', alerts_active_pl: 'active decline alerts',
+      need_data: 'Decline signal needs ≥2 nights of data', building: 'History building',
+      sold: 'sold', median: 'median' },
+    fr: { title: 'Watchlist', sub: 'produits épinglés · statut de déclin en direct', count: 'surveillés',
+      open: 'Ouvrir', remove: 'Retirer', removed: 'Retiré de la watchlist',
+      empty_t: 'Aucun produit surveillé', empty_s: 'Épingle un produit depuis la Découverte pour suivre sa demande et recevoir une alerte in-app dès qu’il passe en déclin prouvé.', explore: 'Explorer la Découverte',
+      st_red: 'En déclin', st_amber: 'Déclin soupçonné', st_green: 'Demande stable', st_unknown: 'Statut inconnu',
+      trap: 'Piège à fric', risky: 'Risqué', viable: 'Viable',
+      score: 'Score', alerts_active: 'alerte de déclin active', alerts_active_pl: 'alertes de déclin actives',
+      need_data: 'Le signal de déclin nécessite ≥2 nuits de données', building: 'Historique en cours',
+      sold: 'vendus', median: 'médiane' },
   };
   const L = () => STR[Sh.lang];
-  const COLORS = ['oklch(0.52 0.16 264)', 'oklch(0.6 0.13 152)', 'oklch(0.58 0.14 250)', 'oklch(0.64 0.18 35)', 'oklch(0.7 0.13 178)', 'oklch(0.72 0.15 70)'];
 
-  const DEFAULTS = [
-    { id: 'w1', name: 'Wellness FR', color: COLORS[4], dynamic: true, members: ['CJ-4471', 'CJ-2741', 'CJ-1907'], trend: 1, hrs: 6 },
-    { id: 'w2', name: 'Q4 Gifting', color: COLORS[5], dynamic: false, members: ['CJ-7782', 'CJ-3380', 'CJ-6033', 'CJ-2255'], trend: 1, hrs: 22 },
-    { id: 'w3', name: 'Low-saturation bets', color: COLORS[0], dynamic: true, members: ['CJ-3344', 'CJ-1130', 'CJ-3380'], trend: 1, hrs: 2 },
-    { id: 'w4', name: 'Beauty rituals', color: COLORS[3], dynamic: false, members: ['CJ-2289', 'CJ-2255', 'CJ-8801'], trend: -1, hrs: 49 },
-  ];
+  /* ---- decline status, read from the product's lossFlags ---- */
+  function declineFlag(p) {
+    return (p.lossFlags || []).find((f) => f && f.name === 'déclin') || null;
+  }
+  function declineMeta(p) {
+    const s = L();
+    const f = declineFlag(p);
+    const level = f ? f.level : 'unknown';
+    const map = {
+      red:     { lbl: s.st_red,     col: 'var(--ph-decline)', cls: 'red' },
+      amber:   { lbl: s.st_amber,   col: 'var(--watch)',      cls: 'amber' },
+      green:   { lbl: s.st_green,   col: 'var(--buy)',        cls: 'green' },
+      unknown: { lbl: s.st_unknown, col: 'var(--text-tertiary)', cls: 'unknown' },
+    };
+    const meta = map[level] || map.unknown;
+    return { level, reason: f ? f.reason : '', lbl: meta.lbl, col: meta.col, cls: meta.cls };
+  }
+  function trapTag(p) {
+    const s = L();
+    if (p.trapVerdict === 'TRAP') return { lbl: s.trap, col: 'var(--pass)', cls: 'pass' };
+    if (p.trapVerdict === 'RISKY') return { lbl: s.risky, col: 'var(--watch)', cls: 'watch' };
+    if (p.trapVerdict === 'VIABLE') return { lbl: s.viable, col: 'var(--buy)', cls: 'buy' };
+    return null;
+  }
 
-  function getLists() { try { const v = Sh.LS.get('watchlists', null); return v ? JSON.parse(v) : DEFAULTS.slice(); } catch (e) { return DEFAULTS.slice(); } }
-  function setLists(a) { Sh.LS.set('watchlists', JSON.stringify(a)); }
-  let creating = false, newColor = COLORS[0];
+  function thumbInner(p) {
+    const hue = p.catHue, a = `oklch(0.7 0.1 ${hue})`, b = `oklch(0.52 0.12 ${hue})`;
+    return `<div class="ph-stripe" style="background:repeating-linear-gradient(135deg, ${a} 0 6px, ${b} 6px 12px);opacity:.92"></div>`;
+  }
 
-  function avgScore(w) { const ps = w.members.map((id) => P.find((p) => p.id === id)).filter(Boolean); return ps.length ? Math.round(ps.reduce((s, p) => s + p.tandor, 0) / ps.length) : 0; }
-  function synthTrend(base, dir) { const out = []; for (let i = 0; i < 14; i++) { const f = i / 13; out.push(base - dir * 5 + dir * 8 * f + Math.sin(i * 1.5) * 2); } return out; }
+  let watchedIds = [];
+
+  /* products in the watchlist, decline-red first */
+  function items() {
+    const arr = watchedIds.map((id) => P.find((p) => p.id === id)).filter(Boolean);
+    const rank = { red: 0, amber: 1, unknown: 2, green: 3 };
+    return arr.sort((a, b) => {
+      const ra = rank[declineMeta(a).level] ?? 2, rb = rank[declineMeta(b).level] ?? 2;
+      if (ra !== rb) return ra - rb;
+      return (b.tandor || 0) - (a.tandor || 0);
+    });
+  }
 
   function render() {
-    const s = L(), lists = getLists();
+    const s = L(), arr = items();
+    const alerts = arr.filter((p) => declineMeta(p).level === 'red').length;
+    const alertLine = alerts
+      ? ` · <span style="color:var(--ph-decline);font-weight:600">${alerts} ${alerts > 1 ? s.alerts_active_pl : s.alerts_active}</span>`
+      : '';
     $('#canvas').innerHTML = `
       <div class="page-head rv">
         <div><h1 class="page-title">${s.title}</h1>
-          <div class="page-sub"><span class="live-dot"></span><span>${lists.length} ${s.count} · ${s.sub}</span></div></div>
-        <button class="btn-pri" id="newBtn">${ic('plus')}${s.newl}</button>
+          <div class="page-sub"><span class="live-dot"></span><span>${arr.length} ${s.count}${alertLine}</span></div></div>
       </div>
-      <div class="wl-grid rv" id="wlGrid"></div>`;
-    $('#newBtn').addEventListener('click', () => { creating = true; renderGrid(); });
-    renderGrid();
+      <div class="rv" id="watchBody"></div>`;
+    renderBody();
   }
 
-  function renderGrid() {
-    const s = L(), lists = getLists();
-    let cards = lists.map((w) => {
-      const avg = avgScore(w), up = w.trend >= 0;
-      const ps = w.members.map((id) => P.find((p) => p.id === id)).filter(Boolean).slice(0, 4);
-      const ago = w.hrs < 24 ? `${w.hrs}${s.h_ago}` : `${Math.round(w.hrs / 24)}${s.d_ago}`;
-      return `<div class="wl-card" data-id="${w.id}">
-        <div class="wl-h"><span class="wl-swatch" style="background:${w.color}"></span><span class="wl-name">${w.name}</span>
-          <span class="wl-tag">${w.dynamic ? s.dynamic : s.manual}</span></div>
-        <div class="wl-stats">
-          <div class="wl-stat"><div class="ws-n mono">${avg}</div><div class="ws-l">${s.avg}</div></div>
-          <span class="wl-spark">${C.sparkline(synthTrend(avg, w.trend), { w: 96, h: 34, stroke: up ? 'var(--buy)' : 'var(--pass)', fill: true, sw: 1.8, dot: true })}</span>
-        </div>
-        <div class="wl-foot">
-          <span style="display:flex;align-items:center;gap:6px">${ps.map((p) => `<span class="thumb" style="width:22px;height:22px;border-radius:6px">${thumbInner(p)}</span>`).join('')}<span style="margin-left:4px">${w.members.length} ${s.members}</span></span>
-          <span class="wl-trend ${up ? 'up' : 'down'}">${up ? '+' : ''}${(w.trend * (2 + avg % 3)).toFixed(1)} · ${ago}</span>
-        </div>
-        <div style="display:flex;gap:6px;margin-top:12px">
-          <button class="icon-btn" data-act="rename" title="rename">${ic('edit')}</button>
-          <button class="icon-btn" data-act="delete" title="delete">${ic('trash')}</button>
-        </div>
-      </div>`;
-    }).join('');
-    if (creating) cards += newCardForm();
-    else cards += `<div class="wl-card new" id="addCard">${ic('plus')}<span>${s.newl}</span></div>`;
-    $('#wlGrid').innerHTML = cards;
+  function renderBody() {
+    const s = L(), arr = items();
+    if (!arr.length) {
+      $('#watchBody').innerHTML = `<div class="dg-wrap"><div class="empty">
+        <div class="e-art">${ic('eye')}</div><div class="e-t">${s.empty_t}</div><div class="e-s">${s.empty_s}</div>
+        <div class="e-actions"><a class="btn-pri" href="/discovery">${ic('compass')}${s.explore}</a></div></div></div>`;
+      return;
+    }
+    $('#watchBody').innerHTML = `<div class="card-grid">${arr.map(card).join('')}</div>`;
     wire();
   }
 
-  function thumbInner(p) { const hue = p.catHue, a = `oklch(0.7 0.1 ${hue})`, b = `oklch(0.52 0.12 ${hue})`; return `<div class="ph-stripe" style="background:repeating-linear-gradient(135deg, ${a} 0 5px, ${b} 5px 10px);opacity:.92"></div>`; }
-
-  function newCardForm() {
+  function soldText(p) {
     const s = L();
-    return `<div class="wl-card" style="display:flex;flex-direction:column;gap:12px" id="newForm">
-      <input class="inp" id="nlName" placeholder="${s.name_ph}" />
-      <div><div class="micro" style="margin-bottom:8px">${s.colour}</div>
-        <div style="display:flex;gap:8px">${COLORS.map((c) => `<button class="wl-color-sw" data-c="${c}" style="width:26px;height:26px;border-radius:7px;background:${c};border:2px solid ${c === newColor ? 'var(--text-primary)' : 'transparent'}"></button>`).join('')}</div></div>
-      <div style="display:flex;gap:8px;margin-top:auto">
-        <button class="btn-pri btn-sm" id="createBtn" style="flex:1">${s.create}</button>
-        <button class="btn-ghost btn-sm" id="cancelBtn">${s.cancel}</button></div></div>`;
+    if (p.aliExpressSold == null) return null;
+    let t = `${Sh.fmt(p.aliExpressSold)} ${s.sold}`;
+    if (p.aliExpressMedianSold != null) t += ` · ${Sh.fmt(p.aliExpressMedianSold)} ${s.median}`;
+    return t;
+  }
+
+  function card(p) {
+    const s = L(), d = declineMeta(p), trap = trapTag(p);
+    const sold = soldText(p);
+    // Real demand curve when available; otherwise an honest "needs ≥2 nights" empty-state.
+    const demandBlock = p.hasRealHistory
+      ? `<div style="margin:8px 0 2px">${C.sparkline(p.trend, { w: 220, h: 30, stroke: d.col, fill: true, sw: 1.7 })}</div>`
+      : `<div class="wl-reason" style="margin:8px 0 2px;font-size:11.5px;color:var(--text-tertiary);line-height:1.4">— ${s.building} · ${s.need_data}</div>`;
+    return `<div class="pcard wl-row" data-id="${p.id}" style="border-left:3px solid ${d.col}">
+      <div class="pcard-media" style="height:90px">
+        <span class="thumb" style="position:absolute;inset:0;border-radius:0">${thumbInner(p)}</span>
+        <span class="pcard-ring">${C.ring(p.tandor, d.col, 40, 3.5)}<b>${p.tandor}</b></span>
+      </div>
+      <div class="pcard-body">
+        <div class="pcard-name">${p.name}</div>
+        <div class="pcard-meta">${T.CATS[p.cat][Sh.lang]} · ${p.id}${sold ? ` · ${sold}` : ''}</div>
+        <div class="wl-status" style="display:flex;align-items:center;gap:7px;margin:10px 0 2px">
+          <span class="pdot" style="background:${d.col};width:9px;height:9px;border-radius:50%;flex:none"></span>
+          <b style="color:${d.col};font-size:13px">${d.lbl}</b>
+          ${trap ? `<span class="verdict ${trap.cls}" style="margin-left:auto">${trap.lbl}</span>` : ''}
+        </div>
+        ${d.reason ? `<div class="wl-reason" style="font-size:12px;color:var(--text-secondary);line-height:1.4">${d.reason}</div>` : ''}
+        ${demandBlock}
+        <div class="pcard-foot" style="margin-top:12px">
+          <span class="micro mono">${s.score} ${p.tandor}</span>
+          <span style="display:flex;gap:6px">
+            <button class="icon-btn" data-act="open" title="${s.open}">${ic('arrowUR')}</button>
+            <button class="icon-btn on" data-act="remove" title="${s.remove}">${ic('eye')}</button>
+          </span>
+        </div>
+      </div></div>`;
   }
 
   function wire() {
     const s = L();
-    $$('#wlGrid .wl-card[data-id]').forEach((c) => c.addEventListener('click', (e) => {
+    $$('#watchBody .pcard').forEach((c) => c.addEventListener('click', (e) => {
       if (e.target.closest('[data-act]')) return;
-      const w = getLists().find((x) => x.id === c.dataset.id);
-      const first = w.members.map((id) => P.find((p) => p.id === id)).filter(Boolean)[0];
-      if (first) Sh.openProduct(first);
+      Sh.openProduct(P.find((p) => p.id === c.dataset.id));
     }));
-    $$('#wlGrid [data-act="delete"]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); const id = b.closest('[data-id]').dataset.id; setLists(getLists().filter((x) => x.id !== id)); Sh.toast(s.deleted); render(); }));
-    $$('#wlGrid [data-act="rename"]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); Sh.toast(Sh.lang === 'fr' ? 'Renommer · bientôt' : 'Rename · soon'); }));
-    if ($('#addCard')) $('#addCard').addEventListener('click', () => { creating = true; renderGrid(); });
-    if ($('#newForm')) {
-      $$('#newForm .wl-color-sw').forEach((b) => b.addEventListener('click', () => { newColor = b.dataset.c; renderGrid(); setTimeout(() => $('#nlName') && $('#nlName').focus(), 0); }));
-      $('#cancelBtn').addEventListener('click', () => { creating = false; renderGrid(); });
-      $('#createBtn').addEventListener('click', () => {
-        const name = ($('#nlName').value || '').trim() || (Sh.lang === 'fr' ? 'Sans titre' : 'Untitled');
-        const lists = getLists();
-        lists.push({ id: 'w' + Date.now(), name, color: newColor, dynamic: false, members: [], trend: 1, hrs: 0 });
-        setLists(lists); creating = false; Sh.toast(s.created); render();
-      });
-      setTimeout(() => $('#nlName') && $('#nlName').focus(), 30);
-    }
+    $$('#watchBody [data-act="open"]').forEach((b) => b.addEventListener('click', (e) => {
+      e.stopPropagation(); Sh.openProduct(P.find((p) => p.id === b.closest('.pcard').dataset.id));
+    }));
+    $$('#watchBody [data-act="remove"]').forEach((b) => b.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const id = b.closest('.pcard').dataset.id;
+      await WL.removeFromWatchlist(id);
+      Sh.toast(s.removed);
+      // optimistic: drop locally; onWatchlistChange will reconcile.
+      watchedIds = watchedIds.filter((x) => x !== id);
+      render();
+    }));
   }
 
-  Sh.start({ active: 'n_watch', render });
+  async function refresh() {
+    try { watchedIds = await WL.getWatchlist(); } catch (e) { watchedIds = []; }
+    render();
+  }
+
+  let unsub = null;
+  function start() {
+    if (unsub) { try { unsub(); } catch (e) {} unsub = null; }
+    refresh();
+    unsub = WL.onWatchlistChange(() => { refresh(); });
+  }
+
+  Sh.start({ active: 'n_watch', render: start });
 }

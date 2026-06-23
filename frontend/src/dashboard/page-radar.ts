@@ -116,6 +116,8 @@ export function mountRadar() {
         <div class="pd-econ" style="grid-template-columns:1fr 1fr">
           <div class="pd-econ-tile"><span class="micro">${s.margin}</span><b class="mono">${money(p.net, 1)}</b></div>
           <div class="pd-econ-tile"><span class="micro">${s.velocity}</span><b class="mono" style="color:${up ? 'var(--buy)' : 'var(--pass)'}">${up ? '+' : ''}${Math.round(p.growth * 100)}%</b></div>
+          ${(p.aliExpressSold != null && p.aliExpressSold > 0) ? `<div class="pd-econ-tile"><span class="micro">${Sh.lang === 'fr' ? 'Vendus (AliExpress)' : 'Sold (AliExpress)'}</span><b class="mono">${Sh.fmt(p.aliExpressSold)}</b></div>` : ''}
+          ${(p.salesScore != null) ? `<div class="pd-econ-tile"><span class="micro">${Sh.lang === 'fr' ? 'Score demande' : 'Demand score'}</span><b class="mono">${Math.round(p.salesScore)}</b></div>` : ''}
         </div>
       </div>
       <div style="padding:14px 18px 4px">${gauges.map(([k, v, c]) => `<div class="pd-gauge"><span class="pd-g-l">${k}</span>${C.microGauge(v, c)}<span class="pd-g-v mono">${Math.round(v)}</span></div>`).join('')}</div>

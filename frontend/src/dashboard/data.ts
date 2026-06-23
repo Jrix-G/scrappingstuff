@@ -84,15 +84,40 @@ import REAL_PRODUCTS from './products.json';
     // maturity (0..100): saturation proxy from listed sellers + age
     const maturity = round(clamp(base.listed * 0.7 + (base.age / 120) * 30, 0, 100));
 
-    /* time series (procedural, stable) */
-    const trend = series(base.organic, base.growth, base.volatility, 30, rnd, 8, 96);
+    /* ---------- séries RÉELLES depuis le backend ----------
+       base.history.{sales,amazon} = bloc {points,dates,days,values,spanDays}
+       ou null tant qu'il n'y a pas ≥2 snapshots. Amazon = meilleur signal demande. */
+    const hist = base.history || {};
+    const realSales  = hist.sales  && (hist.sales.values  || []).length >= 2 ? hist.sales  : null;
+    const realAmazon = hist.amazon && (hist.amazon.values || []).length >= 2 ? hist.amazon : null;
+    const realDemand = realAmazon || realSales;          // priorité Amazon
+    const hasRealHistory = !!realDemand;
+
+    /* time series : RÉEL si dispo (normalisé 0..100 pour le sparkline), sinon repli
+       procédural. Les pages affichent « pas de données » quand hasRealHistory est faux. */
+    const trend = hasRealHistory
+      ? normalize100(realDemand.values)
+      : series(base.organic, base.growth, base.volatility, 30, rnd, 8, 96);
+    // Pas de série Reddit/CJ réelle par produit en DB -> procédural, marqué non-réel.
     const reddit = series(base.redditScore, base.growth * 0.9, base.volatility * 1.2, 12, rnd, 2, 40, true);
     const cj = ramp(Math.max(1, base.listed - round(base.growth * 14)), base.listed, 12, rnd);
 
     return Object.assign({}, base, {
       gross, margin_pct, tandor, growthScore, risk, momentum, maturity,
       catHue: CAT_HUE[base.cat], trend, reddit, cj,
+      // vraies données exposées aux pages (à brancher) + drapeau de transparence
+      realHistory: { sales: realSales, amazon: realAmazon, demand: realDemand, reddit: null, cj: null },
+      hasRealHistory,
+      seriesReal: { trend: hasRealHistory, reddit: false, cj: false },
+      lastCollection: base.lastCollection || null,
     });
+  }
+
+  // normalise une courbe réelle vers 0..100 (préserve la forme) pour le sparkline.
+  function normalize100(arr) {
+    const lo = Math.min.apply(null, arr), hi = Math.max.apply(null, arr);
+    if (hi === lo) return arr.map(() => 50);
+    return arr.map((v) => +(((v - lo) / (hi - lo)) * 92 + 4).toFixed(1));
   }
 
   // smooth-ish rising series ending near `level`

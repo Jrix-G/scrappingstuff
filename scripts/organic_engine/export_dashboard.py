@@ -67,6 +67,55 @@ def z_to_100(z: float) -> int:
     return int(max(0, min(100, round((z + 2.0) / 4.0 * 100))))
 
 
+def _series_block(rows: list[tuple]) -> dict | None:
+    """(observed_at, valeur) triés -> bloc série pour le front, ou ``None``.
+
+    Règle dure (moat = transparence vérifiable) : moins de 2 snapshots réels
+    => ``None``, JAMAIS de courbe fabriquée ni de remplissage neutre.
+    """
+    rows = [(t, v) for t, v in rows if v is not None]
+    if len(rows) < 2:
+        return None
+    t0 = datetime.fromisoformat(rows[0][0])
+    dates = [t for t, _ in rows]
+    days = [round((datetime.fromisoformat(t) - t0).total_seconds() / 86400.0, 3)
+            for t, _ in rows]
+    vals = [float(v) for _, v in rows]
+    return {"points": len(rows), "dates": dates, "days": days,
+            "values": vals, "spanDays": days[-1]}
+
+
+def _demand_history(conn, keyword: str) -> dict:
+    """Historique RÉEL de demande pour un mot-clé : ventes AliExpress + « bought » Amazon.
+
+    Lecture DB pure (aucun appel réseau). Chaque série vaut ``None`` tant qu'il
+    n'y a pas ≥2 snapshots. Amazon (« bought in past month ») couvre bien plus de
+    produits que les ventes AliExpress et est notre meilleur signal de demande.
+    """
+    sales = conn.execute(
+        "SELECT observed_at, max_sold FROM sales_snapshots "
+        "WHERE keyword=? AND max_sold IS NOT NULL ORDER BY observed_at",
+        (keyword,),
+    ).fetchall()
+    amazon = conn.execute(
+        "SELECT observed_at, max_bought FROM amazon_snapshots "
+        "WHERE keyword=? AND max_bought IS NOT NULL ORDER BY observed_at",
+        (keyword,),
+    ).fetchall()
+    return {"sales": _series_block(sales), "amazon": _series_block(amazon)}
+
+
+def _db_last_collection(conn) -> str | None:
+    """Horodatage RÉEL de la dernière collecte (max observed_at, sources de demande)."""
+    row = conn.execute(
+        "SELECT MAX(observed_at) FROM ("
+        "  SELECT MAX(observed_at) AS observed_at FROM sales_snapshots"
+        "  UNION ALL SELECT MAX(observed_at) FROM amazon_snapshots"
+        ")"
+    ).fetchone()
+    return row[0] if row and row[0] else None
+
+
 def _build_dossier(r: dict) -> dict:
     """Assemble la fiche produit qualitative (CJ product/query) pour le front.
 
@@ -169,13 +218,19 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
     # sales_snapshots accumulé jour après jour -> extract_trend -> pente log/jour.
     # Pure lecture DB. Le garde-fou « < 3 points = inconnu » vit dans loss_risk.
     decline_by_id: dict[str, dict] = {}
+    # Courbes RÉELLES (séries de demande snapshotées) par produit + horodatage réel
+    # de la dernière collecte. Remplace les courbes procédurales fabriquées côté front.
+    history_by_id: dict[str, dict] = {}
+    last_collection: str | None = None
     try:
         from collect_demand import init_db as demand_db, latest_sales_level, demand_raw_signals
         from signals.timeseries import extract_trend
         dconn = demand_db()
         try:
+            last_collection = _db_last_collection(dconn)
             for r in top:
                 kw = keyword_from_name(r["name"])
+                history_by_id[r["product_id"]] = _demand_history(dconn, kw)
                 lvl = latest_sales_level(dconn, kw)
                 if lvl:
                     sold_by_id[r["product_id"]] = lvl
@@ -186,6 +241,8 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
                             "velocity": tf.velocity,
                             "points": tf.n_points,
                             "volatility": tf.volatility,
+                            "velocity_se": tf.velocity_se,
+                            "span_days": tf.span_days,
                         }
         finally:
             dconn.close()
@@ -223,6 +280,8 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
             demand_velocity=dec.get("velocity"),
             demand_points=dec.get("points", 0),
             demand_volatility=dec.get("volatility"),
+            demand_velocity_se=dec.get("velocity_se"),
+            demand_span_days=dec.get("span_days"),
         )
         out.append({
             "id": pid[-7:] if pid else f"P{i}",
@@ -257,6 +316,11 @@ def build_records(limit: int, geo: str, no_enrich: bool) -> tuple[list[dict], in
                           for f in loss.flags],
             "breakevenCpa": (round(loss.breakeven_cpa_eur, 1)
                              if loss.breakeven_cpa_eur is not None else None),
+            # Courbes RÉELLES (séries snapshotées) : `null` par série tant qu'il n'y
+            # a pas ≥2 points. Le front retombe sur « pas de données » au lieu de
+            # fabriquer une tendance. `lastCollection` = vrai horodatage DB.
+            "history": history_by_id.get(pid) or {"sales": None, "amazon": None},
+            "lastCollection": last_collection,
             "detectedHrs": i + 1,  # ordre du flux (proxy : par score)
             # Dossier qualitatif (CJ product/query) : enrichit la fiche produit.
             # `null`/`priceFromCJ:false` tant que le produit n'a pas été re-photographié.

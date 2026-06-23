@@ -12,43 +12,61 @@ export function mountEngine() {
   const $ = Sh.$, $$ = Sh.$$, ic = Sh.ic, clamp = Sh.clamp;
 
   const STR = {
-    en: { title: 'Analytics', sub: 'engine performance · backtest · proof',
-      k_auc: 'ROC AUC', k_prec: 'Precision @20', k_brier: 'Brier score', k_pred: 'Predictions evaluated',
-      k_auc_s: 'discrimination', k_prec_s: 'top-20 hit rate', k_brier_s: 'lower is better', k_pred_s: 'last 90 days',
-      calib: 'Calibration', calib_s: 'predicted probability vs realised outcome', pred: 'Predicted', obs: 'Observed',
+    en: { title: 'Analytics', sub: 'catalogue coverage · real-history proof',
+      k_tracked: 'Tracked products', k_real: 'With real history', k_corro: 'Corroborated', k_last: 'Last collection',
+      k_tracked_s: 'in the catalogue', k_real_s: '≥2 demand snapshots', k_corro_s: 'Trends + Reddit > 60', k_last_s: 'real DB timestamp',
+      calib: 'Calibration', calib_s: 'no backtest persisted yet', pred: 'Predicted', obs: 'Observed',
       dist: 'Score distribution', dist_s: 'Tandor score across the catalogue',
       phases: 'Phase mix', phases_s: 'tracked products by phase', total: 'tracked',
-      bets: 'Our past bets', bets_s: 'flagged Emergent · what they became',
-      c_prod: 'Product', c_flag: 'Flagged', c_then: 'Then', c_now: 'Now', c_evo: 'Evolution', c_out: 'Outcome',
-      validated: 'Validated', early: 'Still early', missed: 'Faded',
-      coverage: 'Source coverage', coverage_s: 'pipeline uptime · 90 days', wk: 'wk ago' },
-    fr: { title: 'Analytics', sub: 'performance du moteur · backtest · preuve',
-      k_auc: 'AUC ROC', k_prec: 'Précision @20', k_brier: 'Score de Brier', k_pred: 'Prédictions évaluées',
-      k_auc_s: 'discrimination', k_prec_s: 'taux top-20', k_brier_s: 'plus bas = mieux', k_pred_s: '90 derniers jours',
-      calib: 'Calibration', calib_s: 'probabilité prédite vs résultat observé', pred: 'Prédit', obs: 'Observé',
+      bets: 'Past-bet validation', bets_s: 'requires prediction history — not persisted yet',
+      coverage: 'Source coverage', coverage_s: 'demand-history coverage by source',
+      soon: 'coming soon', soon_s: 'This metric needs a persisted prediction/backtest history, which the engine does not store yet — shown as “—” rather than a fabricated number.',
+      cover_real: 'with real demand curve' },
+    fr: { title: 'Analytics', sub: 'couverture du catalogue · preuve d’historique réel',
+      k_tracked: 'Produits suivis', k_real: 'Avec historique réel', k_corro: 'Corroborés', k_last: 'Dernière collecte',
+      k_tracked_s: 'dans le catalogue', k_real_s: '≥2 snapshots de demande', k_corro_s: 'Trends + Reddit > 60', k_last_s: 'horodatage réel DB',
+      calib: 'Calibration', calib_s: 'aucun backtest persisté pour l’instant', pred: 'Prédit', obs: 'Observé',
       dist: 'Distribution des scores', dist_s: 'Score Tandor sur le catalogue',
       phases: 'Répartition des phases', phases_s: 'produits suivis par phase', total: 'suivis',
-      bets: 'Nos paris passés', bets_s: 'flaggés Émergent · ce qu’ils sont devenus',
-      c_prod: 'Produit', c_flag: 'Flaggé', c_then: 'Alors', c_now: 'Maintenant', c_evo: 'Évolution', c_out: 'Résultat',
-      validated: 'Validé', early: 'Encore tôt', missed: 'Retombé',
-      coverage: 'Couverture des sources', coverage_s: 'disponibilité pipeline · 90 jours', wk: 'sem.' },
+      bets: 'Validation des paris passés', bets_s: 'nécessite un historique de prédictions — pas encore persisté',
+      coverage: 'Couverture des sources', coverage_s: 'couverture de l’historique de demande par source',
+      soon: 'bientôt', soon_s: 'Cette métrique nécessite un historique de prédictions/backtest persisté, que le moteur ne stocke pas encore — affiché « — » plutôt qu’un chiffre fabriqué.',
+      cover_real: 'avec courbe de demande réelle' },
   };
   const L = () => STR[Sh.lang];
 
   const PHASE_ORDER = ['EMERGENT', 'EARLY_GROWTH', 'GROWTH', 'MATURE', 'PEAK', 'DECLINING'];
 
+  // Honest "il y a Xh/Xj" from a real ISO timestamp; null → handled by caller.
+  function agoFromISO(iso) {
+    if (!iso) return null;
+    const t = Date.parse(iso); if (isNaN(t)) return null;
+    const mins = Math.max(0, Math.round((Date.now() - t) / 60000)), fr = Sh.lang === 'fr';
+    if (mins < 60) return fr ? `il y a ${mins} min` : `${mins} min ago`;
+    const hrs = Math.round(mins / 60);
+    if (hrs < 48) return fr ? `il y a ${hrs} h` : `${hrs} h ago`;
+    const days = Math.round(hrs / 24);
+    return fr ? `il y a ${days} j` : `${days} d ago`;
+  }
+
   function render() {
     const s = L();
+    // REAL counts from the catalogue.
+    const tracked = P.length;
+    const withReal = P.filter((p) => p.hasRealHistory).length;
+    const corro = P.filter((p) => p.redditScore > 60 && p.trendsScore > 60).length;
+    const lastVal = agoFromISO(P.length ? P[0].lastCollection : null) || (Sh.lang === 'fr' ? '—' : '—');
+
     $('#canvas').innerHTML = `
       <div class="page-head rv">
         <div><h1 class="page-title">${s.title}</h1>
           <div class="page-sub"><span class="live-dot"></span><span>${s.sub}</span></div></div>
       </div>
       <div class="kpi-mono-row rv">
-        ${statTile('target', s.k_auc, '0.87', s.k_auc_s, 'var(--signal)')}
-        ${statTile('check', s.k_prec, '78%', s.k_prec_s, 'var(--buy)')}
-        ${statTile('gauge', s.k_brier, '0.11', s.k_brier_s, 'var(--azure)')}
-        ${statTile('bars', s.k_pred, '1,284', s.k_pred_s, 'var(--ph-mature)')}
+        ${statTile('bars', s.k_tracked, Sh.fmt(tracked), s.k_tracked_s, 'var(--signal)')}
+        ${statTile('activity', s.k_real, Sh.fmt(withReal), s.k_real_s, 'var(--buy)')}
+        ${statTile('check', s.k_corro, Sh.fmt(corro), s.k_corro_s, 'var(--azure)')}
+        ${statTile('clock', s.k_last, lastVal, s.k_last_s, 'var(--ph-mature)')}
       </div>
       <div class="section-row" style="grid-template-columns:1.1fr 1fr 0.9fr">
         <section class="panel rv">
@@ -69,20 +87,16 @@ export function mountEngine() {
       </div>
       <section class="panel rv" style="margin-bottom:18px">
         <div class="panel-h"><div><div class="ttl">${s.bets}</div><div class="sub">${s.bets_s}</div></div></div>
-        <div class="dg-scroll"><table class="dg"><thead><tr>
-          <th>${s.c_prod}</th><th>${s.c_flag}</th><th class="num">${s.c_then}</th><th class="num">${s.c_now}</th><th>${s.c_evo}</th><th>${s.c_out}</th></tr></thead>
-          <tbody id="betsBody"></tbody></table></div>
+        <div id="betsBody"></div>
       </section>
       <section class="panel rv">
         <div class="panel-h"><div><div class="ttl">${s.coverage}</div><div class="sub">${s.coverage_s}</div></div></div>
         <div class="set-pad" id="coverBox"></div>
       </section>`;
 
-    // calibration
-    X.calibration($('#calibBox'), [
-      { x: 0.08, y: 0.06 }, { x: 0.22, y: 0.19 }, { x: 0.38, y: 0.36 }, { x: 0.52, y: 0.55 },
-      { x: 0.68, y: 0.64 }, { x: 0.81, y: 0.83 }, { x: 0.93, y: 0.9 },
-    ], { height: 280, xLab: s.pred, yLab: s.obs });
+    // calibration — no real backtest/outcome pairs are persisted, so we do NOT
+    // draw a fabricated calibration curve; honest empty-state instead.
+    $('#calibBox').innerHTML = `<div class="empty" style="padding:48px 0"><div class="e-art">${ic('target')}</div><div class="e-t">${s.soon}</div><div class="e-s">${s.soon_s}</div></div>`;
 
     // histogram of scores
     const bins = new Array(10).fill(0);
@@ -106,35 +120,29 @@ export function mountEngine() {
 
   function renderBets() {
     const s = L();
-    const past = P.filter((p) => ['EARLY_GROWTH', 'GROWTH', 'PEAK', 'MATURE'].includes(p.phase)).sort((a, b) => b.tandor - a.tandor).slice(0, 6);
-    const weeks = [9, 8, 7, 6, 5, 4];
-    $('#betsBody').innerHTML = past.map((p, i) => {
-      const then = clamp(p.organic - 22 - i * 2, 20, 90), now = p.organic;
-      const delta = now - then, up = delta >= 0;
-      const outcome = now >= 78 ? 'validated' : now >= 60 ? 'early' : 'missed';
-      const ocol = outcome === 'validated' ? 'buy' : outcome === 'early' ? 'watch' : 'pass';
-      const series = []; for (let k = 0; k < 10; k++) series.push(then + (now - then) * (k / 9) + Math.sin(k * 1.4) * 3);
-      return `<tr data-id="${p.id}">
-        <td><div class="cell-prod">${Sh.thumb(p, 32)}<div><div class="cp-name">${p.name}</div><div class="cp-sub">${T.CATS[p.cat][Sh.lang]}</div></div></div></td>
-        <td class="mono" style="font-size:12px;color:var(--text-tertiary)">${weeks[i]} ${s.wk}</td>
-        <td class="num">${then}</td>
-        <td class="num"><b>${now}</b></td>
-        <td><span class="past-spark">${C.sparkline(series, { w: 90, h: 30, stroke: up ? 'var(--buy)' : 'var(--pass)', fill: true, sw: 1.8 })}</span></td>
-        <td><span class="verdict ${ocol}">${s[outcome]} <span class="delta-big ${up ? 'up' : 'down'}" style="font-size:11px">${up ? '+' : ''}${delta}</span></span></td></tr>`;
-    }).join('');
-    $$('#betsBody tr').forEach((r) => r.addEventListener('click', () => Sh.openProduct(P.find((p) => p.id === r.dataset.id))));
+    // Past-bet validation needs a persisted prediction history (then-score,
+    // outcome) that the engine does not store. We refuse to fabricate it.
+    $('#betsBody').innerHTML = `<div class="empty" style="padding:40px 0"><div class="e-art">${ic('bars')}</div><div class="e-t">${s.soon}</div><div class="e-s">${s.soon_s}</div></div>`;
   }
 
   function renderCoverage() {
+    // REAL coverage: how many tracked products carry a real demand history,
+    // split by source (Amazon vs AliExpress). Uptime % is not measured, so we
+    // do not invent it.
+    const total = P.length || 1;
+    const amazon = P.filter((p) => p.realHistory && p.realHistory.amazon).length;
+    const ali = P.filter((p) => p.realHistory && p.realHistory.sales).length;
     const sources = [
-      { l: 'Google Trends', col: 'var(--azure)', up: 99.2 },
-      { l: 'Reddit', col: 'var(--reddit)', up: 97.5 },
-      { l: 'CJ Catalogue', col: 'var(--signal)', up: 99.8 },
+      { l: 'Amazon', col: 'var(--signal)', n: amazon },
+      { l: 'AliExpress', col: 'var(--amber)', n: ali },
     ];
-    $('#coverBox').innerHTML = sources.map((x) => `
-      <div class="usage-row">
-        <div class="usage-h"><span style="display:flex;align-items:center;gap:8px"><span class="pdot" style="width:8px;height:8px;border-radius:50%;background:${x.col}"></span>${x.l}</span><b>${x.up.toFixed(1)}%</b></div>
-        <div class="usage-bar"><i style="width:${x.up}%;background:${x.col}"></i></div></div>`).join('');
+    const cr = L().cover_real;
+    $('#coverBox').innerHTML = sources.map((x) => {
+      const pctv = Math.round(x.n / total * 100);
+      return `<div class="usage-row">
+        <div class="usage-h"><span style="display:flex;align-items:center;gap:8px"><span class="pdot" style="width:8px;height:8px;border-radius:50%;background:${x.col}"></span>${x.l} <span class="micro" style="color:var(--text-tertiary)">· ${cr}</span></span><b>${x.n}/${P.length} (${pctv}%)</b></div>
+        <div class="usage-bar"><i style="width:${pctv}%;background:${x.col}"></i></div></div>`;
+    }).join('');
   }
 
   Sh.start({ active: 'n_analytics', render });

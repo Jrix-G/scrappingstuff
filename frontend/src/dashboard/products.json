@@ -4,17 +4,17 @@
     "name": "Womens Thick-soled Colorful Beach Sandals",
     "cat": "TECH",
     "cost": 6.11,
-    "retail": 43.02,
+    "retail": 43.2,
     "sellability": 96,
-    "organic": 34,
-    "phase": "DECLINING",
+    "organic": 32,
+    "phase": "GROWTH",
     "verdict": "BUY",
-    "growth": -0.884,
-    "confidence": 0.46,
-    "listed": 8,
-    "age": 12,
-    "volatility": 0,
-    "net": 24.9,
+    "growth": 5.862,
+    "confidence": 0.56,
+    "listed": 9,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 25.1,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -23,11 +23,11 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~25€/vente (86% brut), 8 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~25€/vente (86% brut), 8 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+      "en": "ACHETER — marge nette ~25€/vente (86% brut), 9 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~25€/vente (86% brut), 9 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
-    "trapVerdict": "TRAP",
-    "trapHeadline": "❌ Piège : demande en chute (~-88%/mois) — tendance qui meurt, tu arrives trop tard",
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~37€ (au-delà, tu perds)",
     "lossFlags": [
       {
         "name": "marge",
@@ -47,20 +47,79 @@
       {
         "name": "saturation",
         "level": "green",
-        "reason": "8 vendeur(s) — peu saturé (niveau)"
+        "reason": "9 vendeur(s) — peu saturé (niveau)"
       },
       {
         "name": "déclin",
-        "level": "red",
-        "reason": "demande en chute (~-88%/mois) — tendance qui meurt, tu arrives trop tard"
+        "level": "green",
+        "reason": "demande en forte hausse"
       }
     ],
-    "breakevenCpa": 36.9,
+    "breakevenCpa": 37.1,
+    "history": {
+      "sales": {
+        "points": 7,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997,
+          5.997,
+          6.997
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          2000.0,
+          2000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 6.997
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T11:45:16.628691+00:00",
+          "2026-06-18T12:05:55.969398+00:00",
+          "2026-06-20T07:52:12.381996+00:00",
+          "2026-06-21T07:55:06.910223+00:00",
+          "2026-06-22T07:57:18.375141+00:00"
+        ],
+        "days": [
+          0.0,
+          1.014,
+          2.838,
+          3.84,
+          4.842
+        ],
+        "values": [
+          7000.0,
+          7000.0,
+          7000.0,
+          8000.0,
+          8000.0
+        ],
+        "spanDays": 4.842
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 1,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 43.02,
+      "suggestPrice": 43.2,
       "description": "Product information: Product Overview: These women's platform reflective colorful sandals feature a stylish casual design. Crafted with high-quality PU upper and lining, paired with a durable rubber outsole, they offer comfort and stable traction. The round toe design combined with a velcro strap closure ensures easy wear and a secure fit, making them ideal for beach walks or daily casual wear. Specifications: Style: Casual Upper Material: PU Lining Material: PU Outsole Material: Rubber Toe Shape: Round Toe Closure Type: Velcro Strap Color: Yellow, Green Size Information: Available Sizes: 35, ",
       "video": null,
       "images": [
@@ -97,28 +156,28 @@
     "cost": 6.38,
     "retail": 43.01,
     "sellability": 96,
-    "organic": 31,
-    "phase": "MATURE",
+    "organic": 34,
+    "phase": "DECLINING",
     "verdict": "BUY",
-    "growth": -0.0,
-    "confidence": 0.42,
+    "growth": -1.0,
+    "confidence": 0.52,
     "listed": 1,
-    "age": 17,
-    "volatility": 0,
+    "age": 18,
+    "volatility": 0.0,
     "net": 24.6,
-    "redditScore": 50,
+    "redditScore": 67,
     "trendsScore": 50,
     "salesScore": 50,
-    "aliExpressSold": 10000,
-    "aliExpressMedianSold": 3000,
+    "aliExpressSold": 944,
+    "aliExpressMedianSold": 7,
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
       "en": "ACHETER — marge nette ~25€/vente (85% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
       "fr": "ACHETER — marge nette ~25€/vente (85% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
-    "trapVerdict": "VIABLE",
-    "trapHeadline": "✅ Viable jusqu'à un CPA de ~37€ (au-delà, tu perds)",
+    "trapVerdict": "RISKY",
+    "trapHeadline": "⚠️ Risqué : déclin soupçonné (~-100%/mois) mais non confirmé (série trop courte ou pente non significative)",
     "lossFlags": [
       {
         "name": "marge",
@@ -142,11 +201,61 @@
       },
       {
         "name": "déclin",
-        "level": "green",
-        "reason": "demande stable/en hausse (~-0%/mois)"
+        "level": "amber",
+        "reason": "déclin soupçonné (~-100%/mois) mais non confirmé (série trop courte ou pente non significative)"
       }
     ],
     "breakevenCpa": 36.6,
+    "history": {
+      "sales": {
+        "points": 4,
+        "dates": [
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-21T02:12:03.366782+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-22T18:19:33.575002+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.0,
+          2.672
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          944.0
+        ],
+        "spanDays": 2.672
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T05:41:08.713124+00:00",
+          "2026-06-19T05:44:50.305912+00:00",
+          "2026-06-20T05:46:07.357452+00:00",
+          "2026-06-21T05:46:09.553280+00:00",
+          "2026-06-22T05:46:13.737500+00:00"
+        ],
+        "days": [
+          0.0,
+          1.003,
+          2.003,
+          3.003,
+          4.004
+        ],
+        "values": [
+          100000.0,
+          100000.0,
+          100000.0,
+          100000.0,
+          100000.0
+        ],
+        "spanDays": 4.004
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 2,
     "dossier": {
       "hasDetail": true,
@@ -174,22 +283,22 @@
     "name": "Stylish Rhinestone Beach Sandals Bohemian-style Womens Sandals For Vacation",
     "cat": "PETS",
     "cost": 6.47,
-    "retail": 45.68,
+    "retail": 45.75,
     "sellability": 95,
-    "organic": 59,
+    "organic": 64,
     "phase": "MATURE",
     "verdict": "BUY",
-    "growth": -0.0,
-    "confidence": 0.42,
+    "growth": 0.0,
+    "confidence": 0.5,
     "listed": 3,
-    "age": 13,
-    "volatility": 0,
-    "net": 27.2,
+    "age": 14,
+    "volatility": 0.0,
+    "net": 27.3,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
     "aliExpressSold": 2000,
-    "aliExpressMedianSold": 24,
+    "aliExpressMedianSold": 31,
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
@@ -222,15 +331,41 @@
       {
         "name": "déclin",
         "level": "green",
-        "reason": "demande stable/en hausse (~-0%/mois)"
+        "reason": "demande stable/en hausse (~+0%/mois)"
       }
     ],
-    "breakevenCpa": 39.2,
+    "breakevenCpa": 39.3,
+    "history": {
+      "sales": {
+        "points": 4,
+        "dates": [
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-21T02:12:03.366782+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.0,
+          3.0
+        ],
+        "values": [
+          2000.0,
+          2000.0,
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 3.0
+      },
+      "amazon": null
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 3,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 45.68,
+      "suggestPrice": 45.75,
       "description": "Product information: Pattern: Solid color Lining material: PU Colors: Black, silver, gold, dark brown Shaft height: Low-top Sizes: 36, 37, 38, 39, 40, 41, 42, 43, 44 Outsole construction: Glued sole Outsole material: TPR Trendy elements: Sequins, Roman style Toe shape: Round toe Upper material: PU Wearing style: Elastic band Functions: Height-increasing, non-slip, wear-resistant Style: Everyday casual Packing list: Shoes x1pair Product Image:",
       "video": null,
       "images": [
@@ -269,22 +404,22 @@
     "name": "Ultra-light Ultra-quiet Neck Fan",
     "cat": "WELLNESS",
     "cost": 5.99,
-    "retail": 41.7,
+    "retail": 41.76,
     "sellability": 95,
     "organic": 63,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": -0.0,
-    "confidence": 0.5,
+    "confidence": 0.54,
     "listed": 4,
-    "age": 11,
-    "volatility": 0,
-    "net": 23.7,
+    "age": 12,
+    "volatility": 0.0,
+    "net": 23.8,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
     "aliExpressSold": 10000,
-    "aliExpressMedianSold": 500,
+    "aliExpressMedianSold": 600,
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
@@ -320,12 +455,74 @@
         "reason": "demande stable/en hausse (~-0%/mois)"
       }
     ],
-    "breakevenCpa": 35.7,
+    "breakevenCpa": 35.8,
+    "history": {
+      "sales": {
+        "points": 8,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-21T02:12:03.366782+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997,
+          4.997,
+          5.997,
+          6.997
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 6.997
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T22:37:46.023333+00:00",
+          "2026-06-18T22:37:54.553177+00:00",
+          "2026-06-20T03:24:03.759044+00:00",
+          "2026-06-21T03:28:50.601641+00:00",
+          "2026-06-22T03:32:10.494844+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.199,
+          3.202,
+          4.204
+        ],
+        "values": [
+          50000.0,
+          50000.0,
+          50000.0,
+          50000.0,
+          50000.0
+        ],
+        "spanDays": 4.204
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 4,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 41.7,
+      "suggestPrice": 41.76,
       "description": "Stay cool anywhere with this ultra-light ultra-quiet neck fan. It features 360° airflow and an ergonomic design for all-day comfort. Perfect for home, office, outdoor activities, and travel. Chinese-English packaging box：",
       "video": null,
       "images": [
@@ -355,22 +552,22 @@
     "name": "Semi-open-neck Casual Beach Cover-up Sweater",
     "cat": "WELLNESS",
     "cost": 7.63,
-    "retail": 46.85,
+    "retail": 46.93,
     "sellability": 95,
-    "organic": 61,
+    "organic": 73,
     "phase": "GROWTH",
     "verdict": "BUY",
-    "growth": 3.104,
-    "confidence": 0.54,
+    "growth": 2.185,
+    "confidence": 0.58,
     "listed": 9,
-    "age": 8,
-    "volatility": 0,
-    "net": 27.2,
+    "age": 9,
+    "volatility": 0.0,
+    "net": 27.3,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
-    "aliExpressSold": 3000,
-    "aliExpressMedianSold": 67,
+    "aliExpressSold": 2000,
+    "aliExpressMedianSold": 69,
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
@@ -406,12 +603,68 @@
         "reason": "demande en forte hausse"
       }
     ],
-    "breakevenCpa": 39.2,
+    "breakevenCpa": 39.3,
+    "history": {
+      "sales": {
+        "points": 8,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-21T02:12:03.366782+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997,
+          4.997,
+          5.997,
+          6.997
+        ],
+        "values": [
+          2000.0,
+          2000.0,
+          2000.0,
+          2000.0,
+          2000.0,
+          3000.0,
+          3000.0,
+          2000.0
+        ],
+        "spanDays": 6.997
+      },
+      "amazon": {
+        "points": 3,
+        "dates": [
+          "2026-06-17T17:57:55.238062+00:00",
+          "2026-06-18T18:03:34.651307+00:00",
+          "2026-06-20T09:00:17.695048+00:00"
+        ],
+        "days": [
+          0.0,
+          1.004,
+          2.627
+        ],
+        "values": [
+          5000.0,
+          5000.0,
+          4000.0
+        ],
+        "spanDays": 2.627
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 5,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 46.85,
+      "suggestPrice": 46.93,
       "description": "Product information: Pattern: Solid color Color: White Size: S, M, L, XL Fit: Slim fit Style: Street fashion Composition: Single piece Trendy element: Solid color Style: Pullover Thickness: Medium Fabric: Polyester Sleeve style: Regular sleeve Suitable crowd: Universal Wearing method: Pullover Length: Regular length (50cm length ≤ 65cm) Gender: Women Age group: Adult Sleeve length: Long sleeve Style: Street style Craft: Hollow-out design Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm dif",
       "video": null,
       "images": [
@@ -439,30 +692,30 @@
     "name": "Summer Ice-silk Cooling Casual Pants Thin Long Trousers",
     "cat": "APPAREL",
     "cost": 9.57,
-    "retail": 47.57,
+    "retail": 47.66,
     "sellability": 94,
-    "organic": 20,
-    "phase": "MATURE",
+    "organic": 10,
+    "phase": "DECLINING",
     "verdict": "BUY",
-    "growth": -0.0,
-    "confidence": 0.42,
+    "growth": -1.0,
+    "confidence": 0.48,
     "listed": 10,
-    "age": 12,
-    "volatility": 0,
-    "net": 26.0,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 26.1,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
-    "aliExpressSold": 50000,
-    "aliExpressMedianSold": 800,
+    "aliExpressSold": 10000,
+    "aliExpressMedianSold": 600,
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
       "en": "ACHETER — marge nette ~26€/vente (80% brut), 10 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
       "fr": "ACHETER — marge nette ~26€/vente (80% brut), 10 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
-    "trapVerdict": "VIABLE",
-    "trapHeadline": "✅ Viable jusqu'à un CPA de ~38€ (au-delà, tu perds)",
+    "trapVerdict": "RISKY",
+    "trapHeadline": "⚠️ Risqué : déclin soupçonné (~-100%/mois) mais non confirmé (série trop courte ou pente non significative)",
     "lossFlags": [
       {
         "name": "marge",
@@ -486,16 +739,60 @@
       },
       {
         "name": "déclin",
-        "level": "green",
-        "reason": "demande stable/en hausse (~-0%/mois)"
+        "level": "amber",
+        "reason": "déclin soupçonné (~-100%/mois) mais non confirmé (série trop courte ou pente non significative)"
       }
     ],
-    "breakevenCpa": 38.0,
+    "breakevenCpa": 38.1,
+    "history": {
+      "sales": {
+        "points": 4,
+        "dates": [
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-21T02:12:03.366782+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.0,
+          3.0
+        ],
+        "values": [
+          50000.0,
+          50000.0,
+          50000.0,
+          10000.0
+        ],
+        "spanDays": 3.0
+      },
+      "amazon": {
+        "points": 3,
+        "dates": [
+          "2026-06-17T12:57:40.953884+00:00",
+          "2026-06-20T13:00:41.183757+00:00",
+          "2026-06-21T13:07:40.950742+00:00"
+        ],
+        "days": [
+          0.0,
+          3.002,
+          4.007
+        ],
+        "values": [
+          700.0,
+          6000.0,
+          600.0
+        ],
+        "spanDays": 4.007
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 6,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 47.57,
+      "suggestPrice": 47.66,
       "description": "Product information: Color: Black, Royal Blue, Gray, Khaki Stretch: High stretch Pants Length: Full length Size: 29 (170/74A), 30 (170/76A), 31 (175/80A), 32 (175/84A), 33 (175/88A), 34 (175/90A), 35 (175/92A), 36 (180/96B), 38 (180/100B), 40 (185/106C) Fly: Zipper fly Style: Straight-leg pants Fabric Name: Ice silk Occasion: Everyday wear Fabric: Stretch fabric Main Fabric Composition: Nylon Pants Style: Straight-leg Style: Elegant and professional Craftsmanship: Knitted Hem Style: Straight hem Size: Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the l",
       "video": null,
       "images": [
@@ -536,20 +833,20 @@
     "cost": 6.07,
     "retail": 40.92,
     "sellability": 94,
-    "organic": 58,
-    "phase": "GROWTH",
+    "organic": 51,
+    "phase": "PEAK",
     "verdict": "BUY",
-    "growth": 271.271,
-    "confidence": 0.52,
+    "growth": 98.45,
+    "confidence": 0.56,
     "listed": 2,
-    "age": 11,
-    "volatility": 0,
+    "age": 12,
+    "volatility": 0.0,
     "net": 22.9,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
-    "aliExpressSold": 50000,
-    "aliExpressMedianSold": 385,
+    "aliExpressSold": 10000,
+    "aliExpressMedianSold": 226,
     "seasonPeak": 5,
     "seasonMult": 1.42,
     "reason": {
@@ -586,6 +883,68 @@
       }
     ],
     "breakevenCpa": 34.9,
+    "history": {
+      "sales": {
+        "points": 8,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-21T02:12:03.366782+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997,
+          4.997,
+          5.997,
+          6.997
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          50000.0,
+          50000.0,
+          10000.0
+        ],
+        "spanDays": 6.997
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T21:54:43.423168+00:00",
+          "2026-06-18T21:56:55.345097+00:00",
+          "2026-06-20T05:27:01.091657+00:00",
+          "2026-06-21T05:27:18.057441+00:00",
+          "2026-06-22T05:53:56.716023+00:00"
+        ],
+        "days": [
+          0.0,
+          1.002,
+          2.314,
+          3.314,
+          4.333
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 4.333
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 7,
     "dossier": {
       "hasDetail": true,
@@ -618,22 +977,22 @@
     "name": "Spring Summer Womens Blouse With Batwing Sleeves For The Beach",
     "cat": "HOME",
     "cost": 7.13,
-    "retail": 41.72,
+    "retail": 41.86,
     "sellability": 93,
-    "organic": 32,
+    "organic": 37,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.48,
     "listed": 7,
-    "age": 14,
-    "volatility": 0,
-    "net": 22.6,
+    "age": 15,
+    "volatility": 0.0,
+    "net": 22.7,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
     "aliExpressSold": 1000,
-    "aliExpressMedianSold": 99,
+    "aliExpressMedianSold": 164,
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
@@ -665,16 +1024,63 @@
       },
       {
         "name": "déclin",
-        "level": "unknown",
-        "reason": "historique de demande insuffisant (< 3 mesures)"
+        "level": "green",
+        "reason": "demande stable/en hausse (~+0%/mois)"
       }
     ],
-    "breakevenCpa": 34.6,
+    "breakevenCpa": 34.7,
+    "history": {
+      "sales": {
+        "points": 3,
+        "dates": [
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          2.0,
+          3.0
+        ],
+        "values": [
+          1000.0,
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.0
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T03:27:44.765124+00:00",
+          "2026-06-19T03:32:55.771467+00:00",
+          "2026-06-20T07:43:43.451812+00:00",
+          "2026-06-21T07:43:49.116046+00:00",
+          "2026-06-22T07:48:48.162533+00:00"
+        ],
+        "days": [
+          0.0,
+          1.004,
+          2.178,
+          3.178,
+          4.181
+        ],
+        "values": [
+          9000.0,
+          8000.0,
+          9000.0,
+          6000.0,
+          9000.0
+        ],
+        "spanDays": 4.181
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 8,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 41.72,
+      "suggestPrice": 41.86,
       "description": "Product information: Fabric: Chiffon Colors: White, Black, Beige, Red, Lemon Yellow, Khaki Sleeve Style: Batwing Sleeve Sizes: S, M, L, XL How to Wear: Pullover Gender: Women Style Type: Fresh and Sweet Sleeve Length: Long Sleeve Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. 2. Please check the size chart carefully before you buy the item, if you don't know how to choose size, please contact our customer service. 3.As you know, the different comput",
       "video": null,
       "images": [
@@ -709,106 +1115,21 @@
     }
   },
   {
-    "id": "5553154",
-    "name": "European Fan Earrings, Elegant High-End Drop Earrings For Women",
-    "cat": "HOME",
-    "cost": 5.99,
-    "retail": 50.8,
-    "sellability": 93,
-    "organic": 75,
-    "phase": "DECLINING",
-    "verdict": "BUY",
-    "growth": -1.0,
-    "confidence": 0.38,
-    "listed": 3,
-    "age": 12,
-    "volatility": 0,
-    "net": 32.8,
-    "redditScore": 50,
-    "trendsScore": 50,
-    "salesScore": 50,
-    "aliExpressSold": 2000,
-    "aliExpressMedianSold": 70,
-    "seasonPeak": 7,
-    "seasonMult": 1.73,
-    "reason": {
-      "en": "ACHETER — marge nette ~33€/vente (88% brut), 3 vendeurs (validé, peu saturé), produit récent.",
-      "fr": "ACHETER — marge nette ~33€/vente (88% brut), 3 vendeurs (validé, peu saturé), produit récent."
-    },
-    "trapVerdict": "VIABLE",
-    "trapHeadline": "✅ Viable jusqu'à un CPA de ~45€ (au-delà, tu perds)",
-    "lossFlags": [
-      {
-        "name": "marge",
-        "level": "green",
-        "reason": "marge nette ~33€/vente"
-      },
-      {
-        "name": "prix",
-        "level": "green",
-        "reason": "retail ~51€ — zone d'impulsion"
-      },
-      {
-        "name": "retour",
-        "level": "unknown",
-        "reason": "avis insuffisants"
-      },
-      {
-        "name": "saturation",
-        "level": "green",
-        "reason": "3 vendeur(s) — peu saturé (niveau)"
-      },
-      {
-        "name": "déclin",
-        "level": "unknown",
-        "reason": "historique de demande insuffisant (< 3 mesures)"
-      }
-    ],
-    "breakevenCpa": 44.8,
-    "detectedHrs": 9,
-    "dossier": {
-      "hasDetail": true,
-      "priceFromCJ": true,
-      "suggestPrice": 50.8,
-      "description": null,
-      "video": null,
-      "images": [
-        "https://cf.cjdropshipping.com/f79144ca-4510-4fea-9f9a-cd93cbcf78a9.jpg",
-        "https://cf.cjdropshipping.com/5e3a5fae-bb53-4a18-b02d-f926b5a053d4.jpg",
-        "https://cf.cjdropshipping.com/6fb1644c-0477-47b0-9e42-44e915b2e459.jpg",
-        "https://cf.cjdropshipping.com/cc69b415-4d3a-4a5a-bcb1-dcabdbac4c20.jpg",
-        "https://cf.cjdropshipping.com/f9652f67-4eb4-4c20-b3b1-f1ad1623b576.jpg",
-        "https://cf.cjdropshipping.com/5176df84-e72a-47b8-b3d1-383c70261537.jpg",
-        "https://cf.cjdropshipping.com/2b6c23c5-3f9b-483d-b18d-ef22fb511e88.jpg",
-        "https://cf.cjdropshipping.com/511dbe54-3217-4b24-988f-3440431ea49e.jpg"
-      ],
-      "imageCount": 8,
-      "variantCount": 2,
-      "variantOptions": [
-        "Style 1-1 pair",
-        "Style 2-1 pair"
-      ],
-      "material": "Metal",
-      "weightG": 25.0,
-      "supplier": "Yiwu Xiuben ecommerce firm"
-    }
-  },
-  {
     "id": "3662594",
     "name": "Bold Metal Fan & Black Square Earrings, Trendy Versatile European Style Jewelry",
     "cat": "HOME",
     "cost": 5.99,
-    "retail": 51.04,
+    "retail": 51.34,
     "sellability": 92,
-    "organic": 41,
+    "organic": 36,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 5,
-    "age": 12,
-    "volatility": 0,
-    "net": 33.0,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 33.4,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -849,12 +1170,50 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 45.0,
-    "detectedHrs": 10,
+    "breakevenCpa": 45.4,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00"
+        ],
+        "days": [
+          0.0,
+          2.0
+        ],
+        "values": [
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 2.0
+      },
+      "amazon": {
+        "points": 3,
+        "dates": [
+          "2026-06-17T11:51:31.124673+00:00",
+          "2026-06-18T12:07:11.656635+00:00",
+          "2026-06-20T09:15:42.374081+00:00"
+        ],
+        "days": [
+          0.0,
+          1.011,
+          2.892
+        ],
+        "values": [
+          7000.0,
+          5000.0,
+          4000.0
+        ],
+        "spanDays": 2.892
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 9,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 51.04,
+      "suggestPrice": 51.34,
       "description": null,
       "video": null,
       "images": [
@@ -876,21 +1235,141 @@
     }
   },
   {
+    "id": "5553154",
+    "name": "European Fan Earrings, Elegant High-End Drop Earrings For Women",
+    "cat": "HOME",
+    "cost": 5.99,
+    "retail": 51.34,
+    "sellability": 92,
+    "organic": 76,
+    "phase": "DECLINING",
+    "verdict": "BUY",
+    "growth": -1.0,
+    "confidence": 0.45,
+    "listed": 3,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 33.4,
+    "redditScore": 50,
+    "trendsScore": 50,
+    "salesScore": 50,
+    "aliExpressSold": 2000,
+    "aliExpressMedianSold": 70,
+    "seasonPeak": 7,
+    "seasonMult": 1.73,
+    "reason": {
+      "en": "ACHETER — marge nette ~33€/vente (88% brut), 3 vendeurs (validé, peu saturé), produit récent.",
+      "fr": "ACHETER — marge nette ~33€/vente (88% brut), 3 vendeurs (validé, peu saturé), produit récent."
+    },
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~45€ (au-delà, tu perds)",
+    "lossFlags": [
+      {
+        "name": "marge",
+        "level": "green",
+        "reason": "marge nette ~33€/vente"
+      },
+      {
+        "name": "prix",
+        "level": "green",
+        "reason": "retail ~51€ — zone d'impulsion"
+      },
+      {
+        "name": "retour",
+        "level": "unknown",
+        "reason": "avis insuffisants"
+      },
+      {
+        "name": "saturation",
+        "level": "green",
+        "reason": "3 vendeur(s) — peu saturé (niveau)"
+      },
+      {
+        "name": "déclin",
+        "level": "unknown",
+        "reason": "historique de demande insuffisant (< 3 mesures)"
+      }
+    ],
+    "breakevenCpa": 45.4,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00"
+        ],
+        "days": [
+          0.0,
+          2.0
+        ],
+        "values": [
+          4000.0,
+          2000.0
+        ],
+        "spanDays": 2.0
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T00:16:41.703462+00:00",
+          "2026-06-21T00:16:48.651304+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 10,
+    "dossier": {
+      "hasDetail": true,
+      "priceFromCJ": true,
+      "suggestPrice": 51.34,
+      "description": null,
+      "video": null,
+      "images": [
+        "https://cf.cjdropshipping.com/f79144ca-4510-4fea-9f9a-cd93cbcf78a9.jpg",
+        "https://cf.cjdropshipping.com/5e3a5fae-bb53-4a18-b02d-f926b5a053d4.jpg",
+        "https://cf.cjdropshipping.com/6fb1644c-0477-47b0-9e42-44e915b2e459.jpg",
+        "https://cf.cjdropshipping.com/cc69b415-4d3a-4a5a-bcb1-dcabdbac4c20.jpg",
+        "https://cf.cjdropshipping.com/f9652f67-4eb4-4c20-b3b1-f1ad1623b576.jpg",
+        "https://cf.cjdropshipping.com/5176df84-e72a-47b8-b3d1-383c70261537.jpg",
+        "https://cf.cjdropshipping.com/2b6c23c5-3f9b-483d-b18d-ef22fb511e88.jpg",
+        "https://cf.cjdropshipping.com/511dbe54-3217-4b24-988f-3440431ea49e.jpg"
+      ],
+      "imageCount": 8,
+      "variantCount": 2,
+      "variantOptions": [
+        "Style 1-1 pair",
+        "Style 2-1 pair"
+      ],
+      "material": "Metal",
+      "weightG": 25.0,
+      "supplier": "Yiwu Xiuben ecommerce firm"
+    }
+  },
+  {
     "id": "2639106",
     "name": "Forest Style Desktop Fan, USB Rechargeable Quiet Portable Fan With Activated Carbon Air Purification, 3-in-1 Stand Clip Hook Design, Energy Saving Circulating Fan For Home, Office, Bedroom  Travel",
     "cat": "HOME",
     "cost": 5.0,
-    "retail": 36.85,
-    "sellability": 90,
-    "organic": 76,
+    "retail": 37.3,
+    "sellability": 91,
+    "organic": 83,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 1,
-    "age": 11,
-    "volatility": 0,
-    "net": 19.9,
+    "age": 12,
+    "volatility": 0.0,
+    "net": 20.3,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -899,8 +1378,8 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~20€/vente (86% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~20€/vente (86% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+      "en": "ACHETER — marge nette ~20€/vente (87% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~20€/vente (87% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
     "trapVerdict": "VIABLE",
     "trapHeadline": "✅ Viable jusqu'à un CPA de ~32€ (au-delà, tu perds)",
@@ -931,12 +1410,56 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 31.9,
+    "breakevenCpa": 32.3,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00"
+        ],
+        "days": [
+          0.0,
+          2.0
+        ],
+        "values": [
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 2.0
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T22:30:07.251927+00:00",
+          "2026-06-18T22:34:47.769712+00:00",
+          "2026-06-20T02:56:07.620047+00:00",
+          "2026-06-21T02:58:04.589585+00:00",
+          "2026-06-22T02:59:02.297892+00:00"
+        ],
+        "days": [
+          0.0,
+          1.003,
+          2.185,
+          3.186,
+          4.187
+        ],
+        "values": [
+          80000.0,
+          80000.0,
+          80000.0,
+          80000.0,
+          80000.0
+        ],
+        "spanDays": 4.187
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 11,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 36.85,
+      "suggestPrice": 37.3,
       "description": "This Forest Purification Desktop Fan (Model F19) is your ideal companion for staying cool and breathing fresh air anywhere. It combines 3-in-1 versatility with stand, clip, and hook mounting options to fit perfectly on your desk, clipped to your bed frame, or hung on the wall. Built with an activated carbon filter, it doubles as an air purifier, helping to reduce odors and improve air quality in small spaces. Powered by a rechargeable 1200mAh battery with USB Type-C charging, it offers long-lasting wireless use. The quiet brushless motor delivers adjustable airflow with 100-speed touch control",
       "video": null,
       "images": [
@@ -960,20 +1483,108 @@
     }
   },
   {
+    "id": "1609800",
+    "name": "New Sexy V-neck Hollow-out Swimsuit For Women",
+    "cat": "WELLNESS",
+    "cost": 6.8,
+    "retail": 39.1,
+    "sellability": 90,
+    "organic": 85,
+    "phase": "MATURE",
+    "verdict": "BUY",
+    "growth": 0.0,
+    "confidence": 0.0,
+    "listed": 1,
+    "age": 11,
+    "volatility": 0,
+    "net": 20.3,
+    "redditScore": 50,
+    "trendsScore": 50,
+    "salesScore": null,
+    "aliExpressSold": null,
+    "aliExpressMedianSold": null,
+    "seasonPeak": 7,
+    "seasonMult": 1.73,
+    "reason": {
+      "en": "ACHETER — marge nette ~20€/vente (83% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~20€/vente (83% brut), 1 vendeur (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+    },
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~32€ (au-delà, tu perds)",
+    "lossFlags": [
+      {
+        "name": "marge",
+        "level": "green",
+        "reason": "marge nette ~20€/vente"
+      },
+      {
+        "name": "prix",
+        "level": "green",
+        "reason": "retail ~39€ — zone d'impulsion"
+      },
+      {
+        "name": "retour",
+        "level": "unknown",
+        "reason": "avis insuffisants"
+      },
+      {
+        "name": "saturation",
+        "level": "green",
+        "reason": "1 vendeur(s) — peu saturé (niveau)"
+      },
+      {
+        "name": "déclin",
+        "level": "unknown",
+        "reason": "historique de demande insuffisant (< 3 mesures)"
+      }
+    ],
+    "breakevenCpa": 32.3,
+    "history": {
+      "sales": null,
+      "amazon": null
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 12,
+    "dossier": {
+      "hasDetail": true,
+      "priceFromCJ": true,
+      "suggestPrice": 39.1,
+      "description": "Product information: Product Overview This one-piece swimsuit features a solid color design, blending sexy and sweet styles. The V-neck cut flatters the neckline, while the backless and hollow-out details add a fashionable touch. It offers tummy control and a slimming effect, making it ideal for beach vacations and water sports. Product Specifications Material: Nylon fabric with polyester and spandex lining (18% spandex content) Style: One-piece swimsuit, sleeveless Color: White Size: S, M, L Target Audience: Adult women Application: Swimming and water sports Note: 1. Asian sizes are 1 to 2 si",
+      "video": null,
+      "images": [
+        "https://cf.cjdropshipping.com/quick/product/bbd887a4-d10c-406d-96c4-a489503fd7a8.jpg",
+        "https://cf.cjdropshipping.com/quick/product/f88ea6f3-1a80-40b7-872e-ddaf9d55f034.jpg",
+        "https://cf.cjdropshipping.com/quick/product/7cadf68f-9d58-4a2b-b645-21c40dd4ec99.jpg",
+        "https://cf.cjdropshipping.com/quick/product/2fed3bac-fa21-49e9-8fb0-3f86c2ddd2e0.jpg",
+        "https://cf.cjdropshipping.com/quick/product/4124c15d-4eaf-4910-9e89-c5da71163dc8.jpg"
+      ],
+      "imageCount": 5,
+      "variantCount": 3,
+      "variantOptions": [
+        "White-S",
+        "White-M",
+        "White-L"
+      ],
+      "material": "Cloth",
+      "weightG": 200.0,
+      "supplier": null
+    }
+  },
+  {
     "id": "1628300",
     "name": "Sleeveless Floral Tiered Maxi Loose-Fit Beach Holiday Dress",
     "cat": "APPAREL",
     "cost": 11.44,
     "retail": 55.95,
     "sellability": 90,
-    "organic": 85,
+    "organic": 86,
     "phase": "DECLINING",
     "verdict": "BUY",
-    "growth": -0.774,
-    "confidence": 0.49,
+    "growth": -0.949,
+    "confidence": 0.53,
     "listed": 3,
-    "age": 10,
-    "volatility": 0,
+    "age": 11,
+    "volatility": 0.0,
     "net": 32.5,
     "redditScore": 50,
     "trendsScore": 50,
@@ -986,8 +1597,8 @@
       "en": "ACHETER — marge nette ~33€/vente (80% brut), 3 vendeurs (validé, peu saturé), produit récent.",
       "fr": "ACHETER — marge nette ~33€/vente (80% brut), 3 vendeurs (validé, peu saturé), produit récent."
     },
-    "trapVerdict": "TRAP",
-    "trapHeadline": "❌ Piège : demande en chute (~-77%/mois) — tendance qui meurt, tu arrives trop tard",
+    "trapVerdict": "RISKY",
+    "trapHeadline": "⚠️ Risqué : déclin soupçonné (~-95%/mois) mais non confirmé (série trop courte ou pente non significative)",
     "lossFlags": [
       {
         "name": "marge",
@@ -1011,12 +1622,59 @@
       },
       {
         "name": "déclin",
-        "level": "red",
-        "reason": "demande en chute (~-77%/mois) — tendance qui meurt, tu arrives trop tard"
+        "level": "amber",
+        "reason": "déclin soupçonné (~-95%/mois) mais non confirmé (série trop courte ou pente non significative)"
       }
     ],
     "breakevenCpa": 44.5,
-    "detectedHrs": 12,
+    "history": {
+      "sales": {
+        "points": 6,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997,
+          5.997
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          5000.0
+        ],
+        "spanDays": 5.997
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T12:00:58.803060+00:00",
+          "2026-06-20T12:01:09.395130+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          3000.0,
+          3000.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 13,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -1049,17 +1707,17 @@
     "name": "Women's One-piece Swimsuit European And American Style Bikini",
     "cat": "HOME",
     "cost": 6.47,
-    "retail": 37.85,
+    "retail": 37.98,
     "sellability": 89,
-    "organic": 36,
+    "organic": 39,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 2,
-    "age": 15,
-    "volatility": 0,
-    "net": 19.4,
+    "age": 16,
+    "volatility": 0.0,
+    "net": 19.5,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -1068,16 +1726,16 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~19€/vente (83% brut), 2 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~19€/vente (83% brut), 2 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+      "en": "ACHETER — marge nette ~20€/vente (83% brut), 2 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~20€/vente (83% brut), 2 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
     "trapVerdict": "VIABLE",
-    "trapHeadline": "✅ Viable jusqu'à un CPA de ~31€ (au-delà, tu perds)",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~32€ (au-delà, tu perds)",
     "lossFlags": [
       {
         "name": "marge",
         "level": "green",
-        "reason": "marge nette ~19€/vente"
+        "reason": "marge nette ~20€/vente"
       },
       {
         "name": "prix",
@@ -1100,12 +1758,32 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 31.4,
-    "detectedHrs": 13,
+    "breakevenCpa": 31.5,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T04:39:58.744911+00:00",
+          "2026-06-21T04:43:09.956091+00:00"
+        ],
+        "days": [
+          0.0,
+          3.002
+        ],
+        "values": [
+          900.0,
+          1000.0
+        ],
+        "spanDays": 3.002
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 14,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 37.85,
+      "suggestPrice": 37.98,
       "description": "Product information: Color: C4412 Black, C4412 Red Size: S, M, L Style: One-piece Swimsuit Fabric Material: Nylon Fabric Composition: Spandex Sleeve Length: Sleeveless Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. 2. Please check the size chart carefully before you buy the item, if you don't know how to choose size, please contact our customer service. 3.As you know, the different computers display colors differently, the color of the actual item m",
       "video": null,
       "images": [
@@ -1136,17 +1814,17 @@
     "name": "Folding Picnic Table Outdoor,Folding Computer Table, For Homework Compact Handy Camping Table Garden Party BBQ",
     "cat": "HOME",
     "cost": 20.5,
-    "retail": 58.22,
+    "retail": 58.63,
     "sellability": 88,
-    "organic": 47,
+    "organic": 49,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 13,
-    "volatility": 0,
-    "net": 25.7,
+    "age": 14,
+    "volatility": 0.0,
+    "net": 26.1,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -1169,7 +1847,7 @@
       {
         "name": "prix",
         "level": "green",
-        "reason": "retail ~58€ — zone d'impulsion"
+        "reason": "retail ~59€ — zone d'impulsion"
       },
       {
         "name": "retour",
@@ -1187,12 +1865,17 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 37.7,
-    "detectedHrs": 14,
+    "breakevenCpa": 38.1,
+    "history": {
+      "sales": null,
+      "amazon": null
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 15,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 58.22,
+      "suggestPrice": 58.63,
       "description": "Specifications: Type: Folding Table Color: White Frame and Legs Material: Upgrade Aluminum Alloy Unfolded Size(LxWxH): 2Ft x 1.5Ft x 1Ft/2Ft(60cm x 45cm x 26cm /56cm) 2 Adjustable Height: High Height: 22.05\"/56cm, Low Height: 10.2\"/26cm Practical Folds Size(LxWxH): 2Ft x 1.5Ft x 0.1Ft (60cm x 45cm x 3.2cm) Net Weight: 5.03lbs/2.3kg Packaging Size(LxWxH): 61x46x4cm Packaging Weight: 6.2lbs/2.8kg Feature: （1）The folding table uses high-quality strength aluminum alloy as the desktop support for load-bearing, stable and strong, safe and firm. （2） 2 levels of height adjustment: according to your di",
       "video": null,
       "images": [
@@ -1219,17 +1902,17 @@
     "name": "Ombre Polka-dot Strap Split Swimsuit",
     "cat": "HOME",
     "cost": 7.46,
-    "retail": 38.65,
+    "retail": 38.5,
     "sellability": 88,
-    "organic": 88,
+    "organic": 90,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 3,
-    "age": 7,
-    "volatility": 0,
-    "net": 19.2,
+    "age": 8,
+    "volatility": 0.0,
+    "net": 19.0,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -1252,7 +1935,7 @@
       {
         "name": "prix",
         "level": "green",
-        "reason": "retail ~39€ — zone d'impulsion"
+        "reason": "retail ~38€ — zone d'impulsion"
       },
       {
         "name": "retour",
@@ -1270,12 +1953,47 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 31.2,
-    "detectedHrs": 15,
+    "breakevenCpa": 31.0,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 1.0
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T08:46:35.610773+00:00",
+          "2026-06-21T08:47:58.032612+00:00"
+        ],
+        "days": [
+          0.0,
+          3.001
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.001
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 16,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 38.65,
+      "suggestPrice": 38.5,
       "description": "Product information: Fabric Name: Polyester Color: Pink, Multicolor, Orange, Yellow, Blue Size: S, M, L, XL, 2XL, 3XL Lining Composition: Spandex Fabric Composition: Polyester (Terylene) Style: Underwear Pattern Style: Gradient, European/American, Conservative Packing list: Swimsuit *2PCS Product Image:",
       "video": null,
       "images": [
@@ -1310,21 +2028,160 @@
     }
   },
   {
+    "id": "1606700",
+    "name": "Outdoor Beach Vacation Sun-protection Knitwear",
+    "cat": "PETS",
+    "cost": 6.29,
+    "retail": 36.93,
+    "sellability": 88,
+    "organic": 93,
+    "phase": "MATURE",
+    "verdict": "BUY",
+    "growth": 0.0,
+    "confidence": 0.52,
+    "listed": 5,
+    "age": 11,
+    "volatility": 0.0,
+    "net": 18.6,
+    "redditScore": 50,
+    "trendsScore": 50,
+    "salesScore": 50,
+    "aliExpressSold": 2000,
+    "aliExpressMedianSold": 37,
+    "seasonPeak": 7,
+    "seasonMult": 1.73,
+    "reason": {
+      "en": "ACHETER — marge nette ~19€/vente (83% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~19€/vente (83% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+    },
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~31€ (au-delà, tu perds)",
+    "lossFlags": [
+      {
+        "name": "marge",
+        "level": "green",
+        "reason": "marge nette ~19€/vente"
+      },
+      {
+        "name": "prix",
+        "level": "green",
+        "reason": "retail ~37€ — zone d'impulsion"
+      },
+      {
+        "name": "retour",
+        "level": "unknown",
+        "reason": "avis insuffisants"
+      },
+      {
+        "name": "saturation",
+        "level": "green",
+        "reason": "5 vendeur(s) — peu saturé (niveau)"
+      },
+      {
+        "name": "déclin",
+        "level": "green",
+        "reason": "demande stable/en hausse (~+0%/mois)"
+      }
+    ],
+    "breakevenCpa": 30.6,
+    "history": {
+      "sales": {
+        "points": 5,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997
+        ],
+        "values": [
+          2000.0,
+          2000.0,
+          2000.0,
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 3.997
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T20:47:33.523450+00:00",
+          "2026-06-20T20:51:52.267778+00:00"
+        ],
+        "days": [
+          0.0,
+          3.003
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.003
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 17,
+    "dossier": {
+      "hasDetail": true,
+      "priceFromCJ": true,
+      "suggestPrice": 36.93,
+      "description": "Product information: Colors: Khaki, blue, white, green, purple, pink, light green, black, coffee, olive green, apricot, light blue, peacock blue, rose red, gray, orange-red, watermelon red Size: One size fits all Lining material: Polyester (Terylene) Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. 2. Please check the size chart carefully before you buy the item, if you don't know how to choose size, please contact our customer service. 3.As you know,",
+      "video": null,
+      "images": [
+        "https://cf.cjdropshipping.com/quick/product/51b5529f-699e-43aa-acad-01fa404bed73.jpg",
+        "https://cf.cjdropshipping.com/quick/product/a8463f0d-2863-4337-a448-40242fcdef12.jpg",
+        "https://cf.cjdropshipping.com/quick/product/8c54516b-c299-48cb-af2f-e2e17dc78161.jpg",
+        "https://cf.cjdropshipping.com/quick/product/124634bb-c766-4702-8bce-732cd7d513ab.jpg",
+        "https://cf.cjdropshipping.com/quick/product/94838a67-3f2e-40df-b958-3e9f8fab6391.jpg",
+        "https://cf.cjdropshipping.com/quick/product/13ff59f6-f568-4dda-9833-b22c59a4b0f7.jpg",
+        "https://cf.cjdropshipping.com/quick/product/dafc6154-34e3-4ada-aceb-addba9f970ae.jpg",
+        "https://cf.cjdropshipping.com/quick/product/40e07ce7-370a-46be-aec2-7c06eddc30b8.jpg"
+      ],
+      "imageCount": 8,
+      "variantCount": 17,
+      "variantOptions": [
+        "Khaki-Free Size",
+        "Blue-Free Size",
+        "White-Free Size",
+        "Green-Free Size",
+        "Purple-Free Size",
+        "Pink-Free Size",
+        "Light Green-Free Size",
+        "Black-Free Size",
+        "Brown-Free Size",
+        "Olive Green-Free Size",
+        "Apricot-Free Size",
+        "Light Blue-Free Size"
+      ],
+      "material": "Cloth",
+      "weightG": 230.0,
+      "supplier": null
+    }
+  },
+  {
     "id": "1609400",
     "name": "Summer Outdoor Beach Thick-soled Wedge Sandals",
     "cat": "TECH",
     "cost": 7.77,
-    "retail": 59.45,
+    "retail": 59.6,
     "sellability": 88,
-    "organic": 10,
+    "organic": 15,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 8,
-    "age": 18,
-    "volatility": 0,
-    "net": 39.7,
+    "age": 19,
+    "volatility": 0.0,
+    "net": 39.8,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -1347,7 +2204,7 @@
       {
         "name": "prix",
         "level": "green",
-        "reason": "retail ~59€ — zone d'impulsion"
+        "reason": "retail ~60€ — zone d'impulsion"
       },
       {
         "name": "retour",
@@ -1365,12 +2222,47 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 51.7,
-    "detectedHrs": 16,
+    "breakevenCpa": 51.8,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T12:19:48.258223+00:00",
+          "2026-06-20T12:19:51.455382+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          800.0,
+          800.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 18,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 59.45,
+      "suggestPrice": 59.6,
       "description": "Product information: Lining material: PU Toe shape: Peep-toe Colors: Black leather, black satin, off-white, silver Upper material: PU Sizes: 35, 36, 37, 38, 39 Heel height: High heel (6–8 cm) Sole material: Rubber Style: Minimalist Packing list: Sandals x1pair Product Image:",
       "video": null,
       "images": [
@@ -1411,14 +2303,14 @@
     "cost": 21.99,
     "retail": 59.82,
     "sellability": 88,
-    "organic": 90,
+    "organic": 59,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 2,
-    "age": 9,
-    "volatility": 0,
+    "age": 10,
+    "volatility": 0.0,
     "net": 25.8,
     "redditScore": 50,
     "trendsScore": 50,
@@ -1461,7 +2353,51 @@
       }
     ],
     "breakevenCpa": 37.8,
-    "detectedHrs": 17,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T19:20:58.783279+00:00",
+          "2026-06-18T19:24:18.453938+00:00",
+          "2026-06-20T04:00:17.890232+00:00",
+          "2026-06-21T04:00:40.368956+00:00",
+          "2026-06-22T05:13:09.822195+00:00"
+        ],
+        "days": [
+          0.0,
+          1.002,
+          2.361,
+          3.361,
+          4.411
+        ],
+        "values": [
+          30000.0,
+          30000.0,
+          30000.0,
+          30000.0,
+          30000.0
+        ],
+        "spanDays": 4.411
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 19,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -1489,115 +2425,20 @@
     }
   },
   {
-    "id": "1606700",
-    "name": "Outdoor Beach Vacation Sun-protection Knitwear",
-    "cat": "PETS",
-    "cost": 6.29,
-    "retail": 36.8,
-    "sellability": 88,
-    "organic": 92,
-    "phase": "MATURE",
-    "verdict": "BUY",
-    "growth": 0.0,
-    "confidence": 0.48,
-    "listed": 5,
-    "age": 10,
-    "volatility": 0,
-    "net": 18.5,
-    "redditScore": 50,
-    "trendsScore": 50,
-    "salesScore": 50,
-    "aliExpressSold": 2000,
-    "aliExpressMedianSold": 37,
-    "seasonPeak": 7,
-    "seasonMult": 1.73,
-    "reason": {
-      "en": "ACHETER — marge nette ~19€/vente (83% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~19€/vente (83% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
-    },
-    "trapVerdict": "VIABLE",
-    "trapHeadline": "✅ Viable jusqu'à un CPA de ~31€ (au-delà, tu perds)",
-    "lossFlags": [
-      {
-        "name": "marge",
-        "level": "green",
-        "reason": "marge nette ~19€/vente"
-      },
-      {
-        "name": "prix",
-        "level": "green",
-        "reason": "retail ~37€ — zone d'impulsion"
-      },
-      {
-        "name": "retour",
-        "level": "unknown",
-        "reason": "avis insuffisants"
-      },
-      {
-        "name": "saturation",
-        "level": "green",
-        "reason": "5 vendeur(s) — peu saturé (niveau)"
-      },
-      {
-        "name": "déclin",
-        "level": "green",
-        "reason": "demande stable/en hausse (~+0%/mois)"
-      }
-    ],
-    "breakevenCpa": 30.5,
-    "detectedHrs": 18,
-    "dossier": {
-      "hasDetail": true,
-      "priceFromCJ": true,
-      "suggestPrice": 36.8,
-      "description": "Product information: Colors: Khaki, blue, white, green, purple, pink, light green, black, coffee, olive green, apricot, light blue, peacock blue, rose red, gray, orange-red, watermelon red Size: One size fits all Lining material: Polyester (Terylene) Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. 2. Please check the size chart carefully before you buy the item, if you don't know how to choose size, please contact our customer service. 3.As you know,",
-      "video": null,
-      "images": [
-        "https://cf.cjdropshipping.com/quick/product/51b5529f-699e-43aa-acad-01fa404bed73.jpg",
-        "https://cf.cjdropshipping.com/quick/product/a8463f0d-2863-4337-a448-40242fcdef12.jpg",
-        "https://cf.cjdropshipping.com/quick/product/8c54516b-c299-48cb-af2f-e2e17dc78161.jpg",
-        "https://cf.cjdropshipping.com/quick/product/124634bb-c766-4702-8bce-732cd7d513ab.jpg",
-        "https://cf.cjdropshipping.com/quick/product/94838a67-3f2e-40df-b958-3e9f8fab6391.jpg",
-        "https://cf.cjdropshipping.com/quick/product/13ff59f6-f568-4dda-9833-b22c59a4b0f7.jpg",
-        "https://cf.cjdropshipping.com/quick/product/dafc6154-34e3-4ada-aceb-addba9f970ae.jpg",
-        "https://cf.cjdropshipping.com/quick/product/40e07ce7-370a-46be-aec2-7c06eddc30b8.jpg"
-      ],
-      "imageCount": 8,
-      "variantCount": 17,
-      "variantOptions": [
-        "Khaki-Free Size",
-        "Blue-Free Size",
-        "White-Free Size",
-        "Green-Free Size",
-        "Purple-Free Size",
-        "Pink-Free Size",
-        "Light Green-Free Size",
-        "Black-Free Size",
-        "Brown-Free Size",
-        "Olive Green-Free Size",
-        "Apricot-Free Size",
-        "Light Blue-Free Size"
-      ],
-      "material": "Cloth",
-      "weightG": 230.0,
-      "supplier": null
-    }
-  },
-  {
     "id": "1628400",
     "name": "Wicker Floor-standing Candle Holder For Garden Decoration",
     "cat": "HOME",
     "cost": 9.12,
     "retail": 61.47,
     "sellability": 87,
-    "organic": 95,
+    "organic": 78,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 2,
-    "age": 13,
-    "volatility": 0,
+    "age": 14,
+    "volatility": 0.0,
     "net": 40.4,
     "redditScore": 50,
     "trendsScore": 50,
@@ -1640,7 +2481,36 @@
       }
     ],
     "breakevenCpa": 52.4,
-    "detectedHrs": 19,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T00:50:10.065970+00:00",
+          "2026-06-19T00:51:01.116536+00:00",
+          "2026-06-20T04:09:26.186571+00:00",
+          "2026-06-21T04:09:31.390424+00:00",
+          "2026-06-22T05:18:49.095544+00:00"
+        ],
+        "days": [
+          0.0,
+          1.001,
+          2.138,
+          3.138,
+          4.187
+        ],
+        "values": [
+          30000.0,
+          30000.0,
+          30000.0,
+          30000.0,
+          30000.0
+        ],
+        "spanDays": 4.187
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 20,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -1677,17 +2547,17 @@
     "name": "Summer Height-increasing Thick-soled Genuine Leather Retro Roman Flat Beach Sandals Flat Heel",
     "cat": "TECH",
     "cost": 10.3,
-    "retail": 61.5,
+    "retail": 61.7,
     "sellability": 87,
     "organic": 14,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
-    "listed": 7,
-    "age": 14,
-    "volatility": 0,
-    "net": 39.2,
+    "confidence": 0.38,
+    "listed": 8,
+    "age": 15,
+    "volatility": 0.0,
+    "net": 39.4,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -1696,8 +2566,8 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~39€/vente (83% brut), 7 vendeurs (validé, peu saturé), produit récent.",
-      "fr": "ACHETER — marge nette ~39€/vente (83% brut), 7 vendeurs (validé, peu saturé), produit récent."
+      "en": "ACHETER — marge nette ~39€/vente (83% brut), 8 vendeurs (validé, peu saturé), produit récent.",
+      "fr": "ACHETER — marge nette ~39€/vente (83% brut), 8 vendeurs (validé, peu saturé), produit récent."
     },
     "trapVerdict": "VIABLE",
     "trapHeadline": "✅ Viable jusqu'à un CPA de ~51€ (au-delà, tu perds)",
@@ -1720,7 +2590,7 @@
       {
         "name": "saturation",
         "level": "green",
-        "reason": "7 vendeur(s) — peu saturé (niveau)"
+        "reason": "8 vendeur(s) — peu saturé (niveau)"
       },
       {
         "name": "déclin",
@@ -1728,12 +2598,32 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 51.2,
-    "detectedHrs": 20,
+    "breakevenCpa": 51.4,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T03:07:42.766953+00:00",
+          "2026-06-21T04:04:00.061593+00:00"
+        ],
+        "days": [
+          0.0,
+          3.039
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.039
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 21,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 61.5,
+      "suggestPrice": 61.7,
       "description": "Product information: Pattern: Solid color Lining material: Microfiber Sizes: 34, 35, 36, 37, 38, 39, 40, 41 Outsole construction: Stitched Outsole material: Rubber Trendy element: Buckle Toe shape: Round toe Upper material: Microfiber Wearing style: With buckle Size: Packing list: Sandals * 1 pair Product Image:",
       "video": null,
       "images": [
@@ -1772,14 +2662,14 @@
     "cost": 13.99,
     "retail": 45.47,
     "sellability": 86,
-    "organic": 46,
+    "organic": 47,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 13,
-    "volatility": 0,
+    "age": 14,
+    "volatility": 0.0,
     "net": 19.5,
     "redditScore": 50,
     "trendsScore": 50,
@@ -1822,7 +2712,36 @@
       }
     ],
     "breakevenCpa": 31.5,
-    "detectedHrs": 21,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T02:20:35.658860+00:00",
+          "2026-06-19T02:20:43.655741+00:00",
+          "2026-06-20T06:23:23.616576+00:00",
+          "2026-06-21T06:25:51.452193+00:00",
+          "2026-06-22T06:33:41.962732+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.169,
+          3.17,
+          4.176
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 4.176
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 22,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -1867,14 +2786,14 @@
     "cost": 22.9,
     "retail": 62.29,
     "sellability": 86,
-    "organic": 73,
+    "organic": 97,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 1,
-    "age": 13,
-    "volatility": 0,
+    "age": 14,
+    "volatility": 0.0,
     "net": 27.4,
     "redditScore": 50,
     "trendsScore": 50,
@@ -1917,7 +2836,42 @@
       }
     ],
     "breakevenCpa": 39.4,
-    "detectedHrs": 22,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T02:07:16.644462+00:00",
+          "2026-06-21T02:08:21.519035+00:00"
+        ],
+        "days": [
+          0.0,
+          3.001
+        ],
+        "values": [
+          4000.0,
+          4000.0
+        ],
+        "spanDays": 3.001
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 23,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -1948,17 +2902,17 @@
     "name": "Portable TEC Turbo Fan, 3-in-1 Cooling Fan, High Speed Rechargeable Fan",
     "cat": "APPAREL",
     "cost": 4.89,
-    "retail": 34.04,
+    "retail": 34.09,
     "sellability": 86,
-    "organic": 97,
+    "organic": 95,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 12,
-    "volatility": 0,
-    "net": 17.1,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 17.2,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -1999,12 +2953,41 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 29.1,
-    "detectedHrs": 23,
+    "breakevenCpa": 29.2,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T00:13:04.948177+00:00",
+          "2026-06-19T00:15:42.076552+00:00",
+          "2026-06-20T02:57:29.317521+00:00",
+          "2026-06-21T02:58:24.376946+00:00",
+          "2026-06-22T02:59:29.952459+00:00"
+        ],
+        "days": [
+          0.0,
+          1.002,
+          2.114,
+          3.115,
+          4.116
+        ],
+        "values": [
+          80000.0,
+          80000.0,
+          80000.0,
+          80000.0,
+          80000.0
+        ],
+        "spanDays": 4.116
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 24,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 34.04,
+      "suggestPrice": 34.09,
       "description": "ICE-COOL BREEZE: Instantly cool down with powerful airflow. Ultra High Speed Turbo Fan: Enjoy ultra-fast cooling at your fingertips. Large Airflow Design: Cool down a larger area effortlessly. Outdoor Application: Perfect for keeping cool during outdoor activities. Convenient Design: Portable and lightweight for easy carrying.",
       "video": null,
       "images": [
@@ -2036,14 +3019,14 @@
     "cost": 5.08,
     "retail": 34.24,
     "sellability": 86,
-    "organic": 22,
+    "organic": 24,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 17,
-    "volatility": 0,
+    "age": 18,
+    "volatility": 0.0,
     "net": 17.2,
     "redditScore": 50,
     "trendsScore": 50,
@@ -2086,7 +3069,36 @@
       }
     ],
     "breakevenCpa": 29.2,
-    "detectedHrs": 24,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T05:42:43.214599+00:00",
+          "2026-06-19T05:50:51.694761+00:00",
+          "2026-06-20T06:52:14.265335+00:00",
+          "2026-06-21T07:06:32.275470+00:00",
+          "2026-06-22T07:09:45.856618+00:00"
+        ],
+        "days": [
+          0.0,
+          1.006,
+          2.048,
+          3.058,
+          4.06
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 4.06
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 25,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -2129,17 +3141,17 @@
     "name": "Hollow-out Backless Sexy Beach Swimsuit Three-piece Bikini Set",
     "cat": "HOME",
     "cost": 6.97,
-    "retail": 36.11,
+    "retail": 35.97,
     "sellability": 85,
-    "organic": 93,
+    "organic": 92,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 2,
-    "age": 12,
-    "volatility": 0,
-    "net": 17.1,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 17.0,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -2180,12 +3192,47 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 29.1,
-    "detectedHrs": 25,
+    "breakevenCpa": 29.0,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T17:02:38.761374+00:00",
+          "2026-06-20T17:06:51.843678+00:00"
+        ],
+        "days": [
+          0.0,
+          3.003
+        ],
+        "values": [
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 3.003
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 26,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 36.11,
+      "suggestPrice": 35.97,
       "description": "Product information: Colors: Mint Green, Orange Blossoms, Rose Pink, Green Coconut Trees, Black Camouflage, Royal Blue Plumeria, Solid Black, Pink Gradient, Pink Camouflage, Flesh-Pink Palm Leaves, Lake Blue Hibiscus, Red Hibiscus, Magenta, Blue Coconut Leaves, Deep Sea Blue Paisley, Blue Waves, Turquoise Palm Rain Leaves, Leopard Print, Mint Green Paisley, Bright Blue, Army Green Stripes, Icy Blue Cashew Flowers, Peacock Blue, Navy Blue with Pink Flowers Sizes: S, M, L, XL, 2XL Lining Composition: Spandex Lining Composition Content: 18% Style: Briefs, Bikini, Boxer Briefs, Triangle Bikini, Sk",
       "video": null,
       "images": [
@@ -2224,17 +3271,17 @@
     "name": "Hollow-out Backless Sexy Beach Swimsuit Three-piece Bikini Set",
     "cat": "HOME",
     "cost": 6.97,
-    "retail": 36.11,
+    "retail": 35.97,
     "sellability": 85,
     "organic": 42,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 7,
-    "age": 12,
-    "volatility": 0,
-    "net": 17.1,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 17.0,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -2275,12 +3322,47 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 29.1,
-    "detectedHrs": 26,
+    "breakevenCpa": 29.0,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T17:02:38.761374+00:00",
+          "2026-06-20T17:06:51.843678+00:00"
+        ],
+        "days": [
+          0.0,
+          3.003
+        ],
+        "values": [
+          2000.0,
+          2000.0
+        ],
+        "spanDays": 3.003
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 27,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 36.11,
+      "suggestPrice": 35.97,
       "description": "Product information: Colors: Mint Green, Orange Blossoms, Rose Pink, Green Coconut Trees, Black Camouflage, Royal Blue Plumeria, Solid Black, Pink Gradient, Pink Camouflage, Flesh-Pink Palm Leaves, Lake Blue Hibiscus, Red Hibiscus, Magenta, Blue Coconut Leaves, Deep Sea Blue Paisley, Blue Waves, Turquoise Palm Rain Leaves, Leopard Print, Mint Green Paisley, Bright Blue, Army Green Stripes, Icy Blue Cashew Flowers, Peacock Blue, Navy Blue with Pink Flowers Sizes: S, M, L, XL, 2XL Lining Composition: Spandex Lining Composition Content: 18% Style: Briefs, Bikini, Boxer Briefs, Triangle Bikini, Sk",
       "video": null,
       "images": [
@@ -2315,198 +3397,21 @@
     }
   },
   {
-    "id": "1618800",
-    "name": "Flat-bottomed Peep-toe Large-size Strap Beach Casual Sandals",
-    "cat": "HOME",
-    "cost": 10.82,
-    "retail": 64.6,
-    "sellability": 85,
-    "organic": 29,
-    "phase": "DECLINING",
-    "verdict": "BUY",
-    "growth": -0.884,
-    "confidence": 0.46,
-    "listed": 7,
-    "age": 14,
-    "volatility": 0,
-    "net": 41.8,
-    "redditScore": 50,
-    "trendsScore": 50,
-    "salesScore": 50,
-    "aliExpressSold": 10000,
-    "aliExpressMedianSold": 600,
-    "seasonPeak": 7,
-    "seasonMult": 1.73,
-    "reason": {
-      "en": "ACHETER — marge nette ~42€/vente (83% brut), 7 vendeurs (validé, peu saturé), produit récent.",
-      "fr": "ACHETER — marge nette ~42€/vente (83% brut), 7 vendeurs (validé, peu saturé), produit récent."
-    },
-    "trapVerdict": "TRAP",
-    "trapHeadline": "❌ Piège : demande en chute (~-88%/mois) — tendance qui meurt, tu arrives trop tard",
-    "lossFlags": [
-      {
-        "name": "marge",
-        "level": "green",
-        "reason": "marge nette ~42€/vente"
-      },
-      {
-        "name": "prix",
-        "level": "green",
-        "reason": "retail ~65€ — zone d'impulsion"
-      },
-      {
-        "name": "retour",
-        "level": "unknown",
-        "reason": "avis insuffisants"
-      },
-      {
-        "name": "saturation",
-        "level": "green",
-        "reason": "7 vendeur(s) — peu saturé (niveau)"
-      },
-      {
-        "name": "déclin",
-        "level": "red",
-        "reason": "demande en chute (~-88%/mois) — tendance qui meurt, tu arrives trop tard"
-      }
-    ],
-    "breakevenCpa": 53.8,
-    "detectedHrs": 27,
-    "dossier": {
-      "hasDetail": true,
-      "priceFromCJ": true,
-      "suggestPrice": 64.6,
-      "description": "Product information: Lining material: Fabric Color: Green, Rose Gold, Rose Red, Light Gold, Deep Gold, Silver Shaft height: Low-top Size: 34, 35, 36, 37, 38, 39, 40, 41, 42, 43 Outsole construction: Cemented sole Outsole material: Rubber Toe shape: Peep-toe Upper material: PU Closure type: Buckle closure Style: Everyday casual Packing list: Sandals *1Pair Product Image:",
-      "video": null,
-      "images": [
-        "https://cf.cjdropshipping.com/quick/product/5281a9ec-92e7-4f8b-992b-41c3422dc2fc.jpg",
-        "https://cf.cjdropshipping.com/quick/product/04789b4f-c06b-4289-9ae3-620803d6c569.jpg",
-        "https://cf.cjdropshipping.com/quick/product/28c990c9-f5bf-45cd-a032-ebe5ae715955.jpg",
-        "https://cf.cjdropshipping.com/quick/product/444853ba-80c4-48ef-bea5-2497eec15993.jpg",
-        "https://cf.cjdropshipping.com/quick/product/be7fe106-6b5e-4a5a-9a54-51b078688319.jpg",
-        "https://cf.cjdropshipping.com/quick/product/9c6c7999-4075-422c-beac-f91fa2341fea.jpg"
-      ],
-      "imageCount": 6,
-      "variantCount": 60,
-      "variantOptions": [
-        "Green-34",
-        "Green-35",
-        "Green-36",
-        "Green-37",
-        "Green-38",
-        "Green-39",
-        "Green-40",
-        "Green-41",
-        "Green-42",
-        "Green-43",
-        "Rose Gold-34",
-        "Rose Gold-35"
-      ],
-      "material": "Others",
-      "weightG": 294.0,
-      "supplier": null
-    }
-  },
-  {
-    "id": "3484673",
-    "name": "Battery Ultrasonic Garden Deterrent Repeller Animal Bird Cat Scarer Pest Fox Dog",
-    "cat": "WELLNESS",
-    "cost": 12.94,
-    "retail": 64.83,
-    "sellability": 85,
-    "organic": 2,
-    "phase": "MATURE",
-    "verdict": "BUY",
-    "growth": 0.0,
-    "confidence": 0.38,
-    "listed": 14,
-    "age": 17,
-    "volatility": 0,
-    "net": 39.9,
-    "redditScore": 50,
-    "trendsScore": 50,
-    "salesScore": 50,
-    "aliExpressSold": 10000,
-    "aliExpressMedianSold": 800,
-    "seasonPeak": 5,
-    "seasonMult": 1.42,
-    "reason": {
-      "en": "ACHETER — marge nette ~40€/vente (80% brut), 14 vendeurs (validé, peu saturé), produit récent.",
-      "fr": "ACHETER — marge nette ~40€/vente (80% brut), 14 vendeurs (validé, peu saturé), produit récent."
-    },
-    "trapVerdict": "VIABLE",
-    "trapHeadline": "✅ Viable jusqu'à un CPA de ~52€ (au-delà, tu perds)",
-    "lossFlags": [
-      {
-        "name": "marge",
-        "level": "green",
-        "reason": "marge nette ~40€/vente"
-      },
-      {
-        "name": "prix",
-        "level": "green",
-        "reason": "retail ~65€ — zone d'impulsion"
-      },
-      {
-        "name": "retour",
-        "level": "unknown",
-        "reason": "avis insuffisants"
-      },
-      {
-        "name": "saturation",
-        "level": "green",
-        "reason": "14 vendeur(s) — peu saturé (niveau)"
-      },
-      {
-        "name": "déclin",
-        "level": "unknown",
-        "reason": "historique de demande insuffisant (< 3 mesures)"
-      }
-    ],
-    "breakevenCpa": 51.9,
-    "detectedHrs": 28,
-    "dossier": {
-      "hasDetail": true,
-      "priceFromCJ": true,
-      "suggestPrice": 64.83,
-      "description": "FAST SHIPPING GREAT CUSTOMER SERVICE SECURE HASSLE FREE SHOPPING All items are covered by manufacturer warranty CUSTOMER SATISFACTION GUARANTEED Ship Within 24 Hours 1-3 Days ArrivalUK Local StockPremium Quality Guarantee 100% Bran-new and Good Quality 2025 New Upgrade Battery Power Ultrasonic Repeller 100% Brand New and High Quality !!!!! If item not ok ,we will resend or refund !!!!! Please Attention to:For humans, a part of the frequency range is audible (16 ~ 20kHz). Please place the Ultrasonic cat repeller as far away from the living area as possible. Do not install the unit in areas wher",
-      "video": null,
-      "images": [
-        "https://cf.cjdropshipping.com/edf9ee06-487c-452e-9c34-6c4a8633c9a6.jpg",
-        "https://cf.cjdropshipping.com/f96a0781-9c46-4133-ab33-aeeffb7aff65.jpg",
-        "https://cf.cjdropshipping.com/dec9b6a7-8094-40de-a3ed-e4744c8e14b4.jpg",
-        "https://cf.cjdropshipping.com/f8cf5738-558c-42d1-8b3d-f5568909c2a4.jpg",
-        "https://cf.cjdropshipping.com/db41de36-7910-4955-8351-e9dd4de4ebb7.jpg",
-        "https://cf.cjdropshipping.com/7ec628d9-a46a-4daf-b848-0a149d93c7a8.jpg",
-        "https://cf.cjdropshipping.com/8c86b4d8-9e89-4757-a0cd-a43624bbb74c.jpg",
-        "https://cf.cjdropshipping.com/26fc9ee9-d268-4826-be11-f8d791f987d6.jpg"
-      ],
-      "imageCount": 8,
-      "variantCount": 1,
-      "variantOptions": [
-        "1pcs"
-      ],
-      "material": "Others",
-      "weightG": 299.0,
-      "supplier": "Yiwu Ruijia Auto Supplies Co., Ltd."
-    }
-  },
-  {
     "id": "8709633",
     "name": "Full Set Of Outdoor Foldable Portable Camping Tent Gear For Overnight Camping And Picnics, Sun Shelter With One-touch Setup",
     "cat": "OUTDOOR",
     "cost": 19.9,
-    "retail": 64.88,
+    "retail": 64.68,
     "sellability": 85,
-    "organic": 27,
+    "organic": 31,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 16,
-    "volatility": 0,
-    "net": 33.0,
+    "age": 17,
+    "volatility": 0.0,
+    "net": 32.8,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -2547,12 +3452,41 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 45.0,
-    "detectedHrs": 29,
+    "breakevenCpa": 44.8,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T05:34:13.469548+00:00",
+          "2026-06-19T05:34:15.545578+00:00",
+          "2026-06-20T05:34:21.165357+00:00",
+          "2026-06-21T05:37:33.303299+00:00",
+          "2026-06-22T05:37:36.899741+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.0,
+          3.002,
+          4.002
+        ],
+        "values": [
+          30000.0,
+          30000.0,
+          30000.0,
+          30000.0,
+          30000.0
+        ],
+        "spanDays": 4.002
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 28,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 64.88,
+      "suggestPrice": 64.68,
       "description": null,
       "video": null,
       "images": [
@@ -2580,105 +3514,21 @@
     }
   },
   {
-    "id": "4753922",
-    "name": "5pcs Desktop RGB Fans PC 120mm LED Cooling Fans With Remote And Controller New",
-    "cat": "TECH",
-    "cost": 17.4,
-    "retail": 48.9,
-    "sellability": 85,
-    "organic": 8,
-    "phase": "MATURE",
-    "verdict": "BUY",
-    "growth": 0.0,
-    "confidence": 0.38,
-    "listed": 5,
-    "age": 17,
-    "volatility": 0,
-    "net": 19.5,
-    "redditScore": 50,
-    "trendsScore": 50,
-    "salesScore": 50,
-    "aliExpressSold": 50000,
-    "aliExpressMedianSold": 3000,
-    "seasonPeak": 7,
-    "seasonMult": 1.73,
-    "reason": {
-      "en": "ACHETER — marge nette ~20€/vente (64% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~20€/vente (64% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
-    },
-    "trapVerdict": "VIABLE",
-    "trapHeadline": "✅ Viable jusqu'à un CPA de ~32€ (au-delà, tu perds)",
-    "lossFlags": [
-      {
-        "name": "marge",
-        "level": "green",
-        "reason": "marge nette ~20€/vente"
-      },
-      {
-        "name": "prix",
-        "level": "green",
-        "reason": "retail ~49€ — zone d'impulsion"
-      },
-      {
-        "name": "retour",
-        "level": "unknown",
-        "reason": "avis insuffisants"
-      },
-      {
-        "name": "saturation",
-        "level": "green",
-        "reason": "5 vendeur(s) — peu saturé (niveau)"
-      },
-      {
-        "name": "déclin",
-        "level": "unknown",
-        "reason": "historique de demande insuffisant (< 3 mesures)"
-      }
-    ],
-    "breakevenCpa": 31.5,
-    "detectedHrs": 30,
-    "dossier": {
-      "hasDetail": true,
-      "priceFromCJ": true,
-      "suggestPrice": 48.9,
-      "description": "DESCRIPTION Dual-Ring LED Lights - Perfect Match for RGB Lighting Computer Systems Stylish Dual Rings, upgrade the look of your gaming PC with chrome RGB LED dual ring fans that quietly cool and optimize airflow via low noise and increased lifespan rifle bearings. With magical lighting effect by providing multiple-choice control including different modes. Different from most basic RGB Fans controlled by a fan hub and pc reset key, the fan kit is greatly upgraded to RF remote control, which makes it more intelligent and convenient to control on/off and choose preferred light effect. RGB Remote ",
-      "video": null,
-      "images": [
-        "https://cf.cjdropshipping.com/7db1acc4-5d35-4bb9-b3fd-bddf6db4614f.jpg",
-        "https://cf.cjdropshipping.com/a63c4db2-ba2e-4e68-b516-c702a53cf74d.jpg",
-        "https://cf.cjdropshipping.com/3ab559e8-deb5-4742-9a03-babdc3cef936.jpg",
-        "https://cf.cjdropshipping.com/b9ef16c5-bffb-4aac-938a-4e3852143dfd.jpg",
-        "https://cf.cjdropshipping.com/3365bbc8-6415-44b9-b06f-4ba7aa6fd64c.jpg",
-        "https://cf.cjdropshipping.com/590e417f-809c-433e-9eb6-c200fbcfe3d0.jpg",
-        "https://cf.cjdropshipping.com/0f43edd3-509d-471d-981a-58b7ef6c44c5.jpg",
-        "https://cf.cjdropshipping.com/2b1bda0c-307e-41c2-ac11-f128b2d04177.jpg"
-      ],
-      "imageCount": 8,
-      "variantCount": 1,
-      "variantOptions": [
-        "As shown"
-      ],
-      "material": "Plastic",
-      "weightG": 860.0,
-      "supplier": "Ruian Yizhong International Trade Co., Ltd."
-    }
-  },
-  {
     "id": "1612900",
     "name": "Sexy Chic European And American Bikini Halter-neck Swimsuit",
     "cat": "WELLNESS",
     "cost": 9.78,
-    "retail": 50.67,
+    "retail": 50.47,
     "sellability": 85,
     "organic": 0,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.38,
+    "confidence": 0.45,
     "listed": 22,
-    "age": 17,
-    "volatility": 0,
-    "net": 28.9,
+    "age": 18,
+    "volatility": 0.0,
+    "net": 28.7,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -2701,7 +3551,7 @@
       {
         "name": "prix",
         "level": "green",
-        "reason": "retail ~51€ — zone d'impulsion"
+        "reason": "retail ~50€ — zone d'impulsion"
       },
       {
         "name": "retour",
@@ -2719,12 +3569,47 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 40.9,
-    "detectedHrs": 31,
+    "breakevenCpa": 40.7,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T06:16:09.967105+00:00",
+          "2026-06-21T06:33:09.337274+00:00"
+        ],
+        "days": [
+          0.0,
+          3.012
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.012
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 29,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 50.67,
+      "suggestPrice": 50.47,
       "description": "Product information: Color: White, Light Yellow, Sky Blue, Black Size: S, M, L Lining Material: Polyester (Polyester) Lining Content: None Style: Underwear Pattern Style: Solid Color, Sexy, European and American Lining Name: None Fabric Name: Polyester Applicable Scene: Swimming and Water Sports Fabric Material: Polyester (Polyester) Sleeve Length: Sleeveless Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. 2. Please check the size chart carefully bef",
       "video": null,
       "images": [
@@ -2757,21 +3642,301 @@
     }
   },
   {
+    "id": "1618800",
+    "name": "Flat-bottomed Peep-toe Large-size Strap Beach Casual Sandals",
+    "cat": "HOME",
+    "cost": 10.82,
+    "retail": 64.82,
+    "sellability": 85,
+    "organic": 17,
+    "phase": "GROWTH",
+    "verdict": "BUY",
+    "growth": 5.862,
+    "confidence": 0.56,
+    "listed": 7,
+    "age": 15,
+    "volatility": 0.0,
+    "net": 42.0,
+    "redditScore": 50,
+    "trendsScore": 50,
+    "salesScore": 50,
+    "aliExpressSold": 10000,
+    "aliExpressMedianSold": 600,
+    "seasonPeak": 7,
+    "seasonMult": 1.73,
+    "reason": {
+      "en": "ACHETER — marge nette ~42€/vente (83% brut), 7 vendeurs (validé, peu saturé), produit récent.",
+      "fr": "ACHETER — marge nette ~42€/vente (83% brut), 7 vendeurs (validé, peu saturé), produit récent."
+    },
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~54€ (au-delà, tu perds)",
+    "lossFlags": [
+      {
+        "name": "marge",
+        "level": "green",
+        "reason": "marge nette ~42€/vente"
+      },
+      {
+        "name": "prix",
+        "level": "green",
+        "reason": "retail ~65€ — zone d'impulsion"
+      },
+      {
+        "name": "retour",
+        "level": "unknown",
+        "reason": "avis insuffisants"
+      },
+      {
+        "name": "saturation",
+        "level": "green",
+        "reason": "7 vendeur(s) — peu saturé (niveau)"
+      },
+      {
+        "name": "déclin",
+        "level": "green",
+        "reason": "demande en forte hausse"
+      }
+    ],
+    "breakevenCpa": 54.0,
+    "history": {
+      "sales": {
+        "points": 7,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997,
+          5.997,
+          6.997
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          2000.0,
+          2000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 6.997
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T11:45:16.628691+00:00",
+          "2026-06-18T12:05:55.969398+00:00",
+          "2026-06-20T07:52:12.381996+00:00",
+          "2026-06-21T07:55:06.910223+00:00",
+          "2026-06-22T07:57:18.375141+00:00"
+        ],
+        "days": [
+          0.0,
+          1.014,
+          2.838,
+          3.84,
+          4.842
+        ],
+        "values": [
+          7000.0,
+          7000.0,
+          7000.0,
+          8000.0,
+          8000.0
+        ],
+        "spanDays": 4.842
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 30,
+    "dossier": {
+      "hasDetail": true,
+      "priceFromCJ": true,
+      "suggestPrice": 64.82,
+      "description": "Product information: Lining material: Fabric Color: Green, Rose Gold, Rose Red, Light Gold, Deep Gold, Silver Shaft height: Low-top Size: 34, 35, 36, 37, 38, 39, 40, 41, 42, 43 Outsole construction: Cemented sole Outsole material: Rubber Toe shape: Peep-toe Upper material: PU Closure type: Buckle closure Style: Everyday casual Packing list: Sandals *1Pair Product Image:",
+      "video": null,
+      "images": [
+        "https://cf.cjdropshipping.com/quick/product/5281a9ec-92e7-4f8b-992b-41c3422dc2fc.jpg",
+        "https://cf.cjdropshipping.com/quick/product/04789b4f-c06b-4289-9ae3-620803d6c569.jpg",
+        "https://cf.cjdropshipping.com/quick/product/28c990c9-f5bf-45cd-a032-ebe5ae715955.jpg",
+        "https://cf.cjdropshipping.com/quick/product/444853ba-80c4-48ef-bea5-2497eec15993.jpg",
+        "https://cf.cjdropshipping.com/quick/product/be7fe106-6b5e-4a5a-9a54-51b078688319.jpg",
+        "https://cf.cjdropshipping.com/quick/product/9c6c7999-4075-422c-beac-f91fa2341fea.jpg"
+      ],
+      "imageCount": 6,
+      "variantCount": 60,
+      "variantOptions": [
+        "Green-34",
+        "Green-35",
+        "Green-36",
+        "Green-37",
+        "Green-38",
+        "Green-39",
+        "Green-40",
+        "Green-41",
+        "Green-42",
+        "Green-43",
+        "Rose Gold-34",
+        "Rose Gold-35"
+      ],
+      "material": "Others",
+      "weightG": 294.0,
+      "supplier": null
+    }
+  },
+  {
+    "id": "4753922",
+    "name": "5pcs Desktop RGB Fans PC 120mm LED Cooling Fans With Remote And Controller New",
+    "cat": "TECH",
+    "cost": 17.4,
+    "retail": 48.9,
+    "sellability": 85,
+    "organic": 7,
+    "phase": "MATURE",
+    "verdict": "BUY",
+    "growth": 0.0,
+    "confidence": 0.45,
+    "listed": 6,
+    "age": 18,
+    "volatility": 0.0,
+    "net": 19.5,
+    "redditScore": 50,
+    "trendsScore": 50,
+    "salesScore": 50,
+    "aliExpressSold": 50000,
+    "aliExpressMedianSold": 3000,
+    "seasonPeak": 7,
+    "seasonMult": 1.73,
+    "reason": {
+      "en": "ACHETER — marge nette ~20€/vente (64% brut), 6 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~20€/vente (64% brut), 6 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+    },
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~32€ (au-delà, tu perds)",
+    "lossFlags": [
+      {
+        "name": "marge",
+        "level": "green",
+        "reason": "marge nette ~20€/vente"
+      },
+      {
+        "name": "prix",
+        "level": "green",
+        "reason": "retail ~49€ — zone d'impulsion"
+      },
+      {
+        "name": "retour",
+        "level": "unknown",
+        "reason": "avis insuffisants"
+      },
+      {
+        "name": "saturation",
+        "level": "green",
+        "reason": "6 vendeur(s) — peu saturé (niveau)"
+      },
+      {
+        "name": "déclin",
+        "level": "unknown",
+        "reason": "historique de demande insuffisant (< 3 mesures)"
+      }
+    ],
+    "breakevenCpa": 31.5,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          50000.0,
+          50000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T07:05:46.327999+00:00",
+          "2026-06-19T07:05:48.755000+00:00",
+          "2026-06-20T07:05:52.834781+00:00",
+          "2026-06-21T07:05:58.143368+00:00",
+          "2026-06-22T07:06:04.248849+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.0,
+          3.0,
+          4.0
+        ],
+        "values": [
+          80000.0,
+          70000.0,
+          70000.0,
+          80000.0,
+          80000.0
+        ],
+        "spanDays": 4.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 31,
+    "dossier": {
+      "hasDetail": true,
+      "priceFromCJ": true,
+      "suggestPrice": 48.9,
+      "description": "DESCRIPTION Dual-Ring LED Lights - Perfect Match for RGB Lighting Computer Systems Stylish Dual Rings, upgrade the look of your gaming PC with chrome RGB LED dual ring fans that quietly cool and optimize airflow via low noise and increased lifespan rifle bearings. With magical lighting effect by providing multiple-choice control including different modes. Different from most basic RGB Fans controlled by a fan hub and pc reset key, the fan kit is greatly upgraded to RF remote control, which makes it more intelligent and convenient to control on/off and choose preferred light effect. RGB Remote ",
+      "video": null,
+      "images": [
+        "https://cf.cjdropshipping.com/7db1acc4-5d35-4bb9-b3fd-bddf6db4614f.jpg",
+        "https://cf.cjdropshipping.com/a63c4db2-ba2e-4e68-b516-c702a53cf74d.jpg",
+        "https://cf.cjdropshipping.com/3ab559e8-deb5-4742-9a03-babdc3cef936.jpg",
+        "https://cf.cjdropshipping.com/b9ef16c5-bffb-4aac-938a-4e3852143dfd.jpg",
+        "https://cf.cjdropshipping.com/3365bbc8-6415-44b9-b06f-4ba7aa6fd64c.jpg",
+        "https://cf.cjdropshipping.com/590e417f-809c-433e-9eb6-c200fbcfe3d0.jpg",
+        "https://cf.cjdropshipping.com/0f43edd3-509d-471d-981a-58b7ef6c44c5.jpg",
+        "https://cf.cjdropshipping.com/2b1bda0c-307e-41c2-ac11-f128b2d04177.jpg"
+      ],
+      "imageCount": 8,
+      "variantCount": 1,
+      "variantOptions": [
+        "As shown"
+      ],
+      "material": "Plastic",
+      "weightG": 860.0,
+      "supplier": "Ruian Yizhong International Trade Co., Ltd."
+    }
+  },
+  {
     "id": "7366402",
     "name": "Beach Sun Shelter Tents, Outdoor Tents For Fishing, Camping And Travelling, Portable Fishing Tents, Camping Tents",
     "cat": "OUTDOOR",
     "cost": 19.99,
-    "retail": 65.17,
+    "retail": 64.97,
     "sellability": 85,
-    "organic": 25,
+    "organic": 29,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 4,
-    "age": 16,
-    "volatility": 0,
-    "net": 33.2,
+    "age": 17,
+    "volatility": 0.0,
+    "net": 33.0,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -2812,12 +3977,41 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 45.2,
+    "breakevenCpa": 45.0,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T05:34:21.809921+00:00",
+          "2026-06-19T05:34:24.097208+00:00",
+          "2026-06-20T08:23:30.766957+00:00",
+          "2026-06-21T08:27:37.144396+00:00",
+          "2026-06-22T08:41:14.809681+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.117,
+          3.12,
+          4.13
+        ],
+        "values": [
+          7000.0,
+          7000.0,
+          7000.0,
+          7000.0,
+          10000.0
+        ],
+        "spanDays": 4.13
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 32,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 65.17,
+      "suggestPrice": 64.97,
       "description": null,
       "video": null,
       "images": [
@@ -2838,17 +4032,17 @@
     "name": "Fully Automatic Folding Outdoor Tent, Instant Setup For Camping & Beach, Double-Layer Thickened Weatherproof Tent For 3-4 People",
     "cat": "OUTDOOR",
     "cost": 19.99,
-    "retail": 65.17,
+    "retail": 64.97,
     "sellability": 85,
-    "organic": 24,
+    "organic": 27,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 16,
-    "volatility": 0,
-    "net": 33.2,
+    "age": 17,
+    "volatility": 0.0,
+    "net": 33.0,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -2889,12 +4083,41 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 45.2,
+    "breakevenCpa": 45.0,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T05:32:32.179436+00:00",
+          "2026-06-19T05:32:45.604985+00:00",
+          "2026-06-20T07:45:46.816632+00:00",
+          "2026-06-21T07:47:16.839813+00:00",
+          "2026-06-22T07:48:36.342929+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.093,
+          3.094,
+          4.094
+        ],
+        "values": [
+          10000.0,
+          8000.0,
+          8000.0,
+          8000.0,
+          8000.0
+        ],
+        "spanDays": 4.094
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
     "detectedHrs": 33,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 65.17,
+      "suggestPrice": 64.97,
       "description": null,
       "video": null,
       "images": [
@@ -2925,20 +4148,148 @@
     }
   },
   {
+    "id": "3484673",
+    "name": "Battery Ultrasonic Garden Deterrent Repeller Animal Bird Cat Scarer Pest Fox Dog",
+    "cat": "WELLNESS",
+    "cost": 12.94,
+    "retail": 65.48,
+    "sellability": 84,
+    "organic": 2,
+    "phase": "MATURE",
+    "verdict": "BUY",
+    "growth": 0.0,
+    "confidence": 0.45,
+    "listed": 14,
+    "age": 18,
+    "volatility": 0.0,
+    "net": 40.5,
+    "redditScore": 50,
+    "trendsScore": 50,
+    "salesScore": 50,
+    "aliExpressSold": 10000,
+    "aliExpressMedianSold": 800,
+    "seasonPeak": 5,
+    "seasonMult": 1.42,
+    "reason": {
+      "en": "ACHETER — marge nette ~41€/vente (80% brut), 14 vendeurs (validé, peu saturé), produit récent.",
+      "fr": "ACHETER — marge nette ~41€/vente (80% brut), 14 vendeurs (validé, peu saturé), produit récent."
+    },
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~53€ (au-delà, tu perds)",
+    "lossFlags": [
+      {
+        "name": "marge",
+        "level": "green",
+        "reason": "marge nette ~41€/vente"
+      },
+      {
+        "name": "prix",
+        "level": "green",
+        "reason": "retail ~65€ — zone d'impulsion"
+      },
+      {
+        "name": "retour",
+        "level": "unknown",
+        "reason": "avis insuffisants"
+      },
+      {
+        "name": "saturation",
+        "level": "green",
+        "reason": "14 vendeur(s) — peu saturé (niveau)"
+      },
+      {
+        "name": "déclin",
+        "level": "unknown",
+        "reason": "historique de demande insuffisant (< 3 mesures)"
+      }
+    ],
+    "breakevenCpa": 52.5,
+    "history": {
+      "sales": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00"
+        ],
+        "days": [
+          0.0,
+          0.999
+        ],
+        "values": [
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 0.999
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T06:59:06.614574+00:00",
+          "2026-06-19T07:05:18.098647+00:00",
+          "2026-06-20T08:26:31.819999+00:00",
+          "2026-06-21T08:26:37.727632+00:00",
+          "2026-06-22T08:50:03.092879+00:00"
+        ],
+        "days": [
+          0.0,
+          1.004,
+          2.061,
+          3.061,
+          4.077
+        ],
+        "values": [
+          6000.0,
+          7000.0,
+          9000.0,
+          6000.0,
+          7000.0
+        ],
+        "spanDays": 4.077
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 34,
+    "dossier": {
+      "hasDetail": true,
+      "priceFromCJ": true,
+      "suggestPrice": 65.48,
+      "description": "FAST SHIPPING GREAT CUSTOMER SERVICE SECURE HASSLE FREE SHOPPING All items are covered by manufacturer warranty CUSTOMER SATISFACTION GUARANTEED Ship Within 24 Hours 1-3 Days ArrivalUK Local StockPremium Quality Guarantee 100% Bran-new and Good Quality 2025 New Upgrade Battery Power Ultrasonic Repeller 100% Brand New and High Quality !!!!! If item not ok ,we will resend or refund !!!!! Please Attention to:For humans, a part of the frequency range is audible (16 ~ 20kHz). Please place the Ultrasonic cat repeller as far away from the living area as possible. Do not install the unit in areas wher",
+      "video": null,
+      "images": [
+        "https://cf.cjdropshipping.com/edf9ee06-487c-452e-9c34-6c4a8633c9a6.jpg",
+        "https://cf.cjdropshipping.com/f96a0781-9c46-4133-ab33-aeeffb7aff65.jpg",
+        "https://cf.cjdropshipping.com/dec9b6a7-8094-40de-a3ed-e4744c8e14b4.jpg",
+        "https://cf.cjdropshipping.com/f8cf5738-558c-42d1-8b3d-f5568909c2a4.jpg",
+        "https://cf.cjdropshipping.com/db41de36-7910-4955-8351-e9dd4de4ebb7.jpg",
+        "https://cf.cjdropshipping.com/7ec628d9-a46a-4daf-b848-0a149d93c7a8.jpg",
+        "https://cf.cjdropshipping.com/8c86b4d8-9e89-4757-a0cd-a43624bbb74c.jpg",
+        "https://cf.cjdropshipping.com/26fc9ee9-d268-4826-be11-f8d791f987d6.jpg"
+      ],
+      "imageCount": 8,
+      "variantCount": 1,
+      "variantOptions": [
+        "1pcs"
+      ],
+      "material": "Others",
+      "weightG": 299.0,
+      "supplier": "Yiwu Ruijia Auto Supplies Co., Ltd."
+    }
+  },
+  {
     "id": "4428673",
     "name": "Outdoor Folding Table, Roll-up Table, Portable Tables And Chairs For Picnic, Outdoor Cooking, Barbecue And Camping",
     "cat": "BEAUTY",
     "cost": 12.99,
     "retail": 42.22,
     "sellability": 83,
-    "organic": 83,
+    "organic": 41,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
-    "listed": 4,
-    "age": 12,
-    "volatility": 0,
+    "confidence": 0.38,
+    "listed": 5,
+    "age": 13,
+    "volatility": 0.0,
     "net": 17.2,
     "redditScore": 50,
     "trendsScore": 50,
@@ -2948,8 +4299,8 @@
     "seasonPeak": 5,
     "seasonMult": 1.42,
     "reason": {
-      "en": "ACHETER — marge nette ~17€/vente (69% brut), 4 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~17€/vente (69% brut), 4 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+      "en": "ACHETER — marge nette ~17€/vente (69% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~17€/vente (69% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
     "trapVerdict": "VIABLE",
     "trapHeadline": "✅ Viable jusqu'à un CPA de ~29€ (au-delà, tu perds)",
@@ -2972,7 +4323,7 @@
       {
         "name": "saturation",
         "level": "green",
-        "reason": "4 vendeur(s) — peu saturé (niveau)"
+        "reason": "5 vendeur(s) — peu saturé (niveau)"
       },
       {
         "name": "déclin",
@@ -2981,7 +4332,36 @@
       }
     ],
     "breakevenCpa": 29.2,
-    "detectedHrs": 34,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T00:17:57.052199+00:00",
+          "2026-06-19T00:19:24.911064+00:00",
+          "2026-06-20T08:43:32.461194+00:00",
+          "2026-06-21T08:45:02.740826+00:00",
+          "2026-06-22T08:46:36.828253+00:00"
+        ],
+        "days": [
+          0.0,
+          1.001,
+          2.351,
+          3.352,
+          4.353
+        ],
+        "values": [
+          6000.0,
+          6000.0,
+          6000.0,
+          6000.0,
+          3000.0
+        ],
+        "spanDays": 4.353
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 35,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3025,10 +4405,10 @@
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
-    "listed": 4,
-    "age": 7,
-    "volatility": 0,
+    "confidence": 0.38,
+    "listed": 6,
+    "age": 8,
+    "volatility": 0.0,
     "net": 45.4,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3038,8 +4418,8 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~45€/vente (85% brut), 4 vendeurs (validé, peu saturé), produit récent.",
-      "fr": "ACHETER — marge nette ~45€/vente (85% brut), 4 vendeurs (validé, peu saturé), produit récent."
+      "en": "ACHETER — marge nette ~45€/vente (85% brut), 6 vendeurs (validé, peu saturé), produit récent.",
+      "fr": "ACHETER — marge nette ~45€/vente (85% brut), 6 vendeurs (validé, peu saturé), produit récent."
     },
     "trapVerdict": "VIABLE",
     "trapHeadline": "✅ Viable jusqu'à un CPA de ~57€ (au-delà, tu perds)",
@@ -3062,7 +4442,7 @@
       {
         "name": "saturation",
         "level": "green",
-        "reason": "4 vendeur(s) — peu saturé (niveau)"
+        "reason": "6 vendeur(s) — peu saturé (niveau)"
       },
       {
         "name": "déclin",
@@ -3071,7 +4451,36 @@
       }
     ],
     "breakevenCpa": 57.4,
-    "detectedHrs": 35,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T09:28:13.211002+00:00",
+          "2026-06-19T09:29:51.829654+00:00",
+          "2026-06-20T09:32:04.995787+00:00",
+          "2026-06-21T09:34:36.391701+00:00",
+          "2026-06-22T13:06:05.135877+00:00"
+        ],
+        "days": [
+          0.0,
+          1.001,
+          2.003,
+          3.004,
+          4.151
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 4.151
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 36,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3099,16 +4508,16 @@
     "name": "One-piece Hollowed-out Swimsuit With Drawstring",
     "cat": "HOME",
     "cost": 4.7,
-    "retail": 32.58,
+    "retail": 32.62,
     "sellability": 83,
-    "organic": 39,
+    "organic": 44,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 2,
-    "age": 14,
-    "volatility": 0,
+    "age": 15,
+    "volatility": 0.0,
     "net": 15.9,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3151,11 +4560,31 @@
       }
     ],
     "breakevenCpa": 27.9,
-    "detectedHrs": 36,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T03:58:42.263620+00:00",
+          "2026-06-21T04:07:54.089287+00:00"
+        ],
+        "days": [
+          0.0,
+          3.006
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.006
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 37,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 32.58,
+      "suggestPrice": 32.62,
       "description": "Product information: Color: Black Size: S, M, L Lining Composition: Spandex Lining Content: 80% Style: Leather Pants, Bikini, Boxer Briefs, Triangle Bikini, Kick-Flap Bikini, Two-Piece Swimsuit, Casual Surf Swimsuit Pattern Style: Solid Color, Sexy, European and American Style Lining Material: Polyester Fabric Material: Nylon Applicable Occasions: Swimming and Water Sports Applicable Gender: Women’s Size: Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measuremen",
       "video": null,
       "images": [
@@ -3183,16 +4612,16 @@
     "name": "Racing-style Modest One-piece Swimsuit For Curvy Figures Perfect For Hot Springs And Swimming",
     "cat": "HOME",
     "cost": 4.7,
-    "retail": 32.58,
+    "retail": 32.62,
     "sellability": 83,
-    "organic": 44,
+    "organic": 46,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 14,
-    "volatility": 0,
+    "age": 15,
+    "volatility": 0.0,
     "net": 15.9,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3235,11 +4664,31 @@
       }
     ],
     "breakevenCpa": 27.9,
-    "detectedHrs": 37,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T11:34:04.870967+00:00",
+          "2026-06-20T11:34:21.188607+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          2000.0,
+          1000.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 38,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 32.58,
+      "suggestPrice": 32.62,
       "description": "Product information: Color: Black Sizes: M, L, XL, XXL Lining Composition: Spandex Lining Composition Content: 20% Style: One-piece swimsuit Pattern Style: Sexy, Conservative Lining Name: Polyester Category: One-piece swimsuit Fabric Name: Nylon Applicable Scene: Swimming and Water Sports Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. 2. Please check the size chart carefully before you buy the item, if you don't know how to choose size, please conta",
       "video": null,
       "images": [
@@ -3267,17 +4716,17 @@
     "name": "Comfortable Slip-on Beach Sandals For Women",
     "cat": "HOME",
     "cost": 5.59,
-    "retail": 33.43,
+    "retail": 33.49,
     "sellability": 83,
     "organic": 80,
-    "phase": "DECLINING",
+    "phase": "GROWTH",
     "verdict": "BUY",
-    "growth": -0.884,
-    "confidence": 0.46,
-    "listed": 3,
-    "age": 9,
-    "volatility": 0,
-    "net": 15.8,
+    "growth": 5.862,
+    "confidence": 0.56,
+    "listed": 5,
+    "age": 10,
+    "volatility": 0.0,
+    "net": 15.9,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": 50,
@@ -3286,11 +4735,11 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~16€/vente (83% brut), 3 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~16€/vente (83% brut), 3 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+      "en": "ACHETER — marge nette ~16€/vente (83% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~16€/vente (83% brut), 5 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
-    "trapVerdict": "TRAP",
-    "trapHeadline": "❌ Piège : demande en chute (~-88%/mois) — tendance qui meurt, tu arrives trop tard",
+    "trapVerdict": "VIABLE",
+    "trapHeadline": "✅ Viable jusqu'à un CPA de ~28€ (au-delà, tu perds)",
     "lossFlags": [
       {
         "name": "marge",
@@ -3310,20 +4759,79 @@
       {
         "name": "saturation",
         "level": "green",
-        "reason": "3 vendeur(s) — peu saturé (niveau)"
+        "reason": "5 vendeur(s) — peu saturé (niveau)"
       },
       {
         "name": "déclin",
-        "level": "red",
-        "reason": "demande en chute (~-88%/mois) — tendance qui meurt, tu arrives trop tard"
+        "level": "green",
+        "reason": "demande en forte hausse"
       }
     ],
-    "breakevenCpa": 27.8,
-    "detectedHrs": 38,
+    "breakevenCpa": 27.9,
+    "history": {
+      "sales": {
+        "points": 7,
+        "dates": [
+          "2026-06-16T02:16:03.416631+00:00",
+          "2026-06-17T02:12:55.668252+00:00",
+          "2026-06-18T02:12:03.450617+00:00",
+          "2026-06-19T02:12:03.926202+00:00",
+          "2026-06-20T02:12:02.831150+00:00",
+          "2026-06-22T02:12:03.220194+00:00",
+          "2026-06-23T02:12:03.529238+00:00"
+        ],
+        "days": [
+          0.0,
+          0.998,
+          1.997,
+          2.997,
+          3.997,
+          5.997,
+          6.997
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          2000.0,
+          2000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 6.997
+      },
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T11:45:16.628691+00:00",
+          "2026-06-18T12:05:55.969398+00:00",
+          "2026-06-20T07:52:12.381996+00:00",
+          "2026-06-21T07:55:06.910223+00:00",
+          "2026-06-22T07:57:18.375141+00:00"
+        ],
+        "days": [
+          0.0,
+          1.014,
+          2.838,
+          3.84,
+          4.842
+        ],
+        "values": [
+          7000.0,
+          7000.0,
+          7000.0,
+          8000.0,
+          8000.0
+        ],
+        "spanDays": 4.842
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 39,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 33.43,
+      "suggestPrice": 33.49,
       "description": "Product information: Toe shape: Peep-toe Color: Beige, red, blue Upper material: PU Size: 36, 37, 38, 39, 40, 41 Outsole material: Rubber Packing list: A pair of sandals Product Image:",
       "video": null,
       "images": [
@@ -3364,14 +4872,14 @@
     "cost": 5.8,
     "retail": 33.47,
     "sellability": 83,
-    "organic": 78,
+    "organic": 75,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
-    "listed": 7,
-    "age": 8,
-    "volatility": 0,
+    "confidence": 0.38,
+    "listed": 8,
+    "age": 9,
+    "volatility": 0.0,
     "net": 15.7,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3381,8 +4889,8 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~16€/vente (83% brut), 7 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~16€/vente (83% brut), 7 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
+      "en": "ACHETER — marge nette ~16€/vente (83% brut), 8 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~16€/vente (83% brut), 8 vendeurs (validé, peu saturé), prix dans la zone d'impulsion, produit récent."
     },
     "trapVerdict": "VIABLE",
     "trapHeadline": "✅ Viable jusqu'à un CPA de ~28€ (au-delà, tu perds)",
@@ -3405,7 +4913,7 @@
       {
         "name": "saturation",
         "level": "green",
-        "reason": "7 vendeur(s) — peu saturé (niveau)"
+        "reason": "8 vendeur(s) — peu saturé (niveau)"
       },
       {
         "name": "déclin",
@@ -3414,7 +4922,12 @@
       }
     ],
     "breakevenCpa": 27.7,
-    "detectedHrs": 39,
+    "history": {
+      "sales": null,
+      "amazon": null
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 40,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3456,10 +4969,10 @@
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 10,
-    "age": 14,
-    "volatility": 0,
+    "age": 15,
+    "volatility": 0.0,
     "net": 15.6,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3502,7 +5015,27 @@
       }
     ],
     "breakevenCpa": 27.6,
-    "detectedHrs": 40,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T03:59:26.811331+00:00",
+          "2026-06-21T04:08:13.525475+00:00"
+        ],
+        "days": [
+          0.0,
+          3.006
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.006
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 41,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3534,17 +5067,17 @@
     "name": "4 In1 Cooling Fan Camping Fan USB Rechargeable Foldable Clip Desk Fan 360 Adjustable 1-100 Speeds Wtih LED",
     "cat": "HOME",
     "cost": 13.5,
-    "retail": 70.34,
+    "retail": 70.74,
     "sellability": 82,
-    "organic": 37,
+    "organic": 25,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
-    "listed": 4,
-    "age": 14,
-    "volatility": 0,
-    "net": 44.8,
+    "confidence": 0.38,
+    "listed": 5,
+    "age": 15,
+    "volatility": 0.0,
+    "net": 45.2,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -3553,11 +5086,11 @@
     "seasonPeak": 7,
     "seasonMult": 1.73,
     "reason": {
-      "en": "ACHETER — marge nette ~45€/vente (81% brut), 4 vendeurs (validé, peu saturé), prix hors zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~45€/vente (81% brut), 4 vendeurs (validé, peu saturé), prix hors zone d'impulsion, produit récent."
+      "en": "ACHETER — marge nette ~45€/vente (81% brut), 5 vendeurs (validé, peu saturé), prix hors zone d'impulsion, produit récent.",
+      "fr": "ACHETER — marge nette ~45€/vente (81% brut), 5 vendeurs (validé, peu saturé), prix hors zone d'impulsion, produit récent."
     },
     "trapVerdict": "RISKY",
-    "trapHeadline": "⚠️ Risqué : retail ~70€ — hors zone d'impulsion (~12-70€)",
+    "trapHeadline": "⚠️ Risqué : retail ~71€ — hors zone d'impulsion (~12-70€)",
     "lossFlags": [
       {
         "name": "marge",
@@ -3567,7 +5100,7 @@
       {
         "name": "prix",
         "level": "amber",
-        "reason": "retail ~70€ — hors zone d'impulsion (~12-70€)"
+        "reason": "retail ~71€ — hors zone d'impulsion (~12-70€)"
       },
       {
         "name": "retour",
@@ -3577,7 +5110,7 @@
       {
         "name": "saturation",
         "level": "green",
-        "reason": "4 vendeur(s) — peu saturé (niveau)"
+        "reason": "5 vendeur(s) — peu saturé (niveau)"
       },
       {
         "name": "déclin",
@@ -3585,12 +5118,41 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 56.8,
-    "detectedHrs": 41,
+    "breakevenCpa": 57.2,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T04:09:01.024997+00:00",
+          "2026-06-19T04:10:56.282020+00:00",
+          "2026-06-20T06:30:15.228972+00:00",
+          "2026-06-21T06:32:06.421779+00:00",
+          "2026-06-22T06:35:53.656974+00:00"
+        ],
+        "days": [
+          0.0,
+          1.001,
+          2.098,
+          3.099,
+          4.102
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 4.102
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 42,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 70.34,
+      "suggestPrice": 70.74,
       "description": "Description 1.A single click turns the fan on . ① A single click cycles through the speed settings ( Speed 20 → 40 → 60 → 80 → 100). ② While working, a long press enables stepless speed adjustment from Level 1 to 100, meeting various airflow needs, long press again to slow down. ③While working, double-click the button to set a timer for 3, 6, or 9 hours. ④After 10 seconds of work, speed and remaining battery are displayed cyclically.The LED digital display combined with the smart touchscreen offers simple and intuitive operation, allowing you to easily monitor the fan’s status. 2. 4-in-1 Desig",
       "video": null,
       "images": [
@@ -3618,10 +5180,10 @@
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 9,
-    "age": 18,
-    "volatility": 0,
+    "age": 19,
+    "volatility": 0.0,
     "net": 15.1,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3664,7 +5226,27 @@
       }
     ],
     "breakevenCpa": 27.1,
-    "detectedHrs": 42,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T11:53:59.867619+00:00",
+          "2026-06-20T11:54:04.361236+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          4000.0,
+          3000.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 43,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3709,16 +5291,16 @@
     "cost": 4.29,
     "retail": 30.94,
     "sellability": 81,
-    "organic": 7,
+    "organic": 8,
     "phase": "MATURE",
     "verdict": "BUY",
-    "growth": 0.0,
-    "confidence": 0.0,
+    "growth": -0.017,
+    "confidence": 0.52,
     "listed": 9,
-    "age": 15,
-    "volatility": 0,
+    "age": 16,
+    "volatility": 0.0,
     "net": 14.7,
-    "redditScore": 50,
+    "redditScore": 33,
     "trendsScore": 50,
     "salesScore": null,
     "aliExpressSold": null,
@@ -3759,7 +5341,36 @@
       }
     ],
     "breakevenCpa": 26.6,
-    "detectedHrs": 43,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T04:55:03.108087+00:00",
+          "2026-06-19T04:57:31.427184+00:00",
+          "2026-06-20T09:25:05.211341+00:00",
+          "2026-06-21T09:26:43.579484+00:00",
+          "2026-06-22T09:29:36.682634+00:00"
+        ],
+        "days": [
+          0.0,
+          1.002,
+          2.188,
+          3.189,
+          4.191
+        ],
+        "values": [
+          5000.0,
+          5000.0,
+          5000.0,
+          6000.0,
+          6000.0
+        ],
+        "spanDays": 4.191
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 44,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3805,10 +5416,10 @@
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 10,
-    "volatility": 0,
+    "age": 11,
+    "volatility": 0.0,
     "net": 52.4,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3851,7 +5462,27 @@
       }
     ],
     "breakevenCpa": 64.4,
-    "detectedHrs": 44,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T20:38:57.484574+00:00",
+          "2026-06-20T20:44:55.672595+00:00"
+        ],
+        "days": [
+          0.0,
+          3.004
+        ],
+        "values": [
+          1000.0,
+          4000.0
+        ],
+        "spanDays": 3.004
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 45,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3883,14 +5514,14 @@
     "cost": 26.78,
     "retail": 72.85,
     "sellability": 80,
-    "organic": 71,
+    "organic": 54,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 10,
-    "volatility": 0,
+    "age": 11,
+    "volatility": 0.0,
     "net": 34.1,
     "redditScore": 50,
     "trendsScore": 50,
@@ -3933,7 +5564,36 @@
       }
     ],
     "breakevenCpa": 46.1,
-    "detectedHrs": 45,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T21:01:59.218302+00:00",
+          "2026-06-18T21:32:37.467709+00:00",
+          "2026-06-20T09:10:25.279107+00:00",
+          "2026-06-21T09:12:27.978610+00:00",
+          "2026-06-22T09:19:34.622018+00:00"
+        ],
+        "days": [
+          0.0,
+          1.021,
+          2.506,
+          3.507,
+          4.512
+        ],
+        "values": [
+          5000.0,
+          5000.0,
+          5000.0,
+          5000.0,
+          5000.0
+        ],
+        "spanDays": 4.512
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 46,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -3967,14 +5627,14 @@
     "cost": 14.19,
     "retail": 73.23,
     "sellability": 80,
-    "organic": 53,
+    "organic": 56,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 2,
-    "age": 12,
-    "volatility": 0,
+    "age": 13,
+    "volatility": 0.0,
     "net": 47.0,
     "redditScore": 50,
     "trendsScore": 50,
@@ -4017,7 +5677,33 @@
       }
     ],
     "breakevenCpa": 59.0,
-    "detectedHrs": 46,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 4,
+        "dates": [
+          "2026-06-17T12:19:18.871621+00:00",
+          "2026-06-17T12:19:20.032215+00:00",
+          "2026-06-20T12:19:26.983386+00:00",
+          "2026-06-21T12:20:26.874917+00:00"
+        ],
+        "days": [
+          0.0,
+          0.0,
+          3.0,
+          4.001
+        ],
+        "values": [
+          1000.0,
+          2000.0,
+          5000.0,
+          1000.0
+        ],
+        "spanDays": 4.001
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 47,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -4051,14 +5737,14 @@
     "cost": 11.99,
     "retail": 38.97,
     "sellability": 80,
-    "organic": 54,
+    "organic": 58,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 3,
-    "age": 12,
-    "volatility": 0,
+    "age": 13,
+    "volatility": 0.0,
     "net": 15.0,
     "redditScore": 50,
     "trendsScore": 50,
@@ -4101,7 +5787,36 @@
       }
     ],
     "breakevenCpa": 27.0,
-    "detectedHrs": 47,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T23:59:01.638936+00:00",
+          "2026-06-19T00:00:22.443281+00:00",
+          "2026-06-20T04:38:54.298539+00:00",
+          "2026-06-21T04:41:10.615550+00:00",
+          "2026-06-22T05:30:15.116861+00:00"
+        ],
+        "days": [
+          0.0,
+          1.001,
+          2.194,
+          3.196,
+          4.23
+        ],
+        "values": [
+          20000.0,
+          20000.0,
+          20000.0,
+          20000.0,
+          20000.0
+        ],
+        "spanDays": 4.23
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 48,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -4146,14 +5861,14 @@
     "cost": 6.3,
     "retail": 32.51,
     "sellability": 80,
-    "organic": 49,
+    "organic": 53,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 4,
-    "age": 13,
-    "volatility": 0,
+    "age": 14,
+    "volatility": 0.0,
     "net": 14.2,
     "redditScore": 50,
     "trendsScore": 50,
@@ -4196,7 +5911,27 @@
       }
     ],
     "breakevenCpa": 26.2,
-    "detectedHrs": 48,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T01:25:59.621407+00:00",
+          "2026-06-21T01:27:47.224098+00:00"
+        ],
+        "days": [
+          0.0,
+          3.001
+        ],
+        "values": [
+          1000.0,
+          1000.0
+        ],
+        "spanDays": 3.001
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 49,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -4241,14 +5976,14 @@
     "cost": 6.47,
     "retail": 43.61,
     "sellability": 79,
-    "organic": 56,
+    "organic": 71,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 0,
-    "age": 7,
-    "volatility": 0,
+    "age": 8,
+    "volatility": 0.0,
     "net": 25.1,
     "redditScore": 50,
     "trendsScore": 50,
@@ -4291,7 +6026,27 @@
       }
     ],
     "breakevenCpa": 37.1,
-    "detectedHrs": 49,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T09:08:57.084732+00:00",
+          "2026-06-21T09:47:30.294503+00:00"
+        ],
+        "days": [
+          0.0,
+          3.027
+        ],
+        "values": [
+          800.0,
+          500.0
+        ],
+        "spanDays": 3.027
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 50,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -4322,14 +6077,14 @@
     "cost": 6.3,
     "retail": 43.73,
     "sellability": 79,
-    "organic": 69,
+    "organic": 61,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 0,
-    "age": 12,
-    "volatility": 0,
+    "age": 13,
+    "volatility": 0.0,
     "net": 25.4,
     "redditScore": 50,
     "trendsScore": 50,
@@ -4372,7 +6127,27 @@
       }
     ],
     "breakevenCpa": 37.4,
-    "detectedHrs": 50,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T11:34:04.870967+00:00",
+          "2026-06-20T11:34:21.188607+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          2000.0,
+          1000.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 51,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -4406,17 +6181,17 @@
     "name": "Casual Bohemian V-neck Short-sleeve Flowing Long Beach Dress",
     "cat": "WELLNESS",
     "cost": 6.62,
-    "retail": 32.31,
-    "sellability": 78,
+    "retail": 32.38,
+    "sellability": 79,
     "organic": 12,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 7,
-    "age": 14,
-    "volatility": 0,
-    "net": 13.7,
+    "age": 15,
+    "volatility": 0.0,
+    "net": 13.8,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -4457,12 +6232,41 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 25.7,
-    "detectedHrs": 51,
+    "breakevenCpa": 25.8,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-17T17:22:57.793728+00:00",
+          "2026-06-18T17:23:05.646439+00:00",
+          "2026-06-20T08:21:29.432545+00:00",
+          "2026-06-21T08:33:27.898348+00:00",
+          "2026-06-22T08:38:34.550608+00:00"
+        ],
+        "days": [
+          0.0,
+          1.0,
+          2.624,
+          3.632,
+          4.636
+        ],
+        "values": [
+          6000.0,
+          7000.0,
+          6000.0,
+          8000.0,
+          6000.0
+        ],
+        "spanDays": 4.636
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 52,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 32.31,
+      "suggestPrice": 32.38,
       "description": "Product information: Colors: Apricot, Light Blue, Navy Blue, Green Sizes: 0XL, 1XL, 2XL, 3XL, 4XL, 5XL, 6XL Style Category: Elegant Commute Skirt Length: Long Trendy Element: Patchwork Fabric Name: Polyester Sleeve Style: Regular Target Audience: Universal Note: 1. Asian sizes are 1 to 2 sizes smaller than European and American people. Choose the larger size if your size between two sizes. Please allow 2-3cm differences due to manual measurement. 2. Please check the size chart carefully before you buy the item, if you don't know how to choose size, please contact our customer service. 3.As you",
       "video": null,
       "images": [
@@ -4501,17 +6305,17 @@
     "name": "2026 New Plus Size V-Neck Swimsuit With Palm Tree Pattern And Matching High Waist Bottom",
     "cat": "WELLNESS",
     "cost": 14.85,
-    "retail": 76.93,
+    "retail": 76.63,
     "sellability": 78,
-    "organic": 15,
+    "organic": 19,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 2,
-    "age": 17,
-    "volatility": 0,
-    "net": 50.1,
+    "age": 18,
+    "volatility": 0.0,
+    "net": 49.8,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -4552,12 +6356,32 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 62.1,
-    "detectedHrs": 52,
+    "breakevenCpa": 61.8,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T06:44:21.336347+00:00",
+          "2026-06-21T07:40:37.713244+00:00"
+        ],
+        "days": [
+          0.0,
+          3.039
+        ],
+        "values": [
+          1000.0,
+          800.0
+        ],
+        "spanDays": 3.039
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 53,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 76.93,
+      "suggestPrice": 76.63,
       "description": null,
       "video": null,
       "images": [
@@ -4591,17 +6415,17 @@
     "name": "2026 New Boho Floral Swimwear, V-Neck Tank Top With Matching High Waist Bottom",
     "cat": "WELLNESS",
     "cost": 14.85,
-    "retail": 76.93,
+    "retail": 76.63,
     "sellability": 78,
-    "organic": 17,
+    "organic": 20,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 17,
-    "volatility": 0,
-    "net": 50.1,
+    "age": 18,
+    "volatility": 0.0,
+    "net": 49.8,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -4642,12 +6466,32 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 62.1,
-    "detectedHrs": 53,
+    "breakevenCpa": 61.8,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-18T06:52:06.065090+00:00",
+          "2026-06-21T07:40:56.277509+00:00"
+        ],
+        "days": [
+          0.0,
+          3.034
+        ],
+        "values": [
+          1000.0,
+          400.0
+        ],
+        "spanDays": 3.034
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 54,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 76.93,
+      "suggestPrice": 76.63,
       "description": null,
       "video": null,
       "images": [
@@ -4674,17 +6518,17 @@
     "name": "High-Waisted, Tummy-Hiding Two-Piece Sports Swimsuit For Women",
     "cat": "FITNESS",
     "cost": 8.07,
-    "retail": 44.95,
+    "retail": 45.12,
     "sellability": 78,
-    "organic": 64,
+    "organic": 66,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 0,
-    "age": 14,
-    "volatility": 0,
-    "net": 24.9,
+    "age": 15,
+    "volatility": 0.0,
+    "net": 25.1,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -4725,12 +6569,38 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 36.9,
-    "detectedHrs": 54,
+    "breakevenCpa": 37.0,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 4,
+        "dates": [
+          "2026-06-18T03:03:48.292630+00:00",
+          "2026-06-20T06:27:34.445968+00:00",
+          "2026-06-21T06:27:37.059203+00:00",
+          "2026-06-22T06:35:00.469426+00:00"
+        ],
+        "days": [
+          0.0,
+          2.142,
+          3.142,
+          4.147
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 4.147
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 55,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 44.95,
+      "suggestPrice": 45.12,
       "description": "Product information: Color: Black, Orange Size: S, M, L, XL Lining Composition: Spandex Lining Composition Content: 80% Style: Thong Pattern Style: High Waist, Sexy, Highly Elastic, Durable, Fresh and Chic, European and American Lining Name: Polyester Fabric Name: Nylon Applicable Scene: Swimming and Water Sports Packing list: Swimsuit * 1set Product Image:",
       "video": null,
       "images": [
@@ -4767,14 +6637,14 @@
     "cost": 6.8,
     "retail": 45.84,
     "sellability": 78,
-    "organic": 66,
+    "organic": 68,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 0,
-    "age": 14,
-    "volatility": 0,
+    "age": 15,
+    "volatility": 0.0,
     "net": 27.0,
     "redditScore": 50,
     "trendsScore": 50,
@@ -4817,7 +6687,36 @@
       }
     ],
     "breakevenCpa": 39.0,
-    "detectedHrs": 55,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 5,
+        "dates": [
+          "2026-06-18T03:22:16.728324+00:00",
+          "2026-06-19T03:23:40.408801+00:00",
+          "2026-06-20T06:28:52.521930+00:00",
+          "2026-06-21T06:31:19.982698+00:00",
+          "2026-06-22T06:35:17.191626+00:00"
+        ],
+        "days": [
+          0.0,
+          1.001,
+          2.13,
+          3.131,
+          4.134
+        ],
+        "values": [
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0,
+          10000.0
+        ],
+        "spanDays": 4.134
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 56,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -4858,14 +6757,14 @@
     "cost": 7.63,
     "retail": 43.88,
     "sellability": 78,
-    "organic": 68,
+    "organic": 69,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 0,
-    "age": 12,
-    "volatility": 0,
+    "age": 13,
+    "volatility": 0.0,
     "net": 24.2,
     "redditScore": 50,
     "trendsScore": 50,
@@ -4908,7 +6807,27 @@
       }
     ],
     "breakevenCpa": 36.2,
-    "detectedHrs": 56,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T11:35:17.679507+00:00",
+          "2026-06-20T11:35:28.491373+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          3000.0,
+          3000.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 57,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -4947,20 +6866,20 @@
     }
   },
   {
-    "id": "0619521",
-    "name": "2026 New Gold Foil Crack One-Piece Boyleg Swimsuit, Sleeveless Round Neck & Color Block, Tummy Control Modest Swimwear",
+    "id": "3330562",
+    "name": "Plus Size Pink & Blue Ombre One-Piece Swimsuit, Scoop Neck & Tummy Control",
     "cat": "WELLNESS",
     "cost": 15.15,
     "retail": 78.18,
     "sellability": 78,
-    "organic": 51,
+    "organic": 22,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 12,
-    "volatility": 0,
+    "age": 18,
+    "volatility": 0.0,
     "net": 51.0,
     "redditScore": 50,
     "trendsScore": 50,
@@ -5003,7 +6922,27 @@
       }
     ],
     "breakevenCpa": 63.0,
-    "detectedHrs": 57,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 2,
+        "dates": [
+          "2026-06-17T11:34:04.870967+00:00",
+          "2026-06-20T11:34:21.188607+00:00"
+        ],
+        "days": [
+          0.0,
+          3.0
+        ],
+        "values": [
+          2000.0,
+          1000.0
+        ],
+        "spanDays": 3.0
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 58,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -5011,19 +6950,20 @@
       "description": null,
       "video": null,
       "images": [
-        "https://cf.cjdropshipping.com/17810496/9e043f45-8473-4d28-8adc-1004b9bec148.jpg",
-        "https://cf.cjdropshipping.com/17810496/0844f295-ef01-4924-9a64-d2af1cb68137.jpg",
-        "https://cf.cjdropshipping.com/17810496/7c7d7725-298f-431e-b94a-7b389a05ceb5.jpg",
-        "https://cf.cjdropshipping.com/17810496/555eb685-8255-4fd7-abb5-059651015f07.jpg",
-        "https://cf.cjdropshipping.com/17810496/34267859-75ad-49ab-a336-b2c2af520a7a.jpg"
+        "https://cf.cjdropshipping.com/17806176/aa86694f-09ad-43b9-b4de-e1eb178728eb.jpg",
+        "https://cf.cjdropshipping.com/17806176/9dc1af33-96ee-4786-a76f-1c1319bc54fa.jpg",
+        "https://cf.cjdropshipping.com/17806176/a3efe375-0909-43ee-9f6d-a3edd8967029.jpg",
+        "https://cf.cjdropshipping.com/17806176/db1f4421-3199-4609-be95-8e242103a910.jpg",
+        "https://cf.cjdropshipping.com/17806176/c298ea8a-88e9-4751-acf2-5b6b82c081a4.jpg"
       ],
       "imageCount": 5,
-      "variantCount": 4,
+      "variantCount": 5,
       "variantOptions": [
-        "Multicolor-S",
-        "Multicolor-M",
-        "Multicolor-L",
-        "Multicolor-XL"
+        "Multicolor-1XL",
+        "Multicolor-2XL",
+        "Multicolor-3XL",
+        "Multicolor-4XL",
+        "Multicolor-5XL"
       ],
       "material": "Others",
       "weightG": 180.0,
@@ -5031,21 +6971,21 @@
     }
   },
   {
-    "id": "3330562",
-    "name": "Plus Size Pink & Blue Ombre One-Piece Swimsuit, Scoop Neck & Tummy Control",
+    "id": "0619521",
+    "name": "2026 New Gold Foil Crack One-Piece Boyleg Swimsuit, Sleeveless Round Neck & Color Block, Tummy Control Modest Swimwear",
     "cat": "WELLNESS",
     "cost": 15.15,
-    "retail": 78.48,
-    "sellability": 77,
-    "organic": 19,
+    "retail": 78.18,
+    "sellability": 78,
+    "organic": 88,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 1,
-    "age": 17,
-    "volatility": 0,
-    "net": 51.3,
+    "age": 13,
+    "volatility": 0.0,
+    "net": 51.0,
     "redditScore": 50,
     "trendsScore": 50,
     "salesScore": null,
@@ -5086,29 +7026,54 @@
         "reason": "historique de demande insuffisant (< 3 mesures)"
       }
     ],
-    "breakevenCpa": 63.3,
-    "detectedHrs": 58,
+    "breakevenCpa": 63.0,
+    "history": {
+      "sales": null,
+      "amazon": {
+        "points": 4,
+        "dates": [
+          "2026-06-17T12:19:18.871621+00:00",
+          "2026-06-17T12:19:20.032215+00:00",
+          "2026-06-20T12:19:26.983386+00:00",
+          "2026-06-21T12:20:26.874917+00:00"
+        ],
+        "days": [
+          0.0,
+          0.0,
+          3.0,
+          4.001
+        ],
+        "values": [
+          1000.0,
+          2000.0,
+          5000.0,
+          1000.0
+        ],
+        "spanDays": 4.001
+      }
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 59,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
-      "suggestPrice": 78.48,
+      "suggestPrice": 78.18,
       "description": null,
       "video": null,
       "images": [
-        "https://cf.cjdropshipping.com/17806176/aa86694f-09ad-43b9-b4de-e1eb178728eb.jpg",
-        "https://cf.cjdropshipping.com/17806176/9dc1af33-96ee-4786-a76f-1c1319bc54fa.jpg",
-        "https://cf.cjdropshipping.com/17806176/a3efe375-0909-43ee-9f6d-a3edd8967029.jpg",
-        "https://cf.cjdropshipping.com/17806176/db1f4421-3199-4609-be95-8e242103a910.jpg",
-        "https://cf.cjdropshipping.com/17806176/c298ea8a-88e9-4751-acf2-5b6b82c081a4.jpg"
+        "https://cf.cjdropshipping.com/17810496/9e043f45-8473-4d28-8adc-1004b9bec148.jpg",
+        "https://cf.cjdropshipping.com/17810496/0844f295-ef01-4924-9a64-d2af1cb68137.jpg",
+        "https://cf.cjdropshipping.com/17810496/7c7d7725-298f-431e-b94a-7b389a05ceb5.jpg",
+        "https://cf.cjdropshipping.com/17810496/555eb685-8255-4fd7-abb5-059651015f07.jpg",
+        "https://cf.cjdropshipping.com/17810496/34267859-75ad-49ab-a336-b2c2af520a7a.jpg"
       ],
       "imageCount": 5,
-      "variantCount": 5,
+      "variantCount": 4,
       "variantOptions": [
-        "Multicolor-1XL",
-        "Multicolor-2XL",
-        "Multicolor-3XL",
-        "Multicolor-4XL",
-        "Multicolor-5XL"
+        "Multicolor-S",
+        "Multicolor-M",
+        "Multicolor-L",
+        "Multicolor-XL"
       ],
       "material": "Others",
       "weightG": 180.0,
@@ -5122,14 +7087,14 @@
     "cost": 15.29,
     "retail": 78.9,
     "sellability": 77,
-    "organic": 86,
+    "organic": 100,
     "phase": "MATURE",
     "verdict": "BUY",
     "growth": 0.0,
-    "confidence": 0.0,
+    "confidence": 0.38,
     "listed": 2,
-    "age": 12,
-    "volatility": 0,
+    "age": 13,
+    "volatility": 0.0,
     "net": 51.6,
     "redditScore": 50,
     "trendsScore": 50,
@@ -5172,7 +7137,12 @@
       }
     ],
     "breakevenCpa": 63.6,
-    "detectedHrs": 59,
+    "history": {
+      "sales": null,
+      "amazon": null
+    },
+    "lastCollection": "2026-06-23T02:27:51.034890+00:00",
+    "detectedHrs": 60,
     "dossier": {
       "hasDetail": true,
       "priceFromCJ": true,
@@ -5192,90 +7162,6 @@
         "Multicolor-M",
         "Multicolor-L",
         "Multicolor-XL"
-      ],
-      "material": "Others",
-      "weightG": 180.0,
-      "supplier": "Xingcheng Ke'an Garment Manufacturing Co., Ltd."
-    }
-  },
-  {
-    "id": "1325314",
-    "name": "2026 New Plus Size Blue White Floral Bikini, High Waist Tummy Control Two Piece Swimsuit",
-    "cat": "HOME",
-    "cost": 15.29,
-    "retail": 78.9,
-    "sellability": 77,
-    "organic": 100,
-    "phase": "MATURE",
-    "verdict": "BUY",
-    "growth": 0.0,
-    "confidence": 0.0,
-    "listed": 1,
-    "age": 12,
-    "volatility": 0,
-    "net": 51.6,
-    "redditScore": 50,
-    "trendsScore": 50,
-    "salesScore": null,
-    "aliExpressSold": null,
-    "aliExpressMedianSold": null,
-    "seasonPeak": 7,
-    "seasonMult": 1.73,
-    "reason": {
-      "en": "ACHETER — marge nette ~52€/vente (81% brut), 1 vendeur (validé, peu saturé), prix hors zone d'impulsion, produit récent.",
-      "fr": "ACHETER — marge nette ~52€/vente (81% brut), 1 vendeur (validé, peu saturé), prix hors zone d'impulsion, produit récent."
-    },
-    "trapVerdict": "RISKY",
-    "trapHeadline": "⚠️ Risqué : retail ~79€ — hors zone d'impulsion (~12-70€)",
-    "lossFlags": [
-      {
-        "name": "marge",
-        "level": "green",
-        "reason": "marge nette ~52€/vente"
-      },
-      {
-        "name": "prix",
-        "level": "amber",
-        "reason": "retail ~79€ — hors zone d'impulsion (~12-70€)"
-      },
-      {
-        "name": "retour",
-        "level": "unknown",
-        "reason": "avis insuffisants"
-      },
-      {
-        "name": "saturation",
-        "level": "green",
-        "reason": "1 vendeur(s) — peu saturé (niveau)"
-      },
-      {
-        "name": "déclin",
-        "level": "unknown",
-        "reason": "historique de demande insuffisant (< 3 mesures)"
-      }
-    ],
-    "breakevenCpa": 63.6,
-    "detectedHrs": 60,
-    "dossier": {
-      "hasDetail": true,
-      "priceFromCJ": true,
-      "suggestPrice": 78.9,
-      "description": null,
-      "video": null,
-      "images": [
-        "https://cf.cjdropshipping.com/17810496/0b21a06b-5226-443a-8e12-13e60c6acbd7.jpg",
-        "https://cf.cjdropshipping.com/17810496/a047981b-6115-4d35-80ef-8f1b7e91209a.jpg",
-        "https://cf.cjdropshipping.com/17810496/80330859-2d02-42e1-8bed-2bb6e4636ca5.jpg",
-        "https://cf.cjdropshipping.com/17810496/59f86c16-27d8-40f1-809f-f3fabeeb47a9.jpg"
-      ],
-      "imageCount": 4,
-      "variantCount": 5,
-      "variantOptions": [
-        "Multicolor-0XL",
-        "Multicolor-1XL",
-        "Multicolor-2XL",
-        "Multicolor-3XL",
-        "Multicolor-4XL"
       ],
       "material": "Others",
       "weightG": 180.0,

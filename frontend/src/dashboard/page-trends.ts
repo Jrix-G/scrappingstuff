@@ -11,24 +11,28 @@ export function mountTrends() {
   const $ = Sh.$, $$ = Sh.$$, ic = Sh.ic, clamp = Sh.clamp;
 
   const STR = {
-    en: { title: 'Trend Analysis', sub: 'Google Trends demand · velocity · seasonality',
+    en: { title: 'Trend Analysis', sub: 'real demand curve · velocity · Trends score',
       compare: 'Compare keywords', add: 'Add product', win_3m: '3m', win_12m: '12m', win_5y: '5y',
-      interest: 'Search interest', interest_s: 'Relative interest 0–100 · geo',
+      interest: 'Demand curve', interest_s: 'Real collected demand (Amazon/AliExpress) · normalized 0–100',
       velocity: 'Velocity readout', vel_velocity: 'Velocity', vel_growth: 'Growth', vel_accel: 'Acceleration', vel_r2: 'Fit (R²)',
       accel: 'Growth acceleration', accel_s: 'Second derivative — above 0 = accelerating', accel_pos: 'ACCELERATING', accel_neg: 'cooling',
       season: 'Seasonality', season_s: 'Demand multiplier · month × category',
-      related: 'Related catalogue products', related_s: 'keyword joins to scored products',
+      related: 'Related catalogue products', related_s: 'Trends score per scored product',
       c_prod: 'Product', c_trends: 'Trends score', c_vel: 'Velocity', c_peak: 'Peak month', open: 'Open in Discovery',
-      pick: 'Add a product to compare', perday: '/day', month: 'mo' },
-    fr: { title: 'Analyse de tendances', sub: 'Demande Google Trends · vélocité · saisonnalité',
+      pick: 'Add a product to compare', perday: '/day', month: 'mo',
+      no_curve_t: 'No real curve yet', no_curve_s: 'No product in the selection has a real demand history yet — score numbers below are real, the curve is being built.',
+      no_data: 'no data', score_real: 'Trends score (real)', curve_pending: 'curve in progress' },
+    fr: { title: 'Analyse de tendances', sub: 'courbe de demande réelle · vélocité · score Trends',
       compare: 'Comparer des mots-clés', add: 'Ajouter un produit', win_3m: '3m', win_12m: '12m', win_5y: '5a',
-      interest: 'Intérêt de recherche', interest_s: 'Intérêt relatif 0–100 · geo',
+      interest: 'Courbe de demande', interest_s: 'Demande réelle collectée (Amazon/AliExpress) · normalisée 0–100',
       velocity: 'Lecture de vélocité', vel_velocity: 'Vélocité', vel_growth: 'Croissance', vel_accel: 'Accélération', vel_r2: 'Ajustement (R²)',
       accel: 'Accélération de croissance', accel_s: 'Dérivée seconde — au-dessus de 0 = en accélération', accel_pos: 'EXPLOSE', accel_neg: 'ralentit',
       season: 'Saisonnalité', season_s: 'Multiplicateur de demande · mois × catégorie',
-      related: 'Produits liés du catalogue', related_s: 'jointure mot-clé → produits scorés',
+      related: 'Produits liés du catalogue', related_s: 'score Trends par produit scoré',
       c_prod: 'Produit', c_trends: 'Score Trends', c_vel: 'Vélocité', c_peak: 'Mois de pic', open: 'Ouvrir dans Discovery',
-      pick: 'Ajoutez un produit à comparer', perday: '/jour', month: 'mois' },
+      pick: 'Ajoutez un produit à comparer', perday: '/jour', month: 'mois',
+      no_curve_t: 'Pas encore de courbe réelle', no_curve_s: 'Aucun produit de la sélection n’a encore d’historique de demande réel — les scores ci-dessous sont réels, la courbe est en cours de constitution.',
+      no_data: 'pas de données', score_real: 'Score Trends (réel)', curve_pending: 'courbe en cours' },
   };
   const L = () => STR[Sh.lang];
   const COLORS = ['var(--azure)', 'var(--signal)', 'var(--reddit)', 'var(--buy)', 'var(--watch)'];
@@ -107,46 +111,68 @@ export function mountTrends() {
     $$('#marketPop .pop-item').forEach((it) => it.addEventListener('click', () => { selected.push(it.dataset.id); pop.classList.remove('show'); render(); }));
   }
 
+  // REAL demand curve only — never plot the procedural filler as if it were real.
+  function realCurve(p) { return p.hasRealHistory && p.realHistory && p.realHistory.demand ? p.realHistory.demand.values : null; }
+
   function drawChart() {
+    const s = L();
     const vis = selected.filter((id) => !hidden.has(id));
-    const series = vis.map((id) => { const p = P.find((x) => x.id === id); return { name: p.name, color: colorFor(id), values: sliceSeries(p.trend) }; });
-    if (!series.length) { $('#bigChart').innerHTML = `<div class="empty" style="padding:60px 0"><div class="e-art">${ic('trend')}</div><div class="e-t">${L().pick}</div></div>`; return; }
+    if (!vis.length) { $('#bigChart').innerHTML = `<div class="empty" style="padding:60px 0"><div class="e-art">${ic('trend')}</div><div class="e-t">${s.pick}</div></div>`; return; }
+    // Only products with a REAL demand history get a curve.
+    const series = vis.map((id) => { const p = P.find((x) => x.id === id); const rc = realCurve(p); return rc ? { name: p.name, color: colorFor(id), values: sliceSeries(rc) } : null; }).filter(Boolean);
+    if (!series.length) { $('#bigChart').innerHTML = `<div class="empty" style="padding:50px 0"><div class="e-art">${ic('trend')}</div><div class="e-t">${s.no_curve_t}</div><div class="e-s">${s.no_curve_s}</div></div>`; return; }
     const n = series[0].values.length;
-    X.lineChart($('#bigChart'), series, { xlabels: xLabels(n), yMin: 0, yMax: 100, area: vis.length <= 2, height: 320 });
+    X.lineChart($('#bigChart'), series, { xlabels: xLabels(n), yMin: 0, yMax: 100, area: series.length <= 2, height: 320 });
   }
   function drawAccel() {
-    const id = selected.find((x) => !hidden.has(x)) || selected[0];
-    if (!id) { $('#accelBox').innerHTML = ''; return; }
-    const p = P.find((x) => x.id === id), v = sliceSeries(p.trend);
-    const acc = []; for (let i = 0; i < v.length; i++) { const prev = v[i - 1] != null ? v[i - 1] : v[i]; const next = v[i + 1] != null ? v[i + 1] : v[i]; acc.push((next - 2 * v[i] + prev)); }
     const s = L();
+    // Acceleration is only meaningful on a real curve.
+    const id = selected.find((x) => !hidden.has(x) && realCurve(P.find((p) => p.id === x))) || selected.find((x) => realCurve(P.find((p) => p.id === x)));
+    if (!id) { $('#accelBox').innerHTML = `<div class="empty" style="padding:40px 0"><div class="e-art">${ic('activity')}</div><div class="e-t">${s.no_curve_t}</div></div>`; return; }
+    const p = P.find((x) => x.id === id), v = sliceSeries(realCurve(p));
+    const acc = []; for (let i = 0; i < v.length; i++) { const prev = v[i - 1] != null ? v[i - 1] : v[i]; const next = v[i + 1] != null ? v[i + 1] : v[i]; acc.push((next - 2 * v[i] + prev)); }
     X.divergingArea($('#accelBox'), acc, { xlabels: xLabels(v.length), height: 180, posLabel: s.accel_pos, negLabel: s.accel_neg, label: s.vel_accel });
   }
   function renderVel() {
     const s = L();
     $('#velGrid').innerHTML = selected.map((id) => {
-      const p = P.find((x) => x.id === id), v = p.trend, vel = ((v[v.length - 1] - v[0]) / v.length);
-      const accel = (v[v.length - 1] - 2 * v[Math.floor(v.length / 2)] + v[0]) / 2;
-      const r2 = clamp(1 - p.volatility, 0, 1);
+      const p = P.find((x) => x.id === id);
       const up = p.growth >= 0;
+      // Velocity/acceleration are derived from the REAL curve only; growth and
+      // Trends score are real scalars and always shown.
+      const v = realCurve(p);
+      let velRow, accelRow;
+      if (v && v.length > 1) {
+        const vel = ((v[v.length - 1] - v[0]) / v.length);
+        const accel = (v[v.length - 1] - 2 * v[Math.floor(v.length / 2)] + v[0]) / 2;
+        velRow = `<b class="${vel >= 0 ? 'up' : 'down'}">${vel >= 0 ? '+' : ''}${vel.toFixed(2)} ${s.perday}</b>`;
+        accelRow = `<b>${accel >= 0 ? '+' : ''}${accel.toFixed(2)}</b>`;
+      } else {
+        velRow = `<b style="color:var(--text-tertiary)">—</b>`;
+        accelRow = `<b style="color:var(--text-tertiary)">—</b>`;
+      }
       return `<div class="vel-card">
         <div class="vc-h"><span class="vc-dot" style="background:${colorFor(id)}"></span>${p.name}</div>
         <div class="vc-rows">
-          <div class="vc-row"><span>${s.vel_velocity}</span><b class="${vel >= 0 ? 'up' : 'down'}">${vel >= 0 ? '+' : ''}${vel.toFixed(2)} ${s.perday}</b></div>
+          <div class="vc-row"><span>${s.score_real}</span><b>${p.trendsScore}</b></div>
+          <div class="vc-row"><span>${s.vel_velocity}</span>${velRow}</div>
           <div class="vc-row"><span>${s.vel_growth}</span><b class="${up ? 'up' : 'down'}">${up ? '+' : ''}${Math.round(p.growth * 100)}% /${s.month}</b></div>
-          <div class="vc-row"><span>${s.vel_accel}</span><b>${accel >= 0 ? '+' : ''}${accel.toFixed(2)}</b></div>
-          <div class="vc-row"><span>${s.vel_r2}</span><b>${r2.toFixed(2)}</b></div>
+          <div class="vc-row"><span>${s.vel_accel}</span>${accelRow}</div>
         </div></div>`;
     }).join('');
   }
   function renderRelated() {
     const s = L();
     const rows = P.slice().sort((a, b) => b.trendsScore - a.trendsScore).slice(0, 8).map((p) => {
-      const v = p.trend, vel = ((v[v.length - 1] - v[0]) / v.length), up = vel >= 0;
+      // Velocity only from the real demand curve; "—" when there's none yet.
+      const v = realCurve(p);
+      let velCell;
+      if (v && v.length > 1) { const vel = ((v[v.length - 1] - v[0]) / v.length), up = vel >= 0; velCell = `<span class="vel ${up ? 'up' : 'down'}">${up ? '+' : ''}${vel.toFixed(2)}</span>`; }
+      else velCell = `<span style="color:var(--text-tertiary)">—</span>`;
       return `<tr data-id="${p.id}">
         <td><div class="cell-prod">${Sh.thumb(p, 32)}<div><div class="cp-name">${p.name}</div><div class="cp-sub">${T.CATS[p.cat][Sh.lang]}</div></div></div></td>
         <td class="num">${p.trendsScore}</td>
-        <td class="num"><span class="vel ${up ? 'up' : 'down'}">${up ? '+' : ''}${vel.toFixed(2)}</span></td>
+        <td class="num">${velCell}</td>
         <td>${T.MONTHS[Sh.lang][p.seasonPeak - 1]}</td>
         <td class="num"><a class="panel-link" href="Tandor Discovery.html">${s.open} ${ic('arrowUR')}</a></td></tr>`;
     }).join('');

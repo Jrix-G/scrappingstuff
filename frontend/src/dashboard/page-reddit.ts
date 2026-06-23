@@ -12,22 +12,22 @@ export function mountReddit() {
   const $ = Sh.$, $$ = Sh.$$, ic = Sh.ic, clamp = Sh.clamp;
 
   const STR = {
-    en: { title: 'Reddit Intelligence', sub: 'early social signal · mention velocity',
-      k_mentions: 'Mentions · 12 wks', k_velocity: 'Avg weekly velocity', k_subs: 'Active subreddits', k_corro: 'Corroborated products',
-      timeline: 'Mention timeline', timeline_s: 'Weekly mentions across tracked products', trendline: 'trend',
-      subs: 'Source subreddits', subs_s: 'where the signal originates', mentions: 'mentions',
-      posts: 'Notable posts', posts_s: 'frequency-ranked · no vote inflation',
-      corr: 'Reddit × product velocity', corr_s: 'high mentions + low maturity = early',
-      emerging: 'Emerging terms', focus: 'All products', wk: 'wk',
-      empty_t: 'No Reddit signal yet', empty_s: 'Social silence is normal for very recent products — the signal arrives before the saturation does.' },
-    fr: { title: 'Reddit Intelligence', sub: 'signal social précoce · vélocité des mentions',
-      k_mentions: 'Mentions · 12 sem.', k_velocity: 'Vélocité hebdo moy.', k_subs: 'Subreddits actifs', k_corro: 'Produits corroborés',
-      timeline: 'Chronologie des mentions', timeline_s: 'Mentions hebdomadaires, tous produits suivis', trendline: 'tendance',
-      subs: 'Subreddits sources', subs_s: 'd’où provient le signal', mentions: 'mentions',
-      posts: 'Posts marquants', posts_s: 'classés par fréquence · sans inflation de votes',
-      corr: 'Reddit × vélocité produit', corr_s: 'mentions fortes + maturité faible = précoce',
-      emerging: 'Termes émergents', focus: 'Tous les produits', wk: 'sem.',
-      empty_t: 'Pas encore de signal Reddit', empty_s: 'Le silence social est normal pour les produits très récents — le signal arrive avant la saturation.' },
+    en: { title: 'Reddit Intelligence', sub: 'early social signal · Reddit score',
+      k_score: 'Avg Reddit score', k_velocity: 'Avg weekly velocity', k_subs: 'Likely subreddits', k_corro: 'Corroborated products',
+      timeline: 'Mention timeline', timeline_s: 'no persisted Reddit time-series — score only', trendline: 'trend',
+      subs: 'Likely source subreddits', subs_s: 'estimated from category × Reddit score', mentions: 'mentions',
+      corr: 'Reddit × product velocity', corr_s: 'high Reddit score + high growth = early',
+      focus: 'All products', wk: 'wk',
+      empty_t: 'No Reddit time-series', empty_s: 'Reddit mentions are fetched live and never persisted in the DB, so there is no real weekly curve to draw. The per-product Reddit score below is real.',
+      score_real: 'Reddit score (real)', est: 'estimate' },
+    fr: { title: 'Reddit Intelligence', sub: 'signal social précoce · score Reddit',
+      k_score: 'Score Reddit moyen', k_velocity: 'Vélocité hebdo moy.', k_subs: 'Subreddits probables', k_corro: 'Produits corroborés',
+      timeline: 'Chronologie des mentions', timeline_s: 'aucune série temporelle Reddit persistée — score seul', trendline: 'tendance',
+      subs: 'Subreddits sources probables', subs_s: 'estimés depuis catégorie × score Reddit', mentions: 'mentions',
+      corr: 'Reddit × vélocité produit', corr_s: 'score Reddit fort + croissance forte = précoce',
+      focus: 'Tous les produits', wk: 'sem.',
+      empty_t: 'Pas de série temporelle Reddit', empty_s: 'Les mentions Reddit sont récupérées en direct et jamais stockées en base — il n’existe donc pas de vraie courbe hebdomadaire à tracer. Le score Reddit par produit ci-dessous est réel.',
+      score_real: 'Score Reddit (réel)', est: 'estimation' },
   };
   const L = () => STR[Sh.lang];
 
@@ -43,25 +43,8 @@ export function mountReddit() {
     { n: 'Fitness', cats: ['FITNESS', 'WELLNESS'], base: 0.74 },
     { n: 'BabyBumps', cats: ['BABY'], base: 0.48 },
   ];
-  const TERMS = {
-    en: ['neck massager', 'heatless curls', 'lint shaver', 'sunset lamp', 'gua sha', 'led collar', 'posture belt', 'spin scrubber', 'cloud slippers', 'mushroom light'],
-    fr: ['masseur cervical', 'boucles sans chaleur', 'rasoir anti-bouloche', 'lampe coucher', 'gua sha', 'collier led', 'ceinture posture', 'brosse rotative', 'chaussons nuage', 'veilleuse champignon'],
-  };
-
   let focusId = 'all';
 
-  function weeklyAgg() {
-    const pool = focusId === 'all' ? P : P.filter((p) => p.id === focusId);
-    const raw = new Array(12).fill(0);
-    pool.forEach((p) => p.reddit.forEach((v, i) => raw[i] += v));
-    if (focusId !== 'all') return raw; // single product keeps its real shape
-    // reshape the aggregate into a rising curve (signal building before
-    // saturation) while preserving the total mention volume
-    const total = raw.reduce((a, b) => a + b, 0);
-    const w = raw.map((_, i) => { const f = i / 11; return 0.45 + 0.85 * Math.pow(f, 1.15) + 0.07 * Math.sin(i * 1.7); });
-    const ws = w.reduce((a, b) => a + b, 0);
-    return w.map((x) => Math.round(total * x / ws));
-  }
   function subVolumes() {
     const pool = focusId === 'all' ? P : P.filter((p) => p.id === focusId);
     return SUBS.map((s) => {
@@ -72,9 +55,9 @@ export function mountReddit() {
 
   function render() {
     const s = L();
-    const agg = weeklyAgg();
-    const total = agg.reduce((a, b) => a + b, 0);
-    const vel = ((agg[agg.length - 1] - agg[0]) / agg.length);
+    const pool = focusId === 'all' ? P : P.filter((p) => p.id === focusId);
+    // REAL: per-product redditScore. Average it for the headline KPI.
+    const avgScore = pool.length ? Math.round(pool.reduce((a, p) => a + p.redditScore, 0) / pool.length) : 0;
     const subs = subVolumes();
     const activeSubs = subs.filter((x) => x.vol > 0).length;
     const corro = P.filter((p) => p.redditScore > 60 && p.trendsScore > 60).length;
@@ -89,19 +72,14 @@ export function mountReddit() {
         </select></div>
       </div>
       <div class="kpi-mono-row rv">
-        ${statTile('hash', s.k_mentions, Sh.fmt(total), 'var(--reddit)')}
-        ${statTile('activity', s.k_velocity, (vel >= 0 ? '+' : '') + vel.toFixed(1), 'var(--signal)')}
-        ${statTile('reddit', s.k_subs, activeSubs, 'var(--reddit)')}
+        ${statTile('reddit', s.k_score, Sh.fmt(avgScore), 'var(--reddit)')}
+        ${statTile('reddit', s.k_subs + ' (' + s.est + ')', activeSubs, 'var(--reddit)')}
         ${statTile('check', s.k_corro, corro, 'var(--buy)')}
       </div>
       <div class="section-row grid-21">
         <section class="panel rv">
           <div class="panel-h"><div><div class="ttl">${s.timeline}</div><div class="sub">${s.timeline_s}</div></div></div>
           <div class="chart-box"><div class="chart-h-box" id="barBox" style="height:220px"></div></div>
-          <div style="padding:0 18px 16px">
-            <div class="micro" style="margin-bottom:9px">${s.emerging}</div>
-            <div class="kw-chips" id="termChips"></div>
-          </div>
         </section>
         <section class="panel rv">
           <div class="panel-h"><div><div class="ttl">${s.subs}</div><div class="sub">${s.subs_s}</div></div></div>
@@ -110,8 +88,8 @@ export function mountReddit() {
       </div>
       <div class="section-row grid-21">
         <section class="panel rv">
-          <div class="panel-h"><div><div class="ttl">${s.posts}</div><div class="sub">${s.posts_s}</div></div></div>
-          <div id="postList"></div>
+          <div class="panel-h"><div><div class="ttl">${s.score_real}</div><div class="sub">${s.subs_s}</div></div></div>
+          <div class="dg-scroll"><table class="dg"><thead><tr><th>${Sh.lang === 'fr' ? 'Produit' : 'Product'}</th><th class="num">Reddit</th></tr></thead><tbody id="scoreBody"></tbody></table></div>
         </section>
         <section class="panel rv">
           <div class="panel-h"><div><div class="ttl">${s.corr}</div><div class="sub">${s.corr_s}</div></div></div>
@@ -121,15 +99,11 @@ export function mountReddit() {
 
     $('#focusSel').addEventListener('change', (e) => { focusId = e.target.value; render(); });
 
-    // bar chart of weekly mentions
-    const wkLabels = agg.map((_, i) => `S${i + 1}`);
-    if (total > 0) X.barChart($('#barBox'), agg, { color: 'var(--reddit)', xlabels: wkLabels, height: 220, line: true, label: s.mentions, onBar: (i) => Sh.toast(`${s.wk} ${i + 1} · ${agg[i]} ${s.mentions}`) });
-    else $('#barBox').innerHTML = `<div class="empty"><div class="e-art">${ic('reddit')}</div><div class="e-t">${s.empty_t}</div><div class="e-s">${s.empty_s}</div></div>`;
+    // No real Reddit weekly time-series exists in the DB — show an explicit
+    // empty-state rather than fabricating a curve from p.reddit.
+    $('#barBox').innerHTML = `<div class="empty"><div class="e-art">${ic('reddit')}</div><div class="e-t">${s.empty_t}</div><div class="e-s">${s.empty_s}</div></div>`;
 
-    // emerging term chips
-    $('#termChips').innerHTML = TERMS[Sh.lang].slice(0, 7).map((t, i) => `<span class="tag" style="font-family:var(--font-mono)"><span class="tdot" style="background:var(--reddit)"></span>${t} <span style="color:var(--text-tertiary)">+${[64, 48, 41, 33, 27, 22, 18][i]}%</span></span>`).join('');
-
-    // subreddit list
+    // subreddit list — estimated from category × real Reddit score (labelled as estimate)
     const maxV = Math.max(...subs.map((x) => x.vol), 1);
     $('#subList').innerHTML = subs.slice(0, 8).map((x) => `
       <div class="sub-row">
@@ -138,7 +112,12 @@ export function mountReddit() {
         <div class="sub-val">${x.vol}</div>
       </div>`).join('');
 
-    renderPosts();
+    // real per-product Reddit score table (replaces fabricated "notable posts")
+    $('#scoreBody').innerHTML = P.slice().sort((a, b) => b.redditScore - a.redditScore).slice(0, 8).map((p) => `
+      <tr data-id="${p.id}">
+        <td><div class="cell-prod">${Sh.thumb(p, 30)}<div><div class="cp-name">${p.name}</div><div class="cp-sub">${T.CATS[p.cat][Sh.lang]}</div></div></div></td>
+        <td class="num"><b>${p.redditScore}</b></td></tr>`).join('');
+    $$('#scoreBody tr').forEach((r) => r.addEventListener('click', () => Sh.openProduct(P.find((p) => p.id === r.dataset.id))));
 
     // correlation scatter: x = reddit score, y = velocity(growth→0..100), size by margin
     const pts = P.map((p) => ({
@@ -152,33 +131,6 @@ export function mountReddit() {
     return `<div class="stat-tile">
       <div class="st-l"><span class="st-ico" style="background:color-mix(in oklab, ${col} 14%, var(--surface-1));color:${col}">${ic(icn)}</span><span class="micro">${label}</span></div>
       <div class="st-v">${val}</div></div>`;
-  }
-
-  function renderPosts() {
-    const s = L();
-    const top = P.slice().sort((a, b) => b.redditScore - a.redditScore).slice(0, 6);
-    const subFor = (p) => (SUBS.find((x) => x.cats.includes(p.cat)) || SUBS[0]).n;
-    const titles = {
-      en: (p) => `Anyone else obsessed with this ${p.name.toLowerCase()}? Found it before it blew up`,
-      fr: (p) => `Quelqu’un d’autre accro à ce ${p.name.toLowerCase()} ? Trouvé avant que ça explose`,
-    };
-    const titles2 = {
-      en: (p) => `${p.name} — is the hype real or just another dropship?`,
-      fr: (p) => `${p.name} — le buzz est réel ou juste un énième dropshipping ?`,
-    };
-    const days = [2, 4, 6, 9, 12, 15];
-    const rows = top.map((p, i) => {
-      const t = (i % 2 ? titles2 : titles)[Sh.lang](p);
-      const mentions = Math.round(p.redditScore * 0.4 + 6);
-      const ago = Sh.lang === 'fr' ? `il y a ${days[i]} j` : `${days[i]}d ago`;
-      return `<div class="post-item">
-        <span class="post-sub">r/${subFor(p)}</span>
-        <div class="post-body"><div class="post-title">${t}</div>
-          <div class="post-meta"><span>${ago}</span><span>·</span><span>${mentions} ${s.mentions}</span></div></div>
-        <a class="post-link" href="#" data-id="${p.id}">${ic('ext')}</a></div>`;
-    }).join('');
-    $('#postList').innerHTML = rows;
-    $$('#postList .post-link').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); Sh.openProduct(P.find((p) => p.id === a.dataset.id)); }));
   }
 
   Sh.start({ active: 'n_reddit', render });

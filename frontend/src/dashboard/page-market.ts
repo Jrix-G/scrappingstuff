@@ -13,14 +13,14 @@ export function mountMarket() {
 
   const STR = {
     en: { title: 'Market Signals', sub: 'multi-source corroboration · anomalies',
-      k_emerging: 'Emerging products', k_corro: 'Corroborated signals', k_anom: 'Anomalies flagged', k_sources: 'Active sources',
+      k_emerging: 'Emerging products', k_corro: 'Corroborated signals', k_anom: 'Anomalies flagged', k_sources: 'Score sources',
       scatter: 'Velocity × maturity', scatter_s: 'low maturity + high velocity = the Graal',
       matrix: 'Source correlation', matrix_s: 'z-score correlation across the catalogue',
       anom: 'Anomaly detector', anom_s: 'velocity spikes · |z| > 1.3', corroborated: 'corroborated', isolated: 'isolated',
       corro: 'Corroboration feed', corro_s: 'Trends and Reddit rising together', by: '×',
       maturity: 'Maturity', velocity: 'Velocity', empty: 'No anomalies in the current window.' },
     fr: { title: 'Signaux marché', sub: 'corroboration multi-sources · anomalies',
-      k_emerging: 'Produits émergents', k_corro: 'Signaux corroborés', k_anom: 'Anomalies détectées', k_sources: 'Sources actives',
+      k_emerging: 'Produits émergents', k_corro: 'Signaux corroborés', k_anom: 'Anomalies détectées', k_sources: 'Sources de score',
       scatter: 'Vélocité × maturité', scatter_s: 'maturité faible + vélocité forte = le Graal',
       matrix: 'Corrélation des sources', matrix_s: 'corrélation des z-scores sur le catalogue',
       anom: 'Détecteur d’anomalies', anom_s: 'pics de vélocité · |z| > 1,3', corroborated: 'corroboré', isolated: 'isolé',
@@ -59,7 +59,7 @@ export function mountMarket() {
         ${statTile('sparkles', s.k_emerging, emerging, 'var(--signal)')}
         ${statTile('check', s.k_corro, corro.length, 'var(--buy)')}
         ${statTile('zap', s.k_anom, anomalies.length, 'var(--amber)')}
-        ${statTile('layers', s.k_sources, '5 / 5', 'var(--azure)')}
+        ${statTile('layers', s.k_sources, String(SOURCES.length), 'var(--azure)')}
       </div>
       <div class="section-row grid-21">
         <section class="panel rv">
@@ -107,9 +107,12 @@ export function mountMarket() {
     $('#corroList').innerHTML = corro.slice(0, 7).map((p) => {
       const n = [p.trendsScore > 60, p.redditScore > 60, p.growthScore > 60].filter(Boolean).length;
       const up = p.growth >= 0;
+      // REAL demand signal when present: AliExpress units sold.
+      const soldVal = (p.aliExpressSold != null && p.aliExpressSold > 0)
+        ? `<span class="cp-sub mono" style="font-size:10.5px">${Sh.fmt(p.aliExpressSold)} ${Sh.lang === 'fr' ? 'vendus' : 'sold'}</span>` : '';
       return `<div class="anom-row" data-id="${p.id}" style="grid-template-columns:auto 1fr auto auto">
         <span class="feed-score" style="width:34px;height:34px">${C.ring(p.tandor, `var(--${T.PHASES[p.phase].v})`, 34, 3)}<b style="position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-mono);font-weight:600;font-size:11px">${p.tandor}</b></span>
-        <div class="cell-prod">${Sh.thumb(p, 30)}<div><div class="cp-name">${p.name}</div><div class="cp-sub">${T.CATS[p.cat][Sh.lang]}</div></div></div>
+        <div class="cell-prod">${Sh.thumb(p, 30)}<div><div class="cp-name">${p.name}</div><div class="cp-sub">${T.CATS[p.cat][Sh.lang]}</div>${soldVal}</div></div>
         <span class="feed-growth ${up ? 'up' : 'down'} mono">${up ? '+' : ''}${Math.round(p.growth * 100)}%</span>
         <span class="corro-badge ok">${s.corroborated} ${s.by}${n}</span></div>`;
     }).join('');

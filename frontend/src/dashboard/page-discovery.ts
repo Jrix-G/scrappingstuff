@@ -19,7 +19,10 @@ export function mountDiscovery() {
       s_score: 'Tandor score', s_growth: 'Growth', s_margin: 'Margin', s_potential: 'Potential', s_reddit: 'Reddit', s_trends: 'Trends', s_recent: 'Recency', s_sat: 'Saturation',
       c_prod: 'Product', c_score: 'Score', c_verdict: 'Verdict', c_phase: 'Phase', c_margin: 'Margin', c_vel: 'Velocity', c_sat: 'Sellers', c_pot: 'Potential', c_trend: '30d',
       empty_t: 'No product matches', empty_s: 'Your filters are too tight. Loosen the most restrictive one to see more opportunities.', loosen: 'Loosen filters',
-      mo: '/mo', clearall: 'Clear all', detected: 'detected' },
+      mo: '/mo', clearall: 'Clear all', detected: 'detected',
+      trap: 'Money trap', risky: 'Risky', viable: 'Viable',
+      sold: 'AliExpress sold', no_demand: 'No demand data', no_hist: 'History building', no_hist_s: 'Not enough nights collected yet',
+      sold_unit: 'sold', median: 'median' },
     fr: { title: 'Product Discovery', sub: 'catalogue scoré · signal en direct', search: 'Filtrer par nom ou catégorie…',
       filters: 'Filtres', reset: 'Réinitialiser', verdict: 'Verdict', phase: 'Phase', category: 'Catégorie',
       min_score: 'Score Tandor min.', min_margin: 'Marge nette min.', all: 'Tous',
@@ -27,7 +30,10 @@ export function mountDiscovery() {
       s_score: 'Score Tandor', s_growth: 'Croissance', s_margin: 'Marge', s_potential: 'Potentiel', s_reddit: 'Reddit', s_trends: 'Trends', s_recent: 'Récence', s_sat: 'Saturation',
       c_prod: 'Produit', c_score: 'Score', c_verdict: 'Verdict', c_phase: 'Phase', c_margin: 'Marge', c_vel: 'Vélocité', c_sat: 'Vendeurs', c_pot: 'Potentiel', c_trend: '30j',
       empty_t: 'Aucun produit ne correspond', empty_s: 'Vos filtres sont trop stricts. Assouplissez le plus restrictif pour voir plus d’opportunités.', loosen: 'Assouplir les filtres',
-      mo: '/mois', clearall: 'Tout effacer', detected: 'détecté' },
+      mo: '/mois', clearall: 'Tout effacer', detected: 'détecté',
+      trap: 'Piège à fric', risky: 'Risqué', viable: 'Viable',
+      sold: 'Vendus AliExpress', no_demand: 'Pas de données de demande', no_hist: 'Historique en cours', no_hist_s: 'Pas encore assez de nuits collectées',
+      sold_unit: 'vendus', median: 'médiane' },
   };
   const L = () => STR[Sh.lang];
   const money = Sh.money, pct = Sh.pct, fmt = Sh.fmt;
@@ -44,7 +50,7 @@ export function mountDiscovery() {
   function filtered() {
     const q = state.q.trim().toLowerCase();
     let arr = P.filter((p) => {
-      if (state.verdicts.size && !state.verdicts.has(p.verdict)) return false;
+      if (state.verdicts.size && !state.verdicts.has(p.trapVerdict)) return false;
       if (state.phases.size && !state.phases.has(p.phase)) return false;
       if (state.cats.size && !state.cats.has(p.cat)) return false;
       if (p.tandor < state.minScore) return false;
@@ -85,7 +91,7 @@ export function mountDiscovery() {
             </div>
             <div class="flt-sec">
               <div class="flt-sec-h">${s.verdict}</div>
-              <div class="pill-row" id="verdictPills">${['BUY', 'WATCH', 'PASS'].map((v) => `<button class="pill ${state.verdicts.has(v) ? 'on' : ''}" data-v="${v}">${T.VERDICTS[v][Sh.lang]}<span class="chk-cnt" style="margin:0">${P.filter((p) => p.verdict === v).length}</span></button>`).join('')}</div>
+              <div class="pill-row" id="verdictPills">${[['VIABLE', s.viable], ['RISKY', s.risky], ['TRAP', s.trap]].map(([v, lbl]) => `<button class="pill ${state.verdicts.has(v) ? 'on' : ''}" data-v="${v}">${lbl}<span class="chk-cnt" style="margin:0">${P.filter((p) => p.trapVerdict === v).length}</span></button>`).join('')}</div>
             </div>
             <div class="flt-sec">
               <div class="flt-sec-h">${s.phase}</div>
@@ -134,7 +140,8 @@ export function mountDiscovery() {
 
   function chipList() {
     const s = L(); const chips = [];
-    state.verdicts.forEach((v) => chips.push([`${s.verdict}: ${T.VERDICTS[v][Sh.lang]}`, () => state.verdicts.delete(v)]));
+    const trapLbl = { VIABLE: s.viable, RISKY: s.risky, TRAP: s.trap };
+    state.verdicts.forEach((v) => chips.push([`${s.verdict}: ${trapLbl[v] || v}`, () => state.verdicts.delete(v)]));
     state.phases.forEach((v) => chips.push([T.PHASES[v][Sh.lang], () => state.phases.delete(v)]));
     state.cats.forEach((v) => chips.push([T.CATS[v][Sh.lang], () => state.cats.delete(v)]));
     if (state.minScore > 0) chips.push([`${s.s_score} ≥ ${state.minScore}`, () => state.minScore = 0]);
@@ -165,6 +172,30 @@ export function mountDiscovery() {
 
   function ringCol(p) { return p.verdict === 'BUY' ? `var(--${T.PHASES[p.phase].v})` : p.verdict === 'WATCH' ? 'var(--watch)' : 'var(--pass)'; }
 
+  /* ---- REAL trap verdict (TRAP|RISKY|VIABLE) — the honest buy signal ---- */
+  function trapTag(p) {
+    const s = L();
+    if (p.trapVerdict === 'TRAP')   return { lbl: s.trap,   cls: 'pass',  col: 'var(--pass)' };
+    if (p.trapVerdict === 'RISKY')  return { lbl: s.risky,  cls: 'watch', col: 'var(--watch)' };
+    if (p.trapVerdict === 'VIABLE') return { lbl: s.viable, cls: 'buy',   col: 'var(--buy)' };
+    return null;
+  }
+  /* ---- REAL demand evidence: AliExpress sold + salesScore (null = empty-state) ---- */
+  function soldText(p) {
+    const s = L();
+    if (p.aliExpressSold == null) return null;
+    let t = `${fmt(p.aliExpressSold)} ${s.sold_unit}`;
+    if (p.aliExpressMedianSold != null) t += ` · ${fmt(p.aliExpressMedianSold)} ${s.median}`;
+    return t;
+  }
+  /* ---- per-product sparkline ONLY when a real demand curve exists ---- */
+  function sparkCell(p, up, w, h) {
+    if (!p.hasRealHistory) {
+      return `<span class="row-spark micro" style="color:var(--text-tertiary);font-size:10px;white-space:nowrap" title="${L().no_hist_s}">— ${L().no_hist}</span>`;
+    }
+    return `<span class="row-spark">${C.sparkline(p.trend, { w, h, stroke: up ? 'var(--buy)' : 'var(--pass)', fill: false, sw: 1.6 })}</span>`;
+  }
+
   function renderTable(slice, total, pages) {
     const s = L();
     const cols = [
@@ -176,22 +207,23 @@ export function mountDiscovery() {
       <th data-k="s_score" style="cursor:default">${s.c_verdict}</th>
       <th>${s.c_phase}</th>
       <th data-k="s_margin" class="num ${sortable('s_margin')}">${s.c_margin}${ar('s_margin')}</th>
-      <th data-k="s_growth" class="num ${sortable('s_growth')}">${s.c_vel}${ar('s_growth')}</th>
+      <th class="num" style="cursor:default">${s.sold}</th>
       <th data-k="s_sat" class="num ${sortable('s_sat')}">${s.c_sat}${ar('s_sat')}</th>
       <th data-k="s_potential" class="num ${sortable('s_potential')}">${s.c_pot}${ar('s_potential')}</th>
       <th class="num">${s.c_trend}</th>`;
     const rows = slice.map((p) => {
       const up = p.growth >= 0;
+      const trap = trapTag(p);
       return `<tr data-id="${p.id}">
         <td><div class="cell-prod">${Sh.thumb(p, 36)}<div><div class="cp-name">${p.name}</div><div class="cp-sub">${p.id}</div></div></div></td>
         <td class="num"><span class="score-cell"><span class="mini-ring">${C.ring(p.tandor, ringCol(p), 26, 3)}</span><b>${p.tandor}</b></span></td>
-        <td><span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][Sh.lang]}</span></td>
+        <td>${trap ? `<span class="verdict ${trap.cls}">${trap.lbl}</span>` : `<span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][Sh.lang]}</span>`}</td>
         <td><span class="badge phase-badge"><span class="pdot" style="background:var(--${T.PHASES[p.phase].v})"></span>${T.PHASES[p.phase][Sh.lang]}</span></td>
         <td class="num">${money(p.net, 1)}<span style="color:var(--text-tertiary)"> · ${pct(p.margin_pct * 100)}</span></td>
-        <td class="num"><span class="vel ${up ? 'up' : 'down'}">${up ? '▲ +' : '▼ '}${Math.round(p.growth * 100)}%</span></td>
+        <td class="num">${soldText(p) ? `<span class="mono" title="${L().sold}">${soldText(p)}</span>` : `<span style="color:var(--text-tertiary)">—</span>`}</td>
         <td class="num">${p.listed}</td>
         <td class="num">${p.organic}</td>
-        <td class="num"><span class="row-spark">${C.sparkline(p.trend, { w: 60, h: 22, stroke: up ? 'var(--buy)' : 'var(--pass)', fill: false, sw: 1.6 })}</span></td>
+        <td class="num">${sparkCell(p, up, 60, 22)}</td>
       </tr>`;
     }).join('');
     $('#results').innerHTML = `
@@ -207,7 +239,16 @@ export function mountDiscovery() {
     const cards = slice.map((p) => {
       const up = p.growth >= 0, col = `var(--${T.PHASES[p.phase].v})`;
       const hue = p.catHue, a = `oklch(0.7 0.1 ${hue})`, b = `oklch(0.52 0.12 ${hue})`;
-      const gauges = [['s_growth', p.growthScore, 'var(--signal)'], ['s_reddit', p.redditScore, 'var(--reddit)'], ['s_trends', p.trendsScore, 'var(--azure)'], ['s_potential', p.organic, 'var(--buy)']];
+      const trap = trapTag(p);
+      // Demand evidence: real AliExpress sold + salesScore (honest empty-state when null).
+      const sold = soldText(p);
+      const demandLine = sold
+        ? `<div class="pcard-meta" style="margin-top:2px"><b style="color:var(--text-secondary)">${sold}</b>${p.salesScore != null ? ` · ${s.s_growth}: ${p.salesScore}` : ''}</div>`
+        : `<div class="pcard-meta" style="margin-top:2px;color:var(--text-tertiary)">${s.no_demand}</div>`;
+      // Sparkline only when a real demand curve exists; else honest empty-state.
+      const sparkRow = p.hasRealHistory
+        ? `<div style="margin:8px 0 2px">${C.sparkline(p.trend, { w: 220, h: 26, stroke: up ? 'var(--buy)' : 'var(--pass)', fill: true, sw: 1.6 })}</div>`
+        : `<div class="pcard-meta" style="margin:8px 0 2px;color:var(--text-tertiary);font-size:11px">— ${s.no_hist} · ${s.no_hist_s}</div>`;
       return `<div class="pcard" data-id="${p.id}">
         <div class="pcard-media">
           <div class="ph-stripe" style="background:repeating-linear-gradient(135deg, ${a} 0 7px, ${b} 7px 14px);opacity:.9"></div>
@@ -217,13 +258,14 @@ export function mountDiscovery() {
         <div class="pcard-body">
           <div class="pcard-name">${p.name}</div>
           <div class="pcard-meta">${T.CATS[p.cat][Sh.lang]} · ${p.listed} ${s.c_sat.toLowerCase()}</div>
-          <div class="pcard-gauges">${gauges.map(([k, v, c]) => `<div class="pcard-g"><span>${s[k]}</span>${C.microGauge(v, c)}</div>`).join('')}</div>
+          ${demandLine}
+          ${sparkRow}
           <div class="pcard-kpi">
             <span class="mg-margin">${money(p.net, 1)} <span style="color:var(--text-tertiary);font-weight:500">${pct(p.margin_pct * 100)}</span></span>
-            <span class="vel ${up ? 'up' : 'down'} mono" style="font-size:12.5px;font-weight:600;color:${up ? 'var(--buy)' : 'var(--pass)'}">${up ? '↗ +' : '↘ '}${Math.round(p.growth * 100)}%</span>
+            <span class="micro mono" style="color:var(--text-tertiary)">CPA ≤ ${p.breakevenCpa != null ? money(p.breakevenCpa, 0) : '—'}</span>
           </div>
           <div class="pcard-foot">
-            <span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][Sh.lang]}</span>
+            ${trap ? `<span class="verdict ${trap.cls}">${trap.lbl}</span>` : `<span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][Sh.lang]}</span>`}
             <span class="risk ${p.risk}"><span class="rdot"></span>${p.risk === 'low' ? L0('risk_low') : p.risk === 'mod' ? L0('risk_mod') : L0('risk_high')}</span>
           </div>
         </div>

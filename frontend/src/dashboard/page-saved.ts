@@ -16,12 +16,16 @@ export function mountSaved() {
       group: 'Group', g_none: 'None', g_cat: 'Category', count: 'saved products',
       add_note: 'Add note', to_watch: 'To watchlist', remove: 'Remove',
       empty_t: 'Nothing saved yet', empty_s: 'Save products from Discovery or the radar to build a private shortlist — with your own notes and tags.', explore: 'Explore Discovery',
-      sort: 'Sort', s_recent: 'Recently saved', s_score: 'Tandor score', s_growth: 'Growth' },
+      sort: 'Sort', s_recent: 'Recently saved', s_score: 'Tandor score', s_growth: 'Growth',
+      trap: 'Money trap', risky: 'Risky', viable: 'Viable',
+      sold: 'sold', median: 'median', no_demand: 'No demand data', no_hist: 'History building' },
     fr: { title: 'Sauvegardés', sub: 'votre bibliothèque de recherche', search: 'Rechercher…',
       group: 'Grouper', g_none: 'Aucun', g_cat: 'Catégorie', count: 'produits sauvegardés',
       add_note: 'Ajouter une note', to_watch: 'Vers watchlist', remove: 'Retirer',
       empty_t: 'Rien de sauvegardé', empty_s: 'Sauvegardez des produits depuis Discovery ou le radar pour bâtir une liste privée — avec vos notes et tags.', explore: 'Explorer Discovery',
-      sort: 'Tri', s_recent: 'Récemment ajoutés', s_score: 'Score Tandor', s_growth: 'Croissance' },
+      sort: 'Tri', s_recent: 'Récemment ajoutés', s_score: 'Score Tandor', s_growth: 'Croissance',
+      trap: 'Piège à fric', risky: 'Risqué', viable: 'Viable',
+      sold: 'vendus', median: 'médiane', no_demand: 'Pas de données de demande', no_hist: 'Historique en cours' },
   };
   const L = () => STR[Sh.lang];
 
@@ -85,11 +89,34 @@ export function mountSaved() {
     wire();
   }
 
+  function trapTag(p) {
+    const s = L();
+    if (p.trapVerdict === 'TRAP')   return { lbl: s.trap,   cls: 'pass',  col: 'var(--pass)' };
+    if (p.trapVerdict === 'RISKY')  return { lbl: s.risky,  cls: 'watch', col: 'var(--watch)' };
+    if (p.trapVerdict === 'VIABLE') return { lbl: s.viable, cls: 'buy',   col: 'var(--buy)' };
+    return null;
+  }
+  function soldText(p) {
+    const s = L();
+    if (p.aliExpressSold == null) return null;
+    let t = `${Sh.fmt(p.aliExpressSold)} ${s.sold}`;
+    if (p.aliExpressMedianSold != null) t += ` · ${Sh.fmt(p.aliExpressMedianSold)} ${s.median}`;
+    return t;
+  }
+
   function card(p) {
     const s = L(), up = p.growth >= 0, col = `var(--${T.PHASES[p.phase].v})`;
     const hue = p.catHue, a = `oklch(0.7 0.1 ${hue})`, b = `oklch(0.52 0.12 ${hue})`;
     const note = NOTES[Sh.lang][p.id];
-    const ringCol = p.verdict === 'BUY' ? col : p.verdict === 'WATCH' ? 'var(--watch)' : 'var(--pass)';
+    const trap = trapTag(p);
+    const ringCol = trap ? trap.col : (p.verdict === 'BUY' ? col : p.verdict === 'WATCH' ? 'var(--watch)' : 'var(--pass)');
+    const sold = soldText(p);
+    const demandLine = sold
+      ? `<div class="pcard-meta" style="margin-top:2px"><b style="color:var(--text-secondary)">${sold}</b>${p.salesScore != null ? ` · ${s.s_growth}: ${p.salesScore}` : ''}</div>`
+      : `<div class="pcard-meta" style="margin-top:2px;color:var(--text-tertiary)">${s.no_demand}</div>`;
+    const sparkRow = p.hasRealHistory
+      ? `<div style="margin:8px 0 2px">${C.sparkline(p.trend, { w: 220, h: 26, stroke: up ? 'var(--buy)' : 'var(--pass)', fill: true, sw: 1.6 })}</div>`
+      : `<div class="pcard-meta" style="margin:8px 0 2px;color:var(--text-tertiary);font-size:11px">— ${s.no_hist}</div>`;
     return `<div class="pcard" data-id="${p.id}">
       <div class="pcard-media">
         <div class="ph-stripe" style="background:repeating-linear-gradient(135deg, ${a} 0 7px, ${b} 7px 14px);opacity:.9"></div>
@@ -99,13 +126,15 @@ export function mountSaved() {
       <div class="pcard-body">
         <div class="pcard-name">${p.name}</div>
         <div class="pcard-meta">${T.CATS[p.cat][Sh.lang]} · ${p.id}</div>
+        ${demandLine}
         ${note ? `<div class="note-block">${ic('note')}<span>${note}</span></div>` : ''}
+        ${sparkRow}
         <div class="pcard-kpi">
           <span class="mg-margin">${money(p.net, 1)} <span style="color:var(--text-tertiary);font-weight:500">${pct(p.margin_pct * 100)}</span></span>
-          <span class="mono" style="font-size:12.5px;font-weight:600;color:${up ? 'var(--buy)' : 'var(--pass)'}">${up ? '↗ +' : '↘ '}${Math.round(p.growth * 100)}%</span>
+          <span class="micro mono" style="color:var(--text-tertiary)">CPA ≤ ${p.breakevenCpa != null ? money(p.breakevenCpa, 0) : '—'}</span>
         </div>
         <div class="pcard-foot">
-          <span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][Sh.lang]}</span>
+          ${trap ? `<span class="verdict ${trap.cls}">${trap.lbl}</span>` : `<span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][Sh.lang]}</span>`}
           <span style="display:flex;gap:6px">
             <button class="icon-btn" data-act="watch" title="${s.to_watch}">${ic('plus')}</button>
             <button class="icon-btn on" data-act="remove" title="${s.remove}">${ic('heart')}</button>

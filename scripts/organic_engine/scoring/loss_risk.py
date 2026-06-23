@@ -22,7 +22,7 @@ Verdict : TRAP (au moins un drapeau rouge) / RISKY (au moins un orange) / VIABLE
 """
 from __future__ import annotations
 from dataclasses import dataclass
-from math import exp
+from math import exp, inf
 
 # Risque de retour = PART de produits mal notés (<4.0★) dans la catégorie Amazon.
 # Discrimine bien mieux que la médiane (qui est ~toujours ≥4.0). Une catégorie où
@@ -42,9 +42,31 @@ PRICE_HIGH_TICKET = 120.0
 # est du bruit, pas une tendance). Cohérent avec TrendFeatures.is_reliable.
 DECLINE_MIN_POINTS = 3
 DECLINE_MAX_VOLATILITY = 1.0     # série trop bruitée au-delà => « inconnu », pas « déclin »
+# Fenêtre minimale couverte par la série pour OSER un rouge. Une pente -30 %/mois
+# lue sur 3 j est du bruit ; il faut une durée réelle d'observation.
+DECLINE_MIN_SPAN_DAYS = 10.0
 # Seuils sur la croissance MENSUELLE implicite (exp(velocity*30) - 1), interprétable.
 DECLINE_RED = -0.30      # <= -30 %/mois => la tendance meurt, on arrive trop tard
 DECLINE_AMBER = -0.12    # <= -12 %/mois => momentum qui s'essouffle
+
+# Valeurs critiques de Student (bilatéral, α=0.05) par degré de liberté (= n-2).
+# Au-delà de la table, on tend vers la loi normale (1.96). Sert au test de
+# significativité de la pente : un -30 %/mois sur une pente non distinguable de 0
+# n'est PAS un déclin, juste du bruit -> on ne crie pas « piège ».
+_T_CRIT_05 = {1: 12.71, 2: 4.30, 3: 3.18, 4: 2.78, 5: 2.57, 6: 2.45, 7: 2.36,
+              8: 2.31, 9: 2.26, 10: 2.23, 11: 2.20, 12: 2.18, 13: 2.16, 14: 2.14}
+
+
+def _slope_is_significant(velocity: float, velocity_se: float | None,
+                          n_points: int) -> bool:
+    """La pente est-elle distinguable de 0 à α=0.05 ? (test t = pente / SE)."""
+    if velocity_se is None or velocity_se == inf or velocity_se <= 0.0:
+        return False
+    df = n_points - 2
+    if df < 1:
+        return False
+    t_crit = _T_CRIT_05.get(df, 1.96)
+    return abs(velocity / velocity_se) >= t_crit
 
 
 @dataclass(slots=True)
@@ -118,12 +140,20 @@ def _decline_flag(
     demand_velocity: float | None,
     demand_points: int,
     demand_volatility: float | None,
+    demand_velocity_se: float | None = None,
+    demand_span_days: float | None = None,
 ) -> LossFlag:
     """Demande en déclin ? Lue sur NOTRE horloge (sales_snapshots via extract_trend).
 
     ``demand_velocity`` est la pente log/jour ; on l'exprime en croissance mensuelle
     implicite pour le verdict. ABSENCE d'historique fiable = « inconnu », jamais
     « déclin » : c'est le garde-fou contre le faux négatif (cf. DECLINE_MIN_POINTS).
+
+    Un rouge « déclin » n'est émis que si la chute est PROUVÉE : pente significative
+    à α=0.05 (``demand_velocity_se``) ET fenêtre d'observation suffisante
+    (``demand_span_days`` ≥ DECLINE_MIN_SPAN_DAYS). Sinon on rétrograde en amber
+    (« déclin soupçonné ») : pour un outil qui dit « non », un faux rouge coûte
+    plus cher qu'un amber prudent.
     """
     if demand_velocity is None or demand_points < DECLINE_MIN_POINTS:
         return LossFlag("déclin", "unknown",
@@ -135,9 +165,16 @@ def _decline_flag(
     monthly = exp(min(demand_velocity * 30.0, 20.0)) - 1.0
     pct = monthly * 100.0
     if monthly <= DECLINE_RED:
-        return LossFlag("déclin", "red",
-                        f"demande en chute (~{pct:.0f}%/mois) — tendance qui meurt, "
-                        "tu arrives trop tard")
+        proven = (_slope_is_significant(demand_velocity, demand_velocity_se, demand_points)
+                  and demand_span_days is not None
+                  and demand_span_days >= DECLINE_MIN_SPAN_DAYS)
+        if proven:
+            return LossFlag("déclin", "red",
+                            f"demande en chute (~{pct:.0f}%/mois) — tendance qui meurt, "
+                            "tu arrives trop tard")
+        return LossFlag("déclin", "amber",
+                        f"déclin soupçonné (~{pct:.0f}%/mois) mais non confirmé "
+                        "(série trop courte ou pente non significative)")
     if monthly <= DECLINE_AMBER:
         return LossFlag("déclin", "amber",
                         f"demande en repli (~{pct:.0f}%/mois) — momentum qui s'essouffle")
@@ -170,6 +207,8 @@ def assess_loss_risk(
     demand_velocity: float | None = None,
     demand_points: int = 0,
     demand_volatility: float | None = None,
+    demand_velocity_se: float | None = None,
+    demand_span_days: float | None = None,
 ) -> LossRiskResult:
     """Assemble les drapeaux disponibles en un verdict loss-framed.
 
@@ -183,7 +222,8 @@ def assess_loss_risk(
         _price_flag(retail_eur),
         _return_flag(pct_low_rating),
         _saturation_flag(listed_num),
-        _decline_flag(demand_velocity, demand_points, demand_volatility),
+        _decline_flag(demand_velocity, demand_points, demand_volatility,
+                      demand_velocity_se, demand_span_days),
     ]
     reds = [f for f in flags if f.level == "red"]
     ambers = [f for f in flags if f.level == "amber"]

@@ -19,7 +19,7 @@ mathématiques bien définies de la série observée.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from math import exp
+from math import exp, inf, sqrt
 
 import numpy as np
 
@@ -35,6 +35,7 @@ class TrendFeatures:
     level: float          # dernière valeur lissée (échelle d'origine)
     log_level: float      # log(1+level), pour comparaisons inter-produits
     velocity: float       # pente log/jour = taux de croissance exponentiel
+    velocity_se: float    # erreur-type de la pente (OLS) — inf si non estimable
     acceleration: float   # dérivée seconde (log/jour²)
     volatility: float     # écart-type des résidus log du trend
     r2: float             # qualité d'ajustement du trend [0,1]
@@ -70,32 +71,39 @@ def extract_trend(
     Args:
         timestamps_days: instants des mesures en jours (croissants).
         values: valeurs du signal (>= 0). Travaillées en log(1+v).
-        smooth: applique un lissage EMA avant l'ajustement.
+        smooth: lisse (EMA) la valeur ``level`` rapportée pour l'affichage.
+            NB : la RÉGRESSION (pente, SE, volatilité) se fait toujours sur la
+            série brute. Lisser avant le fit biaise la pente vers le bas sur
+            séries courtes et sous-estime les résidus (double comptage du bruit)
+            — la pente OLS gère déjà le bruit via ses résidus.
 
     Returns:
         Un :class:`TrendFeatures`. Robuste aux séries courtes : vélocité dès
         2 points, accélération dès 3, sinon 0 (et confiance basse en aval).
+        ``velocity_se`` (erreur-type de la pente) vaut ``inf`` tant qu'elle
+        n'est pas estimable (< 3 points), si bien qu'aucun test de
+        significativité en aval ne peut conclure sur une série trop courte.
     """
     t = np.asarray(timestamps_days, dtype=float)
     v = np.asarray(values, dtype=float)
     if t.size != v.size or t.size == 0:
-        return TrendFeatures(0, 0, 0, 0, 0, 0, 0, 0)
+        return TrendFeatures(0, 0, 0, inf, 0, 0, 0, 0, 0)
 
     # Tri chronologique défensif.
     order = np.argsort(t)
     t, v = t[order], v[order]
 
+    # Régression sur la série BRUTE ; lissage réservé à l'affichage de level.
     log_v = np.log1p(np.clip(v, 0, None))
-    if smooth and log_v.size >= 3:
-        log_v = _ema(log_v)
+    log_v_disp = _ema(log_v) if (smooth and log_v.size >= 3) else log_v
 
     level = float(v[-1])
-    log_level = float(log_v[-1])
+    log_level = float(log_v_disp[-1])
     n = int(t.size)
     span = float(t[-1] - t[0])
 
     if n == 1:
-        return TrendFeatures(level, log_level, 0, 0, 0, 0, 1, 0)
+        return TrendFeatures(level, log_level, 0, inf, 0, 0, 0, 1, 0)
 
     # Recentrage du temps pour la stabilité numérique.
     tc = t - t.mean()
@@ -109,6 +117,16 @@ def extract_trend(
     ss_tot = float(np.sum((log_v - log_v.mean()) ** 2))
     r2 = 1.0 - float(np.sum(residuals**2)) / (ss_tot + _EPS) if ss_tot > _EPS else 1.0
 
+    # Erreur-type de la pente : SE = sqrt( s² / Σtc² ), s² = SSR/(n-2).
+    # Permet un test de significativité (t = velocity/SE) en aval. Non estimable
+    # à n<=2 (pas de degré de liberté résiduel) => inf, donc jamais « significatif ».
+    sxx = float(np.sum(tc**2))
+    if n > 2 and sxx > _EPS:
+        s2 = float(np.sum(residuals**2)) / (n - 2)
+        velocity_se = sqrt(s2 / sxx)
+    else:
+        velocity_se = inf
+
     # Accélération : terme quadratique d'un ajustement degré 2 (si >= 3 points).
     acceleration = 0.0
     if n >= 3:
@@ -119,6 +137,7 @@ def extract_trend(
         level=level,
         log_level=log_level,
         velocity=velocity,
+        velocity_se=velocity_se,
         acceleration=acceleration,
         volatility=volatility,
         r2=max(0.0, min(1.0, r2)),

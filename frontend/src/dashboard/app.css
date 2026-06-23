@@ -173,6 +173,8 @@
 .sb-item.on::before { content: ""; position: absolute; left: -12px; top: 7px; bottom: 7px; width: 3px; border-radius: 0 3px 3px 0; background: var(--signal); }
 .sb-item.on svg { color: var(--signal); }
 .sb-label { transition: opacity .15s; }
+.sb-badge { margin-left: auto; min-width: 17px; height: 17px; padding: 0 5px; border-radius: var(--r-full); background: var(--ph-decline, var(--red)); color: #fff; font-family: var(--font-mono); font-size: 10px; font-weight: 600; display: grid; place-items: center; flex: none; }
+.app.collapsed .sb-badge { position: absolute; top: 2px; right: 2px; min-width: 14px; height: 14px; padding: 0 2px; font-size: 8.5px; margin-left: 0; }
 
 /* plan card */
 .sb-plan { margin-top: 10px; padding: 13px; background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-md); box-shadow: var(--elev-1); }

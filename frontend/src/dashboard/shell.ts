@@ -1,6 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 export {};
+import * as WL from './watchlist';
 /* ============================================================
    TANDOR DASHBOARD — shell.js  (shared app chrome, vanilla)
    Injects the same sidebar/topbar/overlays as the Home page and
@@ -128,6 +129,33 @@ export {};
   function money(v, dec) { dec = dec == null ? 0 : dec; return fmt(v, dec) + '\u202f€'; }
   function pct(v) { return fmt(v, 0) + '%'; }
 
+  /* ---------- real last-collection helpers ----------
+     PRODUCTS[0].lastCollection is a REAL ISO timestamp (same across all
+     products) or null. We derive an honest "il y a Xh/Xj" from it instead
+     of the old hardcoded "il y a 2 h". Never invent a value. */
+  function lastCollectionISO() {
+    try { return (P && P.length && P[0].lastCollection) || null; } catch (e) { return null; }
+  }
+  function agoFromISO(iso) {
+    if (!iso) return null;
+    const t = Date.parse(iso);
+    if (isNaN(t)) return null;
+    const mins = Math.max(0, Math.round((Date.now() - t) / 60000));
+    const fr = lang === 'fr';
+    if (mins < 1) return fr ? "à l'instant" : 'just now';
+    if (mins < 60) return fr ? `il y a ${mins} min` : `${mins} min ago`;
+    const hrs = Math.round(mins / 60);
+    if (hrs < 48) return fr ? `il y a ${hrs} h` : `${hrs} h ago`;
+    const days = Math.round(hrs / 24);
+    return fr ? `il y a ${days} j` : `${days} d ago`;
+  }
+  /* Human label for the live banner; honest fallback when never collected. */
+  function liveAgoLabel() {
+    const ago = agoFromISO(lastCollectionISO());
+    if (ago) return ago;
+    return lang === 'fr' ? 'pas encore collecté' : 'not collected yet';
+  }
+
   /* ============================================================
      CHROME MARKUP — injected once into the page
      ============================================================ */
@@ -245,7 +273,28 @@ export {};
   function navItem(icn, key) {
     const s = S(), on = key === activeKey, href = LINK[key];
     const a = href ? `href="${href}"` : '';
-    return `<a class="sb-item${on ? ' on' : ''}" ${a} data-key="${key}" title="${s[key]}">${ic(icn)}<span class="sb-label">${s[key]}</span></a>`;
+    const badge = key === 'n_alerts' ? `<span class="sb-badge" id="navAlertBadge" style="display:none"></span>` : '';
+    return `<a class="sb-item${on ? ' on' : ''}" ${a} data-key="${key}" title="${s[key]}">${ic(icn)}<span class="sb-label">${s[key]}</span>${badge}</a>`;
+  }
+
+  /* ---- live decline-alert counter for the nav badge ---- */
+  function declineAlertCount(ids) {
+    let n = 0;
+    ids.forEach((id) => {
+      const p = P.find((x) => x.id === id);
+      if (p && (p.lossFlags || []).some((f) => f && f.name === 'déclin' && f.level === 'red')) n++;
+    });
+    return n;
+  }
+  function paintAlertBadge(n) {
+    const el = $('#navAlertBadge');
+    if (!el) return;
+    if (n > 0) { el.textContent = String(n); el.style.display = ''; }
+    else { el.style.display = 'none'; }
+  }
+  async function refreshAlertBadge() {
+    try { paintAlertBadge(declineAlertCount(await WL.getWatchlist())); }
+    catch (e) { paintAlertBadge(0); }
   }
   function renderSidebar() {
     const s = S();
@@ -266,7 +315,8 @@ export {};
     const mk = T.MARKETS.find((m) => m.code === (LS.get('market', 'FR'))) || T.MARKETS[0];
     $('#marketBtn').innerHTML = `<span class="flag">${mk.flag}</span><span class="mname">${mk.code}</span>${ic('chev')}`;
     $('#marketBtn').querySelector('svg').style.width = '13px';
-    $('#liveLabel').textContent = `${s.live} · ${s.live_ago}`;
+    // REAL last-collection time (from PRODUCTS[0].lastCollection), not hardcoded.
+    $('#liveLabel').textContent = `${s.live} · ${liveAgoLabel()}`;
     $$('#langToggle button').forEach((b) => b.classList.toggle('on', b.dataset.l === lang));
   }
   function renderTabbar() {
@@ -317,12 +367,20 @@ export {};
   }
   function buildLivePop() {
     const s = S();
+    const fr = lang === 'fr';
+    // Only the last-collection timestamp is REAL. The old per-source OK/limited
+    // statuses and the precise "dans 41 min" countdown are not knowable from the
+    // current export, so we drop them rather than fabricate. The next run is a
+    // nightly estimate, labelled as such — no invented minute count.
+    const lastLbl = fr ? 'Dernière collecte' : 'Last collection';
+    const lastVal = agoFromISO(lastCollectionISO()) || (fr ? 'pas encore collecté' : 'not collected yet');
+    const nextLbl = fr ? 'Prochaine collecte' : 'Next collection';
+    const nextVal = fr ? 'cette nuit (estim.)' : 'overnight (est.)';
     $('#livePop').innerHTML = `<div class="pop-h">${s.live_pipeline}</div>
-      ${[['run_cj', 'ok', s.ok], ['run_trends', 'warn', s.limited], ['run_reddit', 'ok', s.ok]].map(([k, st, lbl]) => `
-        <div class="pipe-row"><span class="name">${k === 'run_reddit' ? 'r/' : k === 'run_trends' ? 'G' : 'CJ'} ${s[k]}</span><span class="st ${st}"><span class="pdot"></span>${lbl}</span></div>`).join('')}
+      <div class="pipe-row"><span class="name">${ic('clock')}${lastLbl}</span><span class="st" style="color:var(--text-secondary)">${lastVal}</span></div>
       <div class="pop-sep"></div>
-      <div class="pipe-row"><span class="name">${ic('refresh')}${s.next_run}</span><span class="st" style="color:var(--text-secondary)">${s.in_min}</span></div>`;
-    $('#livePop .pipe-row svg').style.width = '14px';
+      <div class="pipe-row"><span class="name">${ic('refresh')}${nextLbl}</span><span class="st" style="color:var(--text-secondary)">${nextVal}</span></div>`;
+    $$('#livePop .pipe-row svg').forEach((sv) => sv.style.width = '14px');
   }
   function buildAvatarPop() {
     const s = S();
@@ -463,15 +521,28 @@ export {};
       </div>
       <div class="pd-foot">
         <button class="btn-ghost" data-act="save">${ic('heart')}${L.save}</button>
-        <button class="btn-ghost" data-act="watch">${ic('plus')}${L.watch}</button>
+        <button class="btn-ghost" id="pdWatchBtn" data-act="watch">${ic('eye')}${L.watch}</button>
         <button class="btn-ghost" data-act="alert">${ic('bell')}${L.alert}</button>
         <a class="btn-pri" href="#" data-act="cj">${ic('ext')}${L.cj}</a>
       </div>`;
     $('#scrim').classList.add('show');
     $('#pdDrawer').classList.add('show');
     $('#pdClose').addEventListener('click', closeAll);
-    const acts = { save: L.t_saved, watch: L.t_watch, alert: L.t_alert, cj: L.t_cj };
-    $$('#pdDrawer [data-act]').forEach((b) => b.addEventListener('click', (e) => { if (b.dataset.act === 'cj') e.preventDefault(); toast(`${p.name} · ${acts[b.dataset.act]}`); }));
+    const acts = { save: L.t_saved, alert: L.t_alert, cj: L.t_cj };
+    // Reflect current watch state on the dedicated button.
+    const wbtn = $('#pdWatchBtn');
+    WL.isWatched(p.id).then((on) => { if (wbtn) { wbtn.classList.toggle('on', on); wbtn.innerHTML = `${ic('eye')}${on ? L.watch_on : L.watch}`; } }).catch(() => {});
+    $$('#pdDrawer [data-act]').forEach((b) => b.addEventListener('click', async (e) => {
+      const act = b.dataset.act;
+      if (act === 'cj') e.preventDefault();
+      if (act === 'watch') {
+        const nowOn = await WL.toggleWatch(p.id);
+        if (wbtn) { wbtn.classList.toggle('on', nowOn); wbtn.innerHTML = `${ic('eye')}${nowOn ? L.watch_on : L.watch}`; }
+        toast(`${p.name} · ${nowOn ? L.t_watch_add : L.t_watch_rm}`);
+        return;
+      }
+      toast(`${p.name} · ${acts[act]}`);
+    }));
   }
   function miniBars(vals, col) {
     const max = Math.max(...vals, 1), n = vals.length, w = 300, h = 60, gap = 3, bw = (w - gap * (n - 1)) / n;
@@ -492,16 +563,16 @@ export {};
       cost: 'Coût', retail: 'Prix de vente', gross: 'Marge brute', net: 'Net après pub',
       c_growth: 'Croissance', c_reddit: 'Reddit', c_trends: 'Trends', c_potential: 'Potentiel', c_sat: 'Saturation inv.', c_margin: 'Marge',
       trends90: 'Google Trends · 90 j', reddit12: 'Mentions Reddit · 12 sem.',
-      save: 'Sauvegarder', watch: 'Watchlist', alert: 'Alerte', cj: 'Voir sur CJ',
-      t_saved: 'ajouté à votre bibliothèque', t_watch: 'ajouté à une watchlist', t_alert: 'alerte créée', t_cj: 'ouverture de la fiche CJ',
+      save: 'Sauvegarder', watch: 'Surveiller', watch_on: 'Surveillé', alert: 'Alerte', cj: 'Voir sur CJ',
+      t_saved: 'ajouté à votre bibliothèque', t_watch_add: 'ajouté à la watchlist', t_watch_rm: 'retiré de la watchlist', t_alert: 'alerte créée', t_cj: 'ouverture de la fiche CJ',
     } : {
       detected: 'detected', tandor: 'Score', opportunity: 'Opportunity', phase: 'Phase', scores: 'Sub-scores',
       high: 'High', med: 'Medium', low: 'Low',
       cost: 'Cost', retail: 'Retail price', gross: 'Gross margin', net: 'Net after ads',
       c_growth: 'Growth', c_reddit: 'Reddit', c_trends: 'Trends', c_potential: 'Potential', c_sat: 'Saturation inv.', c_margin: 'Margin',
       trends90: 'Google Trends · 90d', reddit12: 'Reddit mentions · 12 wks',
-      save: 'Save', watch: 'Watchlist', alert: 'Alert', cj: 'View on CJ',
-      t_saved: 'saved to your library', t_watch: 'added to a watchlist', t_alert: 'alert created', t_cj: 'opening CJ listing',
+      save: 'Save', watch: 'Watch', watch_on: 'Watching', alert: 'Alert', cj: 'View on CJ',
+      t_saved: 'saved to your library', t_watch_add: 'added to your watchlist', t_watch_rm: 'removed from watchlist', t_alert: 'alert created', t_cj: 'opening CJ listing',
     };
   }
 
@@ -547,7 +618,7 @@ export {};
   /* ============================================================
      WIRING
      ============================================================ */
-  function renderChrome() { renderSidebar(); renderTopbar(); renderTabbar(); renderNotif(); buildTweaks(); }
+  function renderChrome() { renderSidebar(); renderTopbar(); renderTabbar(); renderNotif(); buildTweaks(); refreshAlertBadge(); }
   function wire() {
     $('#collapseBtn').innerHTML = ic('list');
     $('#collapseBtn').querySelector('svg').style.width = '16px';
@@ -600,6 +671,9 @@ export {};
     renderChrome();
     wire();
     if (pageRender) pageRender();
+    // live decline-alert badge on the Alerts nav item
+    refreshAlertBadge();
+    try { WL.onWatchlistChange(() => refreshAlertBadge()); } catch (e) {}
   }
 
   window.Shell = {
