@@ -137,6 +137,13 @@ def store(conn: sqlite3.Connection, products: list[CJProduct]) -> tuple[int, int
 # Collecte
 # ---------------------------------------------------------------------------
 
+# L'endpoint product/list de CJ refuse tout offset > 6000 (erreur code 1600300
+# « the max offset is 6000 »). On ne peut donc JAMAIS dépasser 6000/pageSize pages,
+# quel que soit la taille réelle du catalogue (1,4 M). Le curseur doit boucler
+# dans cette fenêtre, sinon il finit coincé au-delà du mur et la découverte gèle.
+CJ_MAX_OFFSET = 6000
+
+
 def run_collect(pages: int, page_size: int, keyword: str | None) -> None:
     email = os.environ.get("CJ_EMAIL", "")
     api_key = os.environ.get("CJ_API_KEY", "")
@@ -152,12 +159,25 @@ def run_collect(pages: int, page_size: int, keyword: str | None) -> None:
 
     conn = init_db()
 
+    # Page maximale réellement atteignable avant le mur des 6000 d'offset CJ.
+    max_page = max(1, CJ_MAX_OFFSET // page_size)
+
     # Lit le curseur de pagination (ou démarre à la page 1 au tout premier run).
     row = conn.execute("SELECT value FROM collect_cursor WHERE key='next_page'").fetchone()
     start_page = row[0] if row else 1
+    # Garde-fou : si un ancien curseur est coincé au-delà du mur des 6000,
+    # on le ramène dans la fenêtre exploitable (sinon découverte gelée).
+    if start_page > max_page:
+        print(f"  ↻ Curseur ({start_page}) au-delà du mur CJ (offset 6000, "
+              f"page max {max_page}) → remis à 1")
+        start_page = 1
 
-    print(f"Découverte : pages {start_page} → {start_page + pages - 1} "
-          f"(~{pages * page_size} produits)")
+    print(f"Découverte : pages {start_page} → {min(start_page + pages - 1, max_page)} "
+          f"(fenêtre CJ : pages 1→{max_page}, ~{max_page * page_size} produits accessibles)")
+
+    # Ne jamais demander au-delà du mur : on borne le nombre de pages de ce run
+    # à ce qui reste dans la fenêtre exploitable depuis start_page.
+    pages = min(pages, max_page - start_page + 1)
 
     total_new = total_snaps = 0
     catalog_total = 0
@@ -176,14 +196,14 @@ def run_collect(pages: int, page_size: int, keyword: str | None) -> None:
     finally:
         in_db = conn.execute("SELECT COUNT(*) FROM cj_products").fetchone()[0]
 
-    # Avance le curseur pour le prochain run ; repart de la page 1 si on a
-    # fait le tour complet du catalogue.
+    # Avance le curseur pour le prochain run ; reboucle à la page 1 dès qu'on
+    # atteint le mur des 6000 d'offset CJ (la SEULE limite qui compte ici — le
+    # catalogue réel fait 1,4 M mais n'est pas accessible au-delà de cette fenêtre).
     next_page = last_page + 1
-    if catalog_total > 0:
-        max_page = (catalog_total // page_size) + 1
-        if next_page > max_page:
-            next_page = 1
-            print(f"  ↻ Curseur remis à 1 (catalogue épuisé après page {last_page})")
+    if next_page > max_page:
+        next_page = 1
+        print(f"  ↻ Curseur remis à 1 (mur CJ atteint après page {last_page}, "
+              f"offset {last_page * page_size})")
     conn.execute(
         "INSERT INTO collect_cursor(key, value) VALUES('next_page', ?) "
         "ON CONFLICT(key) DO UPDATE SET value=excluded.value",

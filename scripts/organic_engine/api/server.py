@@ -157,6 +157,176 @@ def _load_cache() -> dict[str, Any]:
         raise HTTPException(status_code=500, detail=f"Cache illisible : {exc}")
 
 
+# ---------------------------------------------------------------------------
+# Catalogue complet (cj.db) — produits NON enrichis, paginés en SQL
+# ---------------------------------------------------------------------------
+#
+# Le cache JSON ne contient que le top ~60 produits enrichis (Trends/Reddit/
+# vélocité). Le reste du catalogue (~6100 lignes) vit dans cj.db. On le sert à la
+# demande, page par page (LIMIT/OFFSET), en calculant un score « léger » par ligne
+# via les fonctions PURES (aucun réseau) score_sellability + assess_loss_risk.
+# Cela garde la même forme de produit que le cache, donc le front n'a rien de
+# spécial à gérer pour ces produits — ils n'ont simplement pas d'historique réel
+# ni de score organique (organic=0, hasRealHistory=false côté UI).
+
+# Buckets catégorie : repris à l'identique d'export_dashboard.py pour la cohérence
+# d'affichage (hue + i18n gérés côté UI).
+_CAT_BUCKETS = {
+    "WELLNESS": ["massage", "neck", "health", "care", "relief", "posture", "wellness"],
+    "HOME": ["home", "storage", "light", "lamp", "decor", "kitchen storage", "cleaning",
+             "organizer", "bedside"],
+    "TECH": ["phone", "charger", "power", "usb", "electronic", "gadget", "cable", "led",
+             "solar", "bluetooth", "printer"],
+    "BEAUTY": ["beauty", "hair", "makeup", "skin", "nail", "gua sha", "curl", "cosmetic"],
+    "PETS": ["pet", "dog", "cat", "animal"],
+    "OUTDOOR": ["outdoor", "camp", "garden", "travel", "hiking", "bottle", "picnic",
+                "backpack", "chair", "fishing"],
+    "KITCHEN": ["kitchen", "cook", "drink", "cup", "mug", "bottle opener", "spice",
+                "cutlery", "coffee"],
+    "FITNESS": ["fitness", "gym", "yoga", "training", "sport", "workout", "muscle"],
+    "APPAREL": ["shoe", "sock", "cloth", "wear", "dress", "pant", "shirt", "slipper",
+                "bag", "lint", "vest", "gown"],
+    "BABY": ["baby", "kid", "child", "infant", "bib"],
+}
+
+
+def _map_category(name: str | None, category: str | None) -> str:
+    h = f"{name or ''} {category or ''}".lower()
+    for bucket, kws in _CAT_BUCKETS.items():
+        if any(k in h for k in kws):
+            return bucket
+    return "HOME"
+
+
+def _catalogue_total(conn: sqlite3.Connection, exclude_ids: set[str]) -> int:
+    """Nombre EXACT de produits du catalogue NON déjà servis par le cache enrichi.
+
+    ``exclude_ids`` = suffixes 7 chiffres des pids déjà enrichis. Plusieurs pids
+    peuvent partager le même suffixe : on compte donc précisément, en DB, les
+    lignes dont le suffixe est dans ``exclude_ids`` et on les retranche du total.
+    """
+    total = conn.execute("SELECT COUNT(*) FROM cj_products").fetchone()[0]
+    if not exclude_ids:
+        return total
+    excluded = conn.execute(
+        "SELECT COUNT(*) FROM cj_products WHERE substr(pid, -7) IN (%s)"
+        % ",".join("?" * len(exclude_ids)),
+        tuple(exclude_ids),
+    ).fetchone()[0]
+    return max(0, total - excluded)
+
+
+def _catalogue_page(
+    conn: sqlite3.Connection,
+    exclude_ids: set[str],
+    sql_offset: int,
+    sql_limit: int,
+) -> list[dict[str, Any]]:
+    """Lit une page du catalogue cj.db et la met à la forme BASE du dashboard.
+
+    Tri stable par listed_num desc puis pid (déterministe entre requêtes, donc pas
+    de doublon/saut entre pages successives). Les pids déjà servis par le cache
+    enrichi sont exclus DIRECTEMENT en SQL (substr(pid,-7) NOT IN exclude_ids) :
+    ainsi l'OFFSET SQL == l'offset logique du catalogue, et chaque page contient
+    exactement ``sql_limit`` lignes. Aucune ligne au-delà de la page n'est chargée.
+    """
+    from scoring.sellability import score_sellability
+    from scoring.loss_risk import assess_loss_risk
+
+    if exclude_ids:
+        placeholders = ",".join("?" * len(exclude_ids))
+        where = f"WHERE substr(p.pid, -7) NOT IN ({placeholders})"
+        params: tuple = tuple(exclude_ids) + (sql_limit, sql_offset)
+    else:
+        where = ""
+        params = (sql_limit, sql_offset)
+
+    rows = conn.execute(
+        f"""
+        SELECT p.pid, p.name, p.category, p.image, p.create_time,
+               s.price, s.listed_num, d.suggest_price
+        FROM cj_products p
+        LEFT JOIN cj_snapshots s ON s.pid = p.pid
+            AND s.observed_at = (
+                SELECT MAX(observed_at) FROM cj_snapshots WHERE pid = p.pid
+            )
+        LEFT JOIN cj_details d ON d.pid = p.pid
+        {where}
+        ORDER BY COALESCE(s.listed_num, 0) DESC, p.pid
+        LIMIT ? OFFSET ?
+        """,
+        params,
+    ).fetchall()
+
+    out: list[dict[str, Any]] = []
+    for r in rows:
+        pid = r["pid"]
+        cost = float(r["price"]) if r["price"] else None
+        listed = int(r["listed_num"]) if r["listed_num"] is not None else 0
+        age = _age_days(r["create_time"])
+        suggest = float(r["suggest_price"]) if r["suggest_price"] else None
+
+        sr = score_sellability(pid, cost, listed, age, retail_override=suggest)
+        loss = assess_loss_risk(
+            pid,
+            net_after_cpa_eur=sr.net_after_cpa_eur,
+            gross_margin_eur=sr.gross_margin_eur,
+            pct_low_rating=None,
+            listed_num=listed,
+            retail_eur=sr.retail_eur,
+        )
+
+        out.append({
+            # Le cache enrichi expose un id = 7 derniers chiffres du pid. Pour le
+            # catalogue brut on garde le pid COMPLET : il est globalement unique
+            # (pas de collision de suffixe entre lignes, ni avec les ids enrichis).
+            "id": pid,
+            "name": r["name"],
+            "cat": _map_category(r["name"], r["category"]),
+            "cost": round(sr.cost_eur, 2),
+            "retail": round(sr.retail_eur, 2),
+            "sellability": round(sr.sellability),
+            # Produits non enrichis : pas de signal organique réel (Trends/Reddit).
+            "organic": 0,
+            "phase": "EMERGENT",
+            "verdict": sr.verdict,
+            "growth": 0.0,
+            "confidence": 0.0,
+            "listed": listed,
+            "age": round(age) if age is not None else 60,
+            "volatility": 0.0,
+            "net": round(sr.net_after_cpa_eur, 1),
+            "redditScore": 0,
+            "trendsScore": 0,
+            "salesScore": None,
+            "aliExpressSold": None,
+            "aliExpressMedianSold": None,
+            "seasonPeak": 6,
+            "seasonMult": 1.0,
+            "reason": {"en": sr.reason, "fr": sr.reason},
+            "trapVerdict": loss.verdict,
+            "trapHeadline": loss.headline,
+            "lossFlags": [
+                {"name": f.name, "level": f.level, "reason": f.reason}
+                for f in loss.flags
+            ],
+            "breakevenCpa": (round(loss.breakeven_cpa_eur, 1)
+                             if loss.breakeven_cpa_eur is not None else None),
+            # Pas d'historique réel pour le catalogue brut -> hasRealHistory=false côté UI.
+            "history": {"sales": None, "amazon": None},
+            "lastCollection": None,
+            "detectedHrs": None,
+            "image": r["image"],
+            "enriched": False,
+            "dossier": {
+                "hasDetail": suggest is not None,
+                "priceFromCJ": suggest is not None,
+                "suggestPrice": suggest,
+            },
+        })
+    return out
+
+
 app = FastAPI(title="Tandor — Organic Engine API", version="1.0.0")
 
 _origins = os.environ.get("TANDOR_CORS_ORIGINS", _DEFAULT_ORIGINS)
@@ -185,25 +355,103 @@ def list_products(
     verdict: str | None = Query(None, description="BUY / WATCH / PASS"),
     min_score: float = Query(0, ge=0, le=100, description="Score Tandor minimum"),
     limit: int = Query(200, ge=1, le=1000),
+    offset: int = Query(0, ge=0, description="Décalage pour la pagination / infinite scroll"),
 ) -> dict[str, Any]:
-    """Produits scorés (forme BASE du dashboard), filtrés et triés par score Tandor."""
+    """Produits du dashboard, paginés sur L'UNIVERS COMPLET (cache enrichi + cj.db).
+
+    Stratégie de pagination unifiée :
+      * Les ~60 produits ENRICHIS (cache JSON, Trends/Reddit/vélocité) occupent les
+        premiers offsets, triés par score Tandor décroissant.
+      * Au-delà, on sert le reste du catalogue cj.db (~6100 produits) page par page
+        en SQL (LIMIT/OFFSET), scoré à la volée par les fonctions pures (aucun
+        réseau). Ces produits ont les champs CJ de base mais organic=0 / pas
+        d'historique réel — le front les affiche en empty-state « History building ».
+
+    Rétro-compat : un appel sans ``offset`` repart de 0 et fonctionne comme avant.
+    Les filtres (cat/verdict/min_score) ne s'appliquent qu'à la partie enrichie
+    (le catalogue brut est servi tel quel ; le front filtre côté client).
+
+    La réponse expose ``meta.total`` (univers complet), ``meta.has_more`` et
+    ``meta.next_offset`` pour piloter l'infinite scroll côté front.
+    """
     data = _load_cache()
-    products = data.get("products", [])
+    enriched = data.get("products", [])
 
     def tandor(p: dict) -> float:
         return 0.55 * p.get("organic", 0) + 0.45 * p.get("sellability", 0)
 
+    # Filtres appliqués sur la partie enrichie uniquement.
     filtered = [
-        p for p in products
+        p for p in enriched
         if (cat is None or p.get("cat") == cat)
         and (verdict is None or p.get("verdict") == verdict)
         and tandor(p) >= min_score
     ]
     filtered.sort(key=tandor, reverse=True)
+    n_enriched = len(filtered)
+
+    # Le cache ne stocke que l'``id`` = 7 derniers chiffres du pid CJ. On exclut donc
+    # du catalogue les pids dont le suffixe correspond à un produit déjà enrichi.
+    enriched_ids = {str(p.get("id")) for p in enriched if p.get("id")}
+
+    page: list[dict[str, Any]] = []
+
+    # 1. Tranche dans la partie enrichie.
+    if offset < n_enriched:
+        page.extend(filtered[offset:offset + limit])
+
+    # 2. Complément depuis le catalogue cj.db si la page n'est pas pleine.
+    has_more = False
+    cat_total = 0
+    # Le catalogue brut n'est servi que sans filtre enrichi (sinon incohérent) :
+    # avec un filtre actif, on reste sur la partie enrichie.
+    serve_catalogue = cat is None and verdict is None and min_score <= 0
+    if CJ_DB.exists() and serve_catalogue:
+        try:
+            conn = sqlite3.connect(CJ_DB, timeout=5)
+            conn.row_factory = sqlite3.Row
+            try:
+                cat_total = _catalogue_total(conn, enriched_ids)
+                remaining = limit - len(page)
+                if remaining > 0:
+                    # Offset dans le catalogue = ce qui dépasse la partie enrichie.
+                    # L'exclusion étant faite en SQL, cet offset est exact.
+                    cat_offset = max(0, offset - n_enriched)
+                    raw = _catalogue_page(conn, enriched_ids, cat_offset, remaining)
+                    page.extend(raw)
+                next_offset = offset + len(page)
+                has_more = next_offset < (n_enriched + cat_total)
+            finally:
+                conn.close()
+        except sqlite3.Error:
+            # DB indisponible : on dégrade proprement sur la seule partie enrichie.
+            cat_total = 0
+            has_more = offset + len(page) < n_enriched
+    else:
+        has_more = offset + len(page) < n_enriched
+
+    total = n_enriched + cat_total
+    next_offset = offset + len(page)
+
+    meta = dict(data.get("meta", {}))
+    meta.update({
+        "total": total,
+        "enriched_count": n_enriched,
+        "catalogue_count": cat_total,
+        "offset": offset,
+        "limit": limit,
+        "returned": len(page),
+        "next_offset": next_offset if has_more else None,
+        "has_more": has_more,
+    })
+
     return {
-        "meta": data.get("meta", {}),
-        "count": len(filtered),
-        "products": filtered[:limit],
+        "meta": meta,
+        "count": len(page),
+        "total": total,
+        "has_more": has_more,
+        "next_offset": next_offset if has_more else None,
+        "products": page,
     }
 
 

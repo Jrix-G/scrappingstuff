@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import sqlite3
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ENGINE = Path(__file__).resolve().parent
@@ -328,6 +328,44 @@ def stats(c: sqlite3.Connection) -> dict:
             sales[t] = "n/a"
     return {"total_keywords": total, "scraped": done, "pending": pending,
             "aliexpress_queued": ali, "hot_products": hot, **sales}
+
+
+BREAKOUT_THRESHOLD = 100000  # palier « demande massive » (cap badge Amazon = 100k+)
+
+
+def amazon_breakout(c: sqlite3.Connection, keyword: str, new_max) -> bool:
+    """True si `new_max` est un NOUVEAU record historique pour ce mot-clé ET atteint
+    le palier de demande massive.
+
+    Sert à n'envoyer une notif produit que sur un vrai événement (~3/jour mesuré)
+    plutôt qu'à chaque produit HOT (~1300/jour → spam, couvert par le digest).
+    À appeler AVANT record_amazon (le snapshot courant ne doit pas encore être inséré)."""
+    if (new_max or 0) < BREAKOUT_THRESHOLD:
+        return False
+    prev = c.execute(
+        "SELECT MAX(max_bought) FROM amazon_snapshots WHERE keyword=?", (keyword,)
+    ).fetchone()[0]
+    return (new_max or 0) > (prev or 0)
+
+
+def hourly_digest(c: sqlite3.Connection, hours: int = 1, top_n: int = 5) -> dict:
+    """Synthèse des snapshots Amazon de la dernière `hours` heure(s) pour Discord.
+
+    Remplace le heartbeat brut : combien de produits scrapés + le top demande réel,
+    sans une notif par produit (la donnée est dense en gros vendeurs → spammy)."""
+    since = (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+    scraped = c.execute(
+        "SELECT COUNT(*) FROM amazon_snapshots WHERE observed_at>=?", (since,)
+    ).fetchone()[0]
+    top = c.execute(
+        "SELECT keyword, MAX(max_bought) AS mb FROM amazon_snapshots "
+        "WHERE observed_at>=? AND max_bought IS NOT NULL "
+        "GROUP BY keyword ORDER BY mb DESC LIMIT ?", (since, top_n)
+    ).fetchall()
+    queue_total = c.execute("SELECT COUNT(*) FROM amazon_queue").fetchone()[0]
+    return {"scraped_last_h": scraped,
+            "top": [(kw, mb) for kw, mb in top],
+            "queue_total": queue_total}
 
 
 if __name__ == "__main__":  # python3 demand_queue.py  → init + stats

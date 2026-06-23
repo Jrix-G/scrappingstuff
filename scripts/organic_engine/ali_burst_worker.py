@@ -49,11 +49,17 @@ from pathlib import Path
 ENGINE = Path(__file__).resolve().parent
 sys.path.insert(0, str(ENGINE))
 
+import notify_discord as notify  # noqa: E402
 from collectors.ali_page_parser import parse_page, page_to_demand, is_blocked  # noqa: E402
 
 EXIT_ALL_DONE = 0
 EXIT_MORE_WORK = 1
 EXIT_BLOCKED = 2
+
+# Chaque mot-clé Ali traité ici est DÉJÀ un top-vélocité Amazon (file aliexpress_queue) :
+# la notif sert de CONFIRMATION par produit. Volume faible (IP maison, ~3-4 req/IP),
+# donc pas de digest nécessaire — seuil modeste pour taire les pages sans vraie traction.
+ALI_HOT_THRESHOLD = 1000  # max_sold AliExpress min pour notifier une confirmation
 
 DB = ENGINE / "data" / "cj.db"
 CACHE_DIR = ENGINE / ".aliexpress_cache"
@@ -278,6 +284,8 @@ def run(budget: int, batch: int, max_keywords: int, dry_run: bool) -> int:
         if blocked or is_blocked(html):
             print(f"[burst] ✗ « {kw} » → PUNISH ({len(html)}o, {dt:.1f}s) "
                   f"— IP épuisée après {fired} req", flush=True)
+            if not dry_run:
+                notify.blocked(kw, source="AliExpress")
             blocked_hit = True
             break
         page = parse_page(html, keyword=kw)
@@ -290,8 +298,12 @@ def run(budget: int, batch: int, max_keywords: int, dry_run: bool) -> int:
             _cache_write(kw, html)
         total_products += n
         total_signals += len(page.sold_values)
+        flag = " 🟢" if (d.max_sold or 0) >= ALI_HOT_THRESHOLD else ""
         print(f"[burst] ✓ « {kw} » → {n} produits, max={d.max_sold} "
-              f"med={d.median_sold} total={d.n_results} ({dt:.1f}s)", flush=True)
+              f"med={d.median_sold} total={d.n_results} ({dt:.1f}s){flag}", flush=True)
+        if not dry_run and (d.max_sold or 0) >= ALI_HOT_THRESHOLD:
+            notify.ali_scraped(kw, d.max_sold, d.median_sold or 0,
+                               d.n_results or d.listings_with_sales)
     if not dry_run:
         c.commit()
     fetcher.close()

@@ -18,12 +18,23 @@ export default function Dashboard() {
     const api = process.env.REACT_APP_API_URL;
     const loadData = async () => {
       if (!api) return;
+      const base = api.replace(/\/$/, '');
       try {
-        const res = await fetch(`${api.replace(/\/$/, '')}/api/products?limit=200`);
+        // L'Accueil n'affiche que le top enrichi : un lot de 60 suffit (il occupe
+        // les premiers offsets). On pose tout de même le curseur de pagination
+        // pour cohérence avec data.ts (loadMore reste dispo si une page l'utilise).
+        const res = await fetch(`${base}/api/products?limit=60&offset=0`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         if (Array.isArray(json.products) && json.products.length) {
           (window as any).__TANDOR_BASE__ = json.products;
+          (window as any).__TANDOR_PAGE__ = {
+            apiBase: base,
+            limit: 60,
+            total: json.total != null ? json.total : json.products.length,
+            nextOffset: json.next_offset != null ? json.next_offset : null,
+            hasMore: !!json.has_more,
+          };
         }
       } catch (err) {
         // silencieux : on retombe sur le JSON bundlé

@@ -174,6 +174,11 @@
 .tandor-dash .pager .pbtn svg { width: 15px; height: 15px; }
 .tandor-dash .pager .pbtn:disabled { opacity: .4; cursor: default; }
 
+/* infinite scroll : indicateur de chargement du lot suivant */
+.tandor-dash .scroll-loader { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: 12px; color: var(--text-tertiary); }
+.tandor-dash .scroll-loader svg { width: 14px; height: 14px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
 /* product cards grid (Discovery card view + Saved) */
 .tandor-dash .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 16px; }
 .tandor-dash .pcard { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-md); box-shadow: var(--elev-1); overflow: hidden; cursor: pointer; transition: box-shadow .2s var(--ease), transform .2s var(--ease); display: flex; flex-direction: column; }

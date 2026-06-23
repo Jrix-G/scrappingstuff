@@ -84,7 +84,7 @@ try:
     collected = con.execute("SELECT COUNT(*) FROM cj_products").fetchone()[0]
     today = datetime.date.today().isoformat()
     new_today = con.execute(
-        "SELECT COUNT(*) FROM cj_products WHERE DATE(created_at)=?", (today,)
+        "SELECT COUNT(*) FROM cj_products WHERE DATE(first_seen)=?", (today,)
     ).fetchone()[0]
     con.close()
 except Exception as e:

@@ -1,0 +1,33 @@
+ANALYSE COMMERCIALE — TANDOR vs MINEA
+=====================================
+
+MINEA = ad-spy. Montre des pubs/produits deja en cours chez les
+concurrents. Signal en retard et deja sature.
+
+CE QU'ON FAIT DE DIFFERENT (4 points)
+-------------------------------------
+1. Angle inverse. loss_risk.py ne dit pas "ca va gagner" mais
+   "ne lance pas, tu vas perdre" (marge, retours, saturation, declin).
+   = detecteur de pieges a fric. Personne ne vend ca.
+
+2. Signal organique, pas pub. On scrape la demande reelle
+   (Amazon, eBay/DHgate, Reddit, TikTok, Trends). On voit avant
+   qu'une pub existe.
+
+3. Derivees dans le temps. phases.py calcule velocite/acceleration
+   -> detecte croissance precoce ET declin ("t'arrives trop tard").
+   Minea donne un niveau, pas une pente.
+
+4. Verdict explicable. Chaque drapeau etiquete DUR vs ESTIME.
+   Pas de score boite noire. = notre moat.
+
+VENDABLE ?
+----------
+Le moteur OUI, le produit PAS ENCORE.
+- OK : IP reelle et differenciee (anti-perte + organique + explicable).
+- BLOCAGE : pages = maquettes, seul /validate est live,
+  pas de Stripe ni de gating -> on ne peut rien encaisser.
+
+VERDICT : concept vendable, produit non-encore-vendable.
+Blocage = productisation (paiement + acces + 1 promesse claire),
+pas le scraping (qui marche).

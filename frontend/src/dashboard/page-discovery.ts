@@ -9,7 +9,12 @@ export function mountDiscovery() {
   'use strict';
   const Sh = window.Shell, T = window.TANDOR, C = window.Charts, P = T.PRODUCTS;
   const $ = Sh.$, $$ = Sh.$$, ic = Sh.ic, clamp = Sh.clamp;
-  const PAGE_SIZE = 8;
+  // Infinite scroll : taille du lot ajouté à chaque fois que la sentinelle entre
+  // dans le viewport. Quand la fenêtre locale approche du bout des produits déjà
+  // chargés en mémoire, on déclenche T.loadMore() (fetch API du lot suivant).
+  const WINDOW = 24;
+  let io = null;          // IntersectionObserver courant (réinitialisé à chaque render)
+  let fetching = false;   // garde anti double-fetch réseau
 
   const STR = {
     en: { title: 'Product Discovery', sub: 'scored catalogue · live signal', search: 'Filter by name or category…',
@@ -45,7 +50,7 @@ export function mountDiscovery() {
     ['s_recent', (p) => -p.detectedHrs], ['s_sat', (p) => -p.listed],
   ];
 
-  let state = { verdicts: new Set(), phases: new Set(), cats: new Set(), minScore: 0, minMargin: 0, q: '', sortKey: 's_score', dir: -1, view: 'table', page: 0, loading: true };
+  let state = { verdicts: new Set(), phases: new Set(), cats: new Set(), minScore: 0, minMargin: 0, q: '', sortKey: 's_score', dir: -1, view: 'table', shown: WINDOW, loading: true };
 
   function filtered() {
     const q = state.q.trim().toLowerCase();
@@ -121,14 +126,14 @@ export function mountDiscovery() {
       </div>`;
 
     // wire toolbar
-    $$('#viewSeg button').forEach((b) => b.addEventListener('click', () => { state.view = b.dataset.v; state.page = 0; render(); }));
-    $('#sortSel').addEventListener('change', (e) => { state.sortKey = e.target.value; state.page = 0; updateResults(); });
-    $('#qInp').addEventListener('input', (e) => { state.q = e.target.value; state.page = 0; updateResults(); });
-    $$('#verdictPills .pill').forEach((b) => b.addEventListener('click', () => { toggle(state.verdicts, b.dataset.v); b.classList.toggle('on'); state.page = 0; updateResults(); }));
-    $$('#phaseChks .chk').forEach((b) => b.addEventListener('click', () => { toggle(state.phases, b.dataset.ph); b.classList.toggle('on'); state.page = 0; updateResults(); }));
-    $$('#catChks .chk').forEach((b) => b.addEventListener('click', () => { toggle(state.cats, b.dataset.c); b.classList.toggle('on'); state.page = 0; updateResults(); }));
-    $('#scoreRng').addEventListener('input', (e) => { state.minScore = +e.target.value; $('#scoreVal').textContent = state.minScore; state.page = 0; updateResults(); });
-    $('#marginRng').addEventListener('input', (e) => { state.minMargin = +e.target.value; $('#marginVal').textContent = money(state.minMargin); state.page = 0; updateResults(); });
+    $$('#viewSeg button').forEach((b) => b.addEventListener('click', () => { state.view = b.dataset.v; state.shown = WINDOW; render(); }));
+    $('#sortSel').addEventListener('change', (e) => { state.sortKey = e.target.value; state.shown = WINDOW; updateResults(); });
+    $('#qInp').addEventListener('input', (e) => { state.q = e.target.value; state.shown = WINDOW; updateResults(); });
+    $$('#verdictPills .pill').forEach((b) => b.addEventListener('click', () => { toggle(state.verdicts, b.dataset.v); b.classList.toggle('on'); state.shown = WINDOW; updateResults(); }));
+    $$('#phaseChks .chk').forEach((b) => b.addEventListener('click', () => { toggle(state.phases, b.dataset.ph); b.classList.toggle('on'); state.shown = WINDOW; updateResults(); }));
+    $$('#catChks .chk').forEach((b) => b.addEventListener('click', () => { toggle(state.cats, b.dataset.c); b.classList.toggle('on'); state.shown = WINDOW; updateResults(); }));
+    $('#scoreRng').addEventListener('input', (e) => { state.minScore = +e.target.value; $('#scoreVal').textContent = state.minScore; state.shown = WINDOW; updateResults(); });
+    $('#marginRng').addEventListener('input', (e) => { state.minMargin = +e.target.value; $('#marginVal').textContent = money(state.minMargin); state.shown = WINDOW; updateResults(); });
     $('#resetBtn').addEventListener('click', resetAll);
 
     if (state.loading) { renderSkeleton(); setTimeout(() => { state.loading = false; updateResults(); }, 480); }
@@ -136,7 +141,7 @@ export function mountDiscovery() {
   }
 
   function toggle(set, v) { set.has(v) ? set.delete(v) : set.add(v); }
-  function resetAll() { state.verdicts.clear(); state.phases.clear(); state.cats.clear(); state.minScore = 0; state.minMargin = 0; state.q = ''; state.page = 0; render(); }
+  function resetAll() { state.verdicts.clear(); state.phases.clear(); state.cats.clear(); state.minScore = 0; state.minMargin = 0; state.q = ''; state.shown = WINDOW; render(); }
 
   function chipList() {
     const s = L(); const chips = [];
@@ -162,12 +167,60 @@ export function mountDiscovery() {
     if (state.loading) { renderSkeleton(); return; }
     if (!arr.length) { renderEmpty(); return; }
 
-    const pages = Math.ceil(arr.length / PAGE_SIZE);
-    state.page = clamp(state.page, 0, pages - 1);
-    const slice = arr.slice(state.page * PAGE_SIZE, state.page * PAGE_SIZE + PAGE_SIZE);
+    // Fenêtre infinie : on n'affiche que les `shown` premiers résultats filtrés.
+    // La sentinelle en bas (IntersectionObserver) augmente `shown` et, si besoin,
+    // déclenche un fetch API du lot suivant via T.loadMore().
+    state.shown = clamp(state.shown, WINDOW, Math.max(WINDOW, arr.length));
+    const slice = arr.slice(0, state.shown);
+    // Reste-t-il des produits à montrer ? localement (déjà chargés) ou côté API.
+    const moreLocal = state.shown < arr.length;
+    const moreApi = !!(T.hasMore);
+    const hasMore = moreLocal || moreApi;
 
-    if (state.view === 'table') renderTable(slice, arr.length, pages);
-    else renderCards(slice, arr.length, pages);
+    if (state.view === 'table') renderTable(slice, arr.length, hasMore);
+    else renderCards(slice, arr.length, hasMore);
+
+    setupSentinel();
+  }
+
+  /* ---- infinite scroll : sentinelle + chargement de lots ---- */
+  function setupSentinel() {
+    if (io) { io.disconnect(); io = null; }
+    const sentinel = $('#scrollSentinel');
+    if (!sentinel) return;
+    // root = la zone scrollable principale du dashboard (#main).
+    const root = $('#main') || null;
+    io = new IntersectionObserver((entries) => {
+      if (entries.some((e) => e.isIntersecting)) loadNext();
+    }, { root, rootMargin: '600px 0px' });
+    io.observe(sentinel);
+  }
+
+  function loadNext() {
+    const arr = filtered();
+    // 1. Encore des produits déjà chargés localement -> on agrandit la fenêtre.
+    if (state.shown < arr.length) {
+      state.shown += WINDOW;
+      updateResults();
+      return;
+    }
+    // 2. Fenêtre au bout du local : on tente de récupérer plus depuis l'API.
+    if (T.hasMore && !fetching && typeof T.loadMore === 'function') {
+      fetching = true;
+      setLoaderBusy(true);
+      T.loadMore().then((res) => {
+        fetching = false;
+        if (res && res.added > 0) {
+          state.shown += WINDOW;   // révèle les nouveaux produits ajoutés à P
+        }
+        updateResults();
+      }).catch(() => { fetching = false; updateResults(); });
+    }
+  }
+
+  function setLoaderBusy(on) {
+    const el = $('#scrollLoader');
+    if (el) el.style.display = on ? '' : 'none';
   }
 
   function ringCol(p) { return p.verdict === 'BUY' ? `var(--${T.PHASES[p.phase].v})` : p.verdict === 'WATCH' ? 'var(--watch)' : 'var(--pass)'; }
@@ -196,7 +249,7 @@ export function mountDiscovery() {
     return `<span class="row-spark">${C.sparkline(p.trend, { w, h, stroke: up ? 'var(--buy)' : 'var(--pass)', fill: false, sw: 1.6 })}</span>`;
   }
 
-  function renderTable(slice, total, pages) {
+  function renderTable(slice, total, hasMore) {
     const s = L();
     const cols = [
       ['c_prod', 's_score', false, 'prod'], // header handled specially
@@ -229,12 +282,12 @@ export function mountDiscovery() {
     $('#results').innerHTML = `
       <div class="dg-wrap">
         <div class="dg-scroll"><table class="dg"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>
-        ${pager(total, pages)}
+        ${scrollFoot(slice.length, total, hasMore)}
       </div>`;
-    wireSort(); wireRows(); wirePager();
+    wireSort(); wireRows();
   }
 
-  function renderCards(slice, total, pages) {
+  function renderCards(slice, total, hasMore) {
     const s = L();
     const cards = slice.map((p) => {
       const up = p.growth >= 0, col = `var(--${T.PHASES[p.phase].v})`;
@@ -271,8 +324,8 @@ export function mountDiscovery() {
         </div>
       </div>`;
     }).join('');
-    $('#results').innerHTML = `<div class="card-grid">${cards}</div><div class="dg-wrap" style="margin-top:16px;background:none;border:none;box-shadow:none">${pager(total, pages)}</div>`;
-    wireRows(); wirePager();
+    $('#results').innerHTML = `<div class="card-grid">${cards}</div><div class="dg-wrap" style="margin-top:16px;background:none;border:none;box-shadow:none">${scrollFoot(slice.length, total, hasMore)}</div>`;
+    wireRows();
   }
   function L0(k) { return T.STR[Sh.lang][k]; }
 
@@ -301,22 +354,28 @@ export function mountDiscovery() {
 
   function sortable(k) { return state.sortKey === k ? 'sorted' : ''; }
   function ar(k) { return `<span class="sort-ar">${state.sortKey === k ? (state.dir < 0 ? '▾' : '▴') : '▾'}</span>`; }
-  function pager(total, pages) {
-    if (pages <= 1) return `<div class="pager"><span class="pinfo">${total} ${L().results}</span></div>`;
+  /* Pied de liste pour l'infinite scroll : compteur « affichés / total »,
+     sentinelle observée, spinner de chargement, et message de fin de liste.
+     Le total affiché est l'univers complet (T.total, fourni par l'API) quand on
+     ne filtre pas ; sinon le nombre de résultats filtrés déjà chargés. */
+  function scrollFoot(shownCount, filteredTotal, hasMore) {
     const s = L();
-    let btns = '';
-    for (let i = 0; i < pages; i++) btns += `<button class="pbtn ${i === state.page ? 'on' : ''}" data-p="${i}">${i + 1}</button>`;
-    const from = state.page * PAGE_SIZE + 1, to = Math.min(total, (state.page + 1) * PAGE_SIZE);
-    return `<div class="pager">
-      <span class="pinfo">${from}–${to} / ${total} ${s.results}</span>
-      <div class="pbtns"><button class="pbtn" data-nav="-1" ${state.page === 0 ? 'disabled' : ''}>${ic('chevL')}</button>${btns}<button class="pbtn" data-nav="1" ${state.page === pages - 1 ? 'disabled' : ''}>${ic('chevR')}</button></div>
+    const noFilter = !state.q && !state.verdicts.size && !state.phases.size
+      && !state.cats.size && state.minScore === 0 && state.minMargin === 0;
+    const universe = (noFilter && T.total) ? T.total : filteredTotal;
+    const info = `<span class="pinfo mono">${shownCount} / ${universe} ${s.results}</span>`;
+    const loader = `<span id="scrollLoader" class="scroll-loader" style="display:none">${ic('search')}<span>…</span></span>`;
+    // La sentinelle n'est rendue que s'il reste des produits à charger.
+    const sentinel = hasMore ? `<div id="scrollSentinel" style="height:1px"></div>` : '';
+    const endMsg = hasMore ? '' : `<span class="pinfo" style="color:var(--text-tertiary)">— ${s.results} —</span>`;
+    return `<div class="pager" style="flex-direction:column;gap:8px;align-items:center">
+      ${info}${loader}${endMsg}${sentinel}
     </div>`;
   }
   function wireSort() {
-    $$('#results thead th[data-k]').forEach((th) => { if (th.style.cursor === 'default') return; th.addEventListener('click', () => { const k = th.dataset.k; if (state.sortKey === k) state.dir *= -1; else { state.sortKey = k; state.dir = -1; } $('#sortSel').value = k; updateResults(); }); });
+    $$('#results thead th[data-k]').forEach((th) => { if (th.style.cursor === 'default') return; th.addEventListener('click', () => { const k = th.dataset.k; if (state.sortKey === k) state.dir *= -1; else { state.sortKey = k; state.dir = -1; } state.shown = WINDOW; $('#sortSel').value = k; updateResults(); }); });
   }
   function wireRows() { $$('#results [data-id]').forEach((r) => r.addEventListener('click', () => Sh.openProduct(P.find((p) => p.id === r.dataset.id)))); }
-  function wirePager() { $$('#results .pbtn').forEach((b) => b.addEventListener('click', () => { if (b.disabled) return; if (b.dataset.nav) state.page += +b.dataset.nav; else state.page = +b.dataset.p; updateResults(); $('#main').scrollTo({ top: 0, behavior: 'smooth' }); })); }
 
   Sh.start({ active: 'n_discovery', render });
 }

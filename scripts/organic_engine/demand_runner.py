@@ -45,8 +45,10 @@ QUIET_HOURS = (2, 6)             # heures creuses locales (léger ralenti ×1.5)
 # cadence calée sur le cooldown, single-IP). Le runner se contente de REMPLIR
 # aliexpress_queue (via record_amazon → seuil ALI_THRESHOLD).
 
-# ── Heartbeat Discord (preuve de vie même si tout est bloqué) ────────────────
-HEARTBEAT_S = 3600               # un message de synthèse toutes les heures
+# ── Digest Discord (synthèse horaire : volume scrapé + top demande réel) ─────
+# Remplace l'ancien 💓 heartbeat (compteur brut, sans visibilité produit). La notif
+# par produit est écartée : >1300 snapshots/jour dépassent le seuil HOT → spammy.
+DIGEST_S = 3600                  # un digest toutes les heures
 
 _RUN = True
 
@@ -82,7 +84,8 @@ def main() -> None:
     n = q.rebuild_from_cj(c)
     print(f"[{_ts()}] Démarrage runner demande — {n} mots-clés en file. Stats: {q.stats(c)}", flush=True)
     notify.send(f"🚀 **Runner demande démarré** — {n} mots-clés en file · {_fmt_stats(q.stats(c))}", ping=True)
-    last_heartbeat = time.time()
+    last_digest = time.time()
+    blocks_this_hour = 0
 
     sess = amz.make_session()
     consec_blocks = 0
@@ -93,11 +96,13 @@ def main() -> None:
     done = 0
 
     while _RUN:
-        # ── Heartbeat Discord (preuve de vie) ────────────────────────────────
-        if time.time() - last_heartbeat >= HEARTBEAT_S:
-            notify.send(f"💓 **Runner OK** — {done} produits scrapés cette session · "
-                        f"{_fmt_stats(q.stats(c))} · {consec_blocks} blocage(s) consécutif(s)")
-            last_heartbeat = time.time()
+        # ── Digest Discord (volume scrapé + top demande de la dernière heure) ─
+        if time.time() - last_digest >= DIGEST_S:
+            dg = q.hourly_digest(c)
+            notify.digest(dg["scraped_last_h"], dg["top"], dg["queue_total"],
+                          blocks=blocks_this_hour)
+            last_digest = time.time()
+            blocks_this_hour = 0
 
         # ── Amazon : prochain mot-clé de la pile ─────────────────────────────
         kw = q.next_amazon_keyword(c)
@@ -110,6 +115,7 @@ def main() -> None:
 
         if d.blocked:
             consec_blocks += 1
+            blocks_this_hour += 1
             q.record_amazon(c, d)
             idx = min(consec_blocks - 1, len(COOLDOWNS) - 1)
             base = COOLDOWNS[idx]
@@ -132,8 +138,13 @@ def main() -> None:
             continue
 
         consec_blocks = 0
+        # Breakout AVANT l'insert : le snapshot courant ne doit pas fausser le record.
+        is_breakout = q.amazon_breakout(c, kw, d.max_bought)
         q.record_amazon(c, d)
         done += 1
+        if is_breakout:
+            notify.amazon_hot(kw, d.max_bought, d.median_bought,
+                              d.n_with_velocity, d.n_results)
         flag = " 🔥" if (d.max_bought or 0) >= q.HOT_THRESHOLD else ""
         if done % 20 == 0 or (d.max_bought or 0) >= q.HOT_THRESHOLD:
             print(f"[{_ts()}] [{done}] « {kw} » max={d.max_bought} med={d.median_bought} "

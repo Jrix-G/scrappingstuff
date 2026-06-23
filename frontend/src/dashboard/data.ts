@@ -149,11 +149,63 @@ import REAL_PRODUCTS from './products.json';
      net (net after cpa €/sale), redditScore, trendsScore, seasonPeak(1-12),
      seasonMult(current month), reason{en,fr}, detectedHrs (for feed order)
   ----------------------------------------------------------------- */
-  // Données live injectées par Dashboard.tsx (fetch API du Pi) si dispo,
-  // sinon fallback sur le JSON bundlé dans le build (mode hors-ligne).
+  // Données live injectées par Dashboard.tsx / DashPage.tsx (fetch API du Pi) si
+  // dispo, sinon fallback sur le JSON bundlé dans le build (mode hors-ligne).
   const BASE = ((window as any).__TANDOR_BASE__ as any[]) || (REAL_PRODUCTS as any[]);
 
+  // PRODUCTS est MUTÉ en place par appendBase() (infinite scroll) : les pages
+  // gardent la même référence de tableau et y voient les nouveaux produits.
   const PRODUCTS = BASE.map(build);
+
+  // Curseur de pagination posé par DashPage.tsx d'après la 1re réponse de l'API
+  // ({ total, next_offset, has_more, apiBase }). Sert à charger les lots suivants.
+  const PAGER = ((window as any).__TANDOR_PAGE__ as any) || {
+    apiBase: '', total: PRODUCTS.length, nextOffset: null, hasMore: false, limit: 60,
+  };
+  // Anti double-fetch concurrent.
+  let _loadingMore = false;
+
+  // Dédup : on ne ré-insère jamais un produit déjà présent (par id).
+  const _seenIds = new Set(PRODUCTS.map((p) => p.id));
+
+  /* Mappe des enregistrements BASE bruts (forme API) et les pousse dans PRODUCTS
+     SANS recréer le tableau (référence stable pour les pages). Renvoie le nombre
+     réellement ajouté (après dédup). */
+  function appendBase(rawArr) {
+    let added = 0;
+    (rawArr || []).forEach((raw) => {
+      if (!raw || raw.id == null || _seenIds.has(raw.id)) return;
+      _seenIds.add(raw.id);
+      PRODUCTS.push(build(raw));
+      added += 1;
+    });
+    return added;
+  }
+
+  /* Charge le lot suivant depuis l'API (offset = PAGER.nextOffset) et l'ajoute.
+     Renvoie une promesse { added, hasMore }. Idempotent / non concurrent :
+     si un chargement est déjà en cours ou s'il n'y a plus de page, no-op. */
+  function loadMore() {
+    if (_loadingMore || !PAGER.hasMore || PAGER.nextOffset == null || !PAGER.apiBase) {
+      return Promise.resolve({ added: 0, hasMore: !!PAGER.hasMore });
+    }
+    _loadingMore = true;
+    const url = `${String(PAGER.apiBase).replace(/\/$/, '')}/api/products?limit=${PAGER.limit}&offset=${PAGER.nextOffset}`;
+    return fetch(url)
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((json) => {
+        const added = appendBase(Array.isArray(json.products) ? json.products : []);
+        PAGER.total = json.total != null ? json.total : PAGER.total;
+        PAGER.hasMore = !!json.has_more;
+        PAGER.nextOffset = json.next_offset != null ? json.next_offset : null;
+        return { added, hasMore: PAGER.hasMore };
+      })
+      .catch((err) => {
+        console.warn('[Tandor] loadMore a échoué :', err);
+        return { added: 0, hasMore: PAGER.hasMore };
+      })
+      .finally(() => { _loadingMore = false; });
+  }
 
   /* ---------- markets ---------- */
   const MARKETS = [
@@ -266,5 +318,9 @@ import REAL_PRODUCTS from './products.json';
     seasonMatrix, clamp,
     // current month index (0-based) — June for the demo
     CUR_MONTH: 5,
+    // Pagination / infinite scroll : curseur + chargeur de lots suivants.
+    PAGER, appendBase, loadMore,
+    get hasMore() { return !!PAGER.hasMore; },
+    get total() { return PAGER.total; },
   };
 })();

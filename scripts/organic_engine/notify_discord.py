@@ -101,8 +101,32 @@ def blocked(keyword: str, source: str = "AliExpress") -> None:
 
 
 def amazon_hot(keyword: str, max_bought, median_bought, n_velocity: int, n_results: int) -> None:
-    send(f"🔥 **Amazon HOT** · `{keyword}` — bought/mois **{max_bought:,}** · "
+    """Breakout Amazon : nouveau record de demande atteignant le palier massif
+    (≥ q.BREAKOUT_THRESHOLD). Rare par design (~3/jour) — pas une notif par produit."""
+    send(f"🚀 **Amazon breakout** · `{keyword}` — nouveau record **{max_bought:,}**/mois · "
          f"médiane {median_bought:,} · {n_velocity}/{n_results} produits")
+
+
+def _fmt_bought(v) -> str:
+    """Entier badge Amazon → libellé compact (« 100000 »→« 100k+ », « 50 »→« 50+ »).
+    Les badges Amazon sont tous des planchers (« X+ ») → le « + » est toujours exact."""
+    if v is None:
+        return "?"
+    if v >= 1000:
+        return f"{v // 1000}k+"
+    return f"{v}+"
+
+
+def digest(scraped_last_h: int, top, queue_total: int, blocks: int = 0) -> None:
+    """Digest horaire (remplace le 💓 heartbeat) : volume scrapé + top demande réel."""
+    lines = [f"📦 **Dernière heure — {scraped_last_h} produits scrapés**"]
+    if top:
+        lines.append("Top demande :")
+        for kw, mb in top:
+            lines.append(f"• {kw} — {_fmt_bought(mb)}/mois")
+    block_txt = f"{blocks} blocage{'s' if blocks != 1 else ''}"
+    lines.append(f"(file : {queue_total:,} mots-clés · {block_txt})")
+    send("\n".join(lines))
 
 
 def sales_hot(keyword: str, source: str, max_sold, median_sold, listings: int) -> None:
