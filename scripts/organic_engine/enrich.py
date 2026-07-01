@@ -51,20 +51,22 @@ _SPLIT_TOKENS = {"with", "for"}
 _UNIT_RE = re.compile(r"^\d+(\.\d+)?(mah|mm|cm|ml|kg|g|w|v|in|inch|ft|m|l|oz|pcs|pc|x)?$")
 
 
-def keyword_from_name(name: str, n_words: int = 2) -> str:
-    """Dérive un mot-clé de recherche depuis un titre produit CJ.
+def _stem(t: str) -> str:
+    """Radical grossier pour comparer singulier/pluriel (« visors » ≈ « visor »)."""
+    return t[:-1] if len(t) > 4 and t.endswith("s") else t
 
-    Les titres CJ suivent le schéma « [adjectifs] NOM-PRODUIT[, ou 'with'] décoration » :
-    la tête nominale (ce qu'on veut réellement chercher sur Trends/Reddit) est à la
-    FIN du groupe principal, pas au début. On isole donc le groupe principal (avant
-    la 1re virgule ou un séparateur décoratif) puis on garde ses derniers mots
-    signifiants. Ex. « Mens Fashionable Casual Breathable Beach Sandals » → « beach
-    sandals » (et non « fashionable casual breathable », qui ne matche rien).
+
+def _significant_tokens(name: str, *, drop_short: bool) -> list[str]:
+    """Groupe principal d'un titre CJ → tokens signifiants, dédupliqués.
+
+    Étapes : coupe la queue décorative (1re virgule / séparateur ``with``/``for``),
+    retire mots vides, nombres purs et unités, puis (option) les fragments d'une
+    seule lettre (« s witch » → « witch »), et enfin DÉDUPLIQUE les radicaux
+    consécutifs (« pants pants » → « pants », « visors visor » → « visors »).
     """
     raw = (name or "").strip()
     if not raw:
-        return ""
-    # 1) Couper la queue décorative : 1re virgule, puis 1er séparateur ('with'/'for').
+        return []
     head = raw.split(",")[0]
     tokens: list[str] = []
     for tok in head.lower().split():
@@ -72,13 +74,79 @@ def keyword_from_name(name: str, n_words: int = 2) -> str:
         if t in _SPLIT_TOKENS:
             break  # tout ce qui suit décrit (couleur, motif…), pas le produit
         tokens.append(t)
-    # 2) Nettoyer : retirer vides, mots vides, nombres purs et unités de mesure.
+    kept = [t for t in tokens
+            if t and t not in _STOP and not t.isdigit() and not _UNIT_RE.match(t)
+            and (len(t) > 1 if drop_short else True)]
+    # Déduplique les radicaux consécutifs : un titre CJ répète souvent la tête
+    # nominale (« Beach Pants Casual Pants ») ; sans ça le mot-clé devient
+    # « pants pants », qui ne matche rien et gâche le scrape.
+    out: list[str] = []
+    for t in kept:
+        if out and _stem(out[-1]) == _stem(t):
+            continue
+        out.append(t)
+    return out
+
+
+def keyword_from_name(name: str, n_words: int = 2) -> str:
+    """Dérive un mot-clé de recherche PROPRE depuis un titre produit CJ.
+
+    Les titres CJ suivent le schéma « [adjectifs] NOM-PRODUIT[, ou 'with'] décoration » :
+    la tête nominale (ce qu'on veut réellement chercher sur Trends/Reddit) est à la
+    FIN du groupe principal, pas au début. On isole donc le groupe principal (avant
+    la 1re virgule ou un séparateur décoratif) puis on garde ses derniers mots
+    signifiants. Ex. « Mens Fashionable Casual Breathable Beach Sandals » → « beach
+    sandals » (et non « fashionable casual breathable », qui ne matche rien).
+
+    Nettoyage anti-bruit (vs ancienne version buguée) : radicaux dupliqués
+    consécutifs supprimés (« pants pants » → « pants »), fragments d'une seule
+    lettre supprimés (« s witch » → « witch »).
+    """
+    raw = (name or "").strip()
+    if not raw:
+        return ""
+    kept = _significant_tokens(raw, drop_short=True)
+    if not kept:
+        return raw[:30].lower()
+    # Tête nominale = les derniers mots signifiants du groupe principal.
+    return " ".join(kept[-n_words:])
+
+
+def _legacy_keyword_from_name(name: str, n_words: int = 2) -> str:
+    """Ancienne dérivation (sans nettoyage) — UNIQUEMENT pour ré-aligner la jointure.
+
+    Les snapshots de demande déjà en base ont été indexés avec CETTE logique
+    (``vpn_warmer._keyword``). On la garde comme clé de repli pour ne PERDRE aucun
+    match historique quand on joint la demande (cf. ``keyword_candidates``).
+    """
+    raw = (name or "").strip()
+    if not raw:
+        return ""
+    head = raw.split(",")[0]
+    tokens: list[str] = []
+    for tok in head.lower().split():
+        t = tok.strip(",.;:()/-")
+        if t in _SPLIT_TOKENS:
+            break
+        tokens.append(t)
     kept = [t for t in tokens
             if t and t not in _STOP and not t.isdigit() and not _UNIT_RE.match(t)]
-    if not kept:
-        return raw[:30]
-    # 3) Tête nominale = les derniers mots signifiants du groupe principal.
-    return " ".join(kept[-n_words:])
+    return " ".join(kept[-n_words:]) if kept else raw[:30].lower()
+
+
+def keyword_candidates(name: str, n_words: int = 2) -> list[str]:
+    """Clés de jointure demande pour un produit : mot-clé propre + repli historique.
+
+    Lecture DB pure côté appelant : on essaie d'abord le mot-clé NETTOYÉ
+    (``keyword_from_name``), puis l'ancienne clé (``_legacy_keyword_from_name``)
+    pour récupérer les snapshots indexés avant le correctif. Garantit une
+    couverture ≥ à chacune des deux logiques prise seule. Ordre = priorité.
+    """
+    out: list[str] = []
+    for k in (keyword_from_name(name, n_words), _legacy_keyword_from_name(name, n_words)):
+        if k and k not in out:
+            out.append(k)
+    return out
 
 
 def enrich(keywords_and_meta: list[dict], geo: str, delay: float) -> list[dict]:

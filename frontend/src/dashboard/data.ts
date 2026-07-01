@@ -1,6 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import REAL_PRODUCTS from './products.json';
+import { authedFetch } from '../auth/api';
 /* ============================================================
    TANDOR — app-data.js
    Demo dataset mapped to the JSON contract + i18n + helpers.
@@ -43,6 +44,29 @@ import REAL_PRODUCTS from './products.json';
     PASS:  { en: 'Pass',  fr: 'Passer',     v: 'pass' },
   };
 
+  // Verdict anti-perte = SEULE source de vérité affichée (pivot Tandor). Le champ
+  // `verdict` (BUY/WATCH/PASS, ancien moteur « trouve un gagnant ») ne doit plus
+  // piloter l'UI : il valait BUY pour 100% des produits → message trompeur.
+  const TRAP_VERDICTS = {
+    VIABLE: { en: 'Viable',  fr: 'Viable',  v: 'buy' },
+    RISKY:  { en: 'Risky',   fr: 'Risqué',  v: 'watch' },
+    TRAP:   { en: 'Trap',    fr: 'Piège',   v: 'pass' },
+  };
+  // Mappe un produit -> { v(css), label, coverage } depuis trapVerdict.
+  // `coverage` qualifie un verdict non étayé (ex. « 2/5 signaux mesurés ») : vide
+  // si l'export ne fournit pas encore la couverture (rétro-compat ancien JSON).
+  function trapMeta(p, lang) {
+    const m = TRAP_VERDICTS[p && p.trapVerdict] || { en: '—', fr: '—', v: 'pass' };
+    let coverage = '';
+    if (p && p.trapCoverageTotal) {
+      const meas = p.trapCoverageMeasured || 0, tot = p.trapCoverageTotal;
+      coverage = lang === 'fr'
+        ? `${meas}/${tot} signaux mesurés`
+        : `${meas}/${tot} signals measured`;
+    }
+    return { v: m.v, label: m[lang] || m.en, coverage };
+  }
+
   const CATS = {
     WELLNESS: { en: 'Wellness',   fr: 'Bien-être' },
     HOME:     { en: 'Home',       fr: 'Maison' },
@@ -68,8 +92,16 @@ import REAL_PRODUCTS from './products.json';
     const gross = +(base.retail - base.cost).toFixed(2);
     const margin_pct = gross / base.retail;
     const tandor = round(0.55 * base.organic + 0.45 * base.sellability);
-    // growth score: map monthly_growth [-0.5 .. +1.5] → 0..100
-    const growthScore = round(clamp((base.growth + 0.5) / 2.0, 0, 1) * 100);
+    // Drapeaux de mesure : un signal null (backend honnête) ne doit jamais être
+    // re-fabriqué ni affiché comme mesuré. gNeutral = 0 sert UNIQUEMENT aux maths
+    // internes du radar (momentum/maturité), jamais à un affichage de croissance.
+    const hasGrowth = base.growth != null;
+    const hasReddit = base.redditScore != null;
+    const hasTrends = base.trendsScore != null;
+    const gNeutral = hasGrowth ? base.growth : 0;
+    // growth score (affichage) : null si la croissance n'est pas mesurée.
+    const growthScore = hasGrowth ? round(clamp((base.growth + 0.5) / 2.0, 0, 1) * 100) : null;
+    const growthScoreCalc = round(clamp((gNeutral + 0.5) / 2.0, 0, 1) * 100);
     // risk: low confidence OR high volatility OR no sellers → risk up
     let riskN = 0;
     if (base.confidence < 0.6) riskN += 1.4;
@@ -80,7 +112,8 @@ import REAL_PRODUCTS from './products.json';
     const risk = riskN >= 2.2 ? 'high' : riskN >= 1 ? 'mod' : 'low';
 
     // momentum (0..100) for radar: velocity + acceleration blend
-    const momentum = round(clamp(growthScore * 0.7 + base.organic * 0.3, 0, 100));
+    // (utilise growthScoreCalc neutre pour ne jamais propager un null dans les maths)
+    const momentum = round(clamp(growthScoreCalc * 0.7 + base.organic * 0.3, 0, 100));
     // maturity (0..100): saturation proxy from listed sellers + age
     const maturity = round(clamp(base.listed * 0.7 + (base.age / 120) * 30, 0, 100));
 
@@ -97,13 +130,18 @@ import REAL_PRODUCTS from './products.json';
        procédural. Les pages affichent « pas de données » quand hasRealHistory est faux. */
     const trend = hasRealHistory
       ? normalize100(realDemand.values)
-      : series(base.organic, base.growth, base.volatility, 30, rnd, 8, 96);
+      : series(base.organic, gNeutral, base.volatility, 30, rnd, 8, 96);
     // Pas de série Reddit/CJ réelle par produit en DB -> procédural, marqué non-réel.
-    const reddit = series(base.redditScore, base.growth * 0.9, base.volatility * 1.2, 12, rnd, 2, 40, true);
+    // Vide si redditScore non mesuré (ne pas fabriquer une courbe depuis null).
+    const reddit = hasReddit
+      ? series(base.redditScore, gNeutral * 0.9, base.volatility * 1.2, 12, rnd, 2, 40, true)
+      : [];
     const cj = ramp(Math.max(1, base.listed - round(base.growth * 14)), base.listed, 12, rnd);
 
     return Object.assign({}, base, {
       gross, margin_pct, tandor, growthScore, risk, momentum, maturity,
+      // Drapeaux de transparence : true seulement si le signal est réellement mesuré.
+      hasGrowth, hasReddit, hasTrends,
       catHue: CAT_HUE[base.cat], trend, reddit, cj,
       // vraies données exposées aux pages (à brancher) + drapeau de transparence
       realHistory: { sales: realSales, amazon: realAmazon, demand: realDemand, reddit: null, cj: null },
@@ -191,7 +229,7 @@ import REAL_PRODUCTS from './products.json';
     }
     _loadingMore = true;
     const url = `${String(PAGER.apiBase).replace(/\/$/, '')}/api/products?limit=${PAGER.limit}&offset=${PAGER.nextOffset}`;
-    return fetch(url)
+    return authedFetch(url)
       .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
       .then((json) => {
         const added = appendBase(Array.isArray(json.products) ? json.products : []);
@@ -205,6 +243,171 @@ import REAL_PRODUCTS from './products.json';
         return { added: 0, hasMore: PAGER.hasMore };
       })
       .finally(() => { _loadingMore = false; });
+  }
+
+  /* ============================================================
+     PAGINATION INDEXÉE (30/page) — Top 2000 par score Tandor.
+     fetchPage({page, pageSize, filters, sort}) renvoie une promesse
+     { products: [...built], meta: {...} }. Les filtres (q, min_score,
+     catégorie, verdict, phase) sont envoyés au backend (contrat
+     /api/products). En l'absence d'API (mode hors-ligne / JSON bundlé)
+     ou si le réseau échoue, on pagine/filtre côté client sur PRODUCTS.
+
+     Note d'honnêteté : on ne re-filtre JAMAIS côté client par-dessus une
+     page renvoyée par le backend (cela fausserait le compteur total /
+     page_count). On fait confiance à meta. Le filtre verdict est mappé
+     sur le param `verdict` avec la valeur trapVerdict (VIABLE/RISKY/TRAP)
+     — source de vérité du pivot anti-perte. ============================ */
+  const CATS_FOR_SEARCH = CATS;
+
+  function buildPageUrl(base, opts) {
+    const sp = new URLSearchParams();
+    sp.set('limit', String(opts.pageSize));
+    sp.set('page', String(opts.page));
+    sp.set('sort', opts.sort || 'tandor');
+    const f = opts.filters || {};
+    if (f.q) sp.set('q', f.q);
+    if (f.minScore) sp.set('min_score', String(f.minScore));
+    if (f.cats && f.cats.length) sp.set('cat', f.cats.join(','));
+    if (f.verdicts && f.verdicts.length) sp.set('verdict', f.verdicts.join(','));
+    if (f.phases && f.phases.length) sp.set('phase', f.phases.join(','));
+    return `${base}/api/products?${sp.toString()}`;
+  }
+
+  // Filtre + tri (Tandor décroissant) côté client sur PRODUCTS (repli hors-ligne).
+  function clientFilterSort(opts) {
+    const f = opts.filters || {};
+    const q = (f.q || '').trim().toLowerCase();
+    const arr = PRODUCTS.filter((p) => {
+      if (f.verdicts && f.verdicts.length && !f.verdicts.includes(p.trapVerdict)) return false;
+      if (f.phases && f.phases.length && !f.phases.includes(p.phase)) return false;
+      if (f.cats && f.cats.length && !f.cats.includes(p.cat)) return false;
+      if (f.minScore && p.tandor < f.minScore) return false;
+      if (q) {
+        const c = CATS_FOR_SEARCH[p.cat] || {};
+        const hit = p.name.toLowerCase().includes(q)
+          || (c.en || '').toLowerCase().includes(q)
+          || (c.fr || '').toLowerCase().includes(q);
+        if (!hit) return false;
+      }
+      return true;
+    });
+    arr.sort((a, b) => b.tandor - a.tandor);
+    return arr;
+  }
+
+  function clientPage(opts) {
+    const arr = clientFilterSort(opts);
+    const total = arr.length;
+    const pageSize = opts.pageSize;
+    const pageCount = Math.max(1, Math.ceil(total / pageSize));
+    const page = Math.min(Math.max(1, opts.page), pageCount);
+    const offset = (page - 1) * pageSize;
+    const slice = arr.slice(offset, offset + pageSize);
+    return {
+      products: slice,
+      meta: {
+        total, page, page_size: pageSize, page_count: pageCount,
+        offset, limit: pageSize, returned: slice.length,
+        has_more: page < pageCount,
+        next_offset: page < pageCount ? offset + pageSize : null,
+      },
+    };
+  }
+
+  // Normalise la meta backend (acceptée à plat OU sous json.meta) + valeurs sûres.
+  function normalizeMeta(meta, opts, returned) {
+    meta = meta || {};
+    const pageSize = meta.page_size != null ? meta.page_size : opts.pageSize;
+    const total = meta.total != null ? meta.total : returned;
+    const pageCount = meta.page_count != null ? meta.page_count : Math.max(1, Math.ceil(total / (pageSize || 1)));
+    const page = meta.page != null ? meta.page : opts.page;
+    return {
+      total, page, page_size: pageSize, page_count: pageCount,
+      offset: meta.offset != null ? meta.offset : (page - 1) * pageSize,
+      limit: meta.limit != null ? meta.limit : pageSize,
+      returned: meta.returned != null ? meta.returned : returned,
+      has_more: meta.has_more != null ? meta.has_more : page < pageCount,
+      next_offset: meta.next_offset != null ? meta.next_offset : null,
+    };
+  }
+
+  // Intègre une liste brute (forme API) dans PRODUCTS (dédup) et renvoie les
+  // produits BÂTIS correspondants, dans l'ordre reçu (réf. stables pour openProduct).
+  function mergeRaw(rawArr) {
+    return (rawArr || []).map((raw) => {
+      if (!raw || raw.id == null) return raw ? build(raw) : null;
+      const existing = PRODUCTS.find((p) => p.id === raw.id);
+      if (existing) return existing;
+      const built = build(raw);
+      _seenIds.add(raw.id);
+      PRODUCTS.push(built);
+      return built;
+    }).filter(Boolean);
+  }
+
+  function fetchPage(opts) {
+    opts = opts || {};
+    opts.page = Math.max(1, opts.page || 1);
+    opts.pageSize = opts.pageSize || 30;
+    opts.sort = opts.sort || 'tandor';
+    const base = PAGER.apiBase ? String(PAGER.apiBase).replace(/\/$/, '') : '';
+    if (!base) return Promise.resolve(clientPage(opts));
+    return authedFetch(buildPageUrl(base, opts))
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((json) => {
+        const raw = Array.isArray(json.products) ? json.products : [];
+        const built = mergeRaw(raw);
+        const meta = normalizeMeta(json.meta || json, opts, built.length);
+        if (meta.total != null) PAGER.total = meta.total;
+        return { products: built, meta };
+      })
+      .catch((err) => {
+        console.warn('[Tandor] fetchPage a échoué, repli client :', err);
+        return clientPage(opts);
+      });
+  }
+
+  /* ============================================================
+     ALERTES + DÉTAIL PRODUIT — données RÉELLES du backend.
+     Règle d'honnêteté : tout échec réseau / endpoint absent renvoie
+     [] ou null. On n'invente JAMAIS d'alerte ni d'historique.
+     Base API = __TANDOR_PAGE__.apiBase (injectée par DashPage) sinon
+     l'origine courante (proxy CRA en dev → /api).
+     ============================================================ */
+  function apiBase() {
+    try {
+      const pg = (window as any).__TANDOR_PAGE__;
+      const b = pg && pg.apiBase;
+      return (b ? String(b) : window.location.origin).replace(/\/$/, '');
+    } catch (e) { return ''; }
+  }
+
+  // GET /api/alerts -> tableau d'alertes (jamais inventé). [] si échec/absent.
+  // Chaque alerte : { id, type, product_id, product_name, message,
+  //                   severity:'info'|'warn'|'high', created_at, delivered }.
+  function fetchAlerts() {
+    return authedFetch(`${apiBase()}/api/alerts`)
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((j) => (j && Array.isArray(j.alerts) ? j.alerts : []))
+      .catch((err) => { console.warn('[Tandor] fetchAlerts a échoué :', err); return []; });
+  }
+
+  // GET /api/product/{id} -> { score, history } ou null.
+  // Tolère la forme « contrat » ({score,history}) ET la forme à plat (produit
+  // complet avec un champ `history`). history.{sales,amazon} = bloc
+  // {points,dates,days,values,spanDays} ou null. N'invente jamais d'historique.
+  function fetchProductDetail(id) {
+    if (id == null) return Promise.resolve(null);
+    return authedFetch(`${apiBase()}/api/product/${encodeURIComponent(id)}`)
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((j) => {
+        if (!j || typeof j !== 'object') return null;
+        const score = j.score && typeof j.score === 'object' ? j.score : j;
+        const history = j.history || (j.score && j.score.history) || null;
+        return { score, history };
+      })
+      .catch((err) => { console.warn('[Tandor] fetchProductDetail a échoué :', err); return null; });
   }
 
   /* ---------- markets ---------- */
@@ -314,12 +517,18 @@ import REAL_PRODUCTS from './products.json';
   }
 
   window.TANDOR = {
-    PRODUCTS, PHASES, VERDICTS, CATS, CAT_HUE, MARKETS, STR, MONTHS,
+    PRODUCTS, PHASES, VERDICTS, TRAP_VERDICTS, trapMeta, CATS, CAT_HUE, MARKETS, STR, MONTHS,
     seasonMatrix, clamp,
     // current month index (0-based) — June for the demo
     CUR_MONTH: 5,
     // Pagination / infinite scroll : curseur + chargeur de lots suivants.
     PAGER, appendBase, loadMore,
+    // Pagination INDEXÉE (30/page) utilisée par Discovery : fetchPage renvoie
+    // { products, meta } pour une page donnée + filtres (backend ou repli client).
+    fetchPage,
+    // Alertes RÉELLES (GET /api/alerts) + détail produit avec historique réel
+    // (GET /api/product/{id}). [] / null en cas d'échec — aucune donnée inventée.
+    fetchAlerts, fetchProductDetail,
     get hasMore() { return !!PAGER.hasMore; },
     get total() { return PAGER.total; },
   };

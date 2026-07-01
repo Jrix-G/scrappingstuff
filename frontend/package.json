@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "firebase": "^11.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/roboto": "^5.2.6",
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
+    "@supabase/supabase-js": "^2.108.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -19,6 +19,7 @@
     "@types/react-dom": "^19.1.6",
     "ajv": "^8.17.1",
     "bootstrap": "^5.3.7",
+    "firebase": "^11.0.0",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
@@ -30,6 +31,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "seo": "node scripts/gen_seo_pages.js",
+    "blog": "node scripts/gen_blog.js",
+    "prebuild": "node scripts/gen_seo_pages.js && node scripts/gen_blog.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

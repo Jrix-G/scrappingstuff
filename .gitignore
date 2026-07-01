@@ -11,3 +11,12 @@ data/
 .env.*
 !.env.example
 *.local
+*.conf
+scripts/*.conf
+
+# Filet de sécurité : caches de scraping et bases, quel que soit le sous-dossier
+**/.*_cache/
+*.db
+*.db-wal
+*.db-shm
+*.db.gz

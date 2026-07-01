@@ -24,19 +24,18 @@ Aucune dépendance externe : urllib + json + re (stdlib) uniquement.
 
 from __future__ import annotations
 
-import gzip
 import hashlib
 import json
 import re
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
+from utils import http  # transport partagé curl_cffi chrome131 (→ urllib de repli)
+
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 _CACHE_DIR = Path(__file__).resolve().parent.parent / ".aliexpress_cache"
 _CACHE_TTL_SECONDS = 24 * 3600          # 24 h : une recherche/jour suffit
 _MIN_REQUEST_INTERVAL = 8.0             # politesse longue (anti-punish)
@@ -108,21 +107,15 @@ def _fetch_html(keyword: str) -> str:
     if wait > 0:
         time.sleep(wait)
     url = "https://www.aliexpress.com/af/" + urllib.parse.quote(keyword) + ".html"
-    req = urllib.request.Request(url, headers={
-        "User-Agent": _UA,
-        "Accept": "text/html,application/xhtml+xml",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip",
-    })
     try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            raw = resp.read()
-            if "gzip" in (resp.headers.get("Content-Encoding") or ""):
-                raw = gzip.decompress(raw)
-            body = raw.decode("utf-8", "replace")
+        res = http.get_text(url, headers={"Accept": "text/html,application/xhtml+xml"},
+                            timeout=20)
     finally:
         _last_request_ts = time.time()
-    if any(m in body for m in _PUNISH_MARKERS) or len(body) < 5000:
+    body = res.text
+    # status 0 = échec transport ; 403/429/503 = anti-bot ; sinon marqueurs punish.
+    if (res.status in (0, 403, 429, 503)
+            or any(m in body for m in _PUNISH_MARKERS) or len(body) < 5000):
         raise AliExpressBlocked("Page punish/captcha AliExpress (IP en cooldown).")
     return body
 
@@ -152,8 +145,10 @@ def fetch_demand(keyword: str) -> AliExpressDemand:
         try:
             body = _fetch_html(keyword)
         except AliExpressBlocked:
+            # Le transport (utils.http) ne lève pas : il renvoie status 0 sur échec
+            # réseau, converti ici en blocage. Toute autre erreur inattendue = blocage.
             return AliExpressDemand(keyword=keyword, blocked=True)
-        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError):
+        except Exception:
             return AliExpressDemand(keyword=keyword, blocked=True)
         _cache_put(keyword, body)
 

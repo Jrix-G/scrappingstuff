@@ -1,0 +1,115 @@
+==================================================================
+ AUDIT SEO — TANDOR  (analyse du site reel, chef de projet)
+==================================================================
+
+VERDICT EN 1 LIGNE
+------------------
+Aujourd'hui Google ne peut quasiment RIEN indexer de notre site, et
+on se bat sur les mauvais mots-cles. Les 2 corrigent = explosion de
+visites. Le coup de genie est en bas (PARTIE 3).
+
+
+==================================================================
+ PARTIE 1 — CE QUI CLOCHE (audit technique reel)
+==================================================================
+
+1. SITE 100% CLIENT-RENDERED (Create React App / react-scripts).
+   -> Google recoit une page VIDE, le contenu n'apparait qu'apres
+      execution du JavaScript. Indexation lente et peu fiable.
+   GRAVITE : CRITIQUE.
+
+2. META DESCRIPTION = "Web site created using create-react-app".
+   -> C'est le texte par defaut jamais modifie. Honteux et zero
+      mot-cle. (Le <title> lui est bon.)
+   GRAVITE : HAUTE (correctif = 2 min).
+
+3. SEULES 2 PAGES SONT PUBLIQUES ( / et /homeby ).
+   Tout le reste (dashboard, radar, trends, market...) est derriere
+   un login (ProtectedRoute). Google ne voit donc AUCUN contenu
+   produit. On a une mine de donnees et on la cache aux robots.
+   GRAVITE : CRITIQUE (c'est LE plafond a nos visites).
+
+4. AUCUN sitemap.xml. robots.txt ouvert mais ne pointe rien.
+   GRAVITE : MOYENNE.
+
+5. AUCUNE balise par page (pas de react-helmet) : toutes les pages
+   partagent le meme titre/description.
+   GRAVITE : HAUTE.
+
+6. AUCUNE donnee structuree (JSON-LD), ni Open Graph / Twitter Card.
+   -> Partages moches sur les reseaux, pas de rich snippets Google.
+   GRAVITE : MOYENNE.
+
+7. MAUVAIS POSITIONNEMENT DES MOTS-CLES. La landing dit "produits
+   gagnants", "vends le produit gagnant" -> on attaque Minea/ZIK
+   FRONTALEMENT sur des mots-cles qu'ils possedent depuis des annees.
+   Impossible a ranker. On ignore notre angle UNIQUE (anti-perte).
+   GRAVITE : STRATEGIQUE.
+
+
+==================================================================
+ PARTIE 2 — CORRECTIFS RAPIDES (semaine 1, gros ROI)
+==================================================================
+
+A. Reecrire la meta description (cibler notre angle, pas Minea).
+B. Ajouter Open Graph + Twitter Card + favicon propre.
+C. Generer sitemap.xml + le declarer dans robots.txt.
+D. Ajouter react-helmet : un title + meta UNIQUE par page publique.
+E. Passer le rendu en pre-rendu/SSR (migrer vers Next.js, OU au
+   minimum pre-render des pages marketing). Sans ca, le reste plafonne.
+F. hreflang FR/EN (le site est deja bilingue via data-en) =
+   on capte 2 marches pour le meme contenu.
+
+
+==================================================================
+ PARTIE 3 — LE COUP DE GENIE (ce qui nous fait gagner)
+==================================================================
+
+>>> SEO PROGRAMMATIQUE SUR NOTRE BASE DE DONNEES <<<
+
+On scrape deja des MILLIERS de produits avec demande, marge, declin.
+Chaque produit = une page publique auto-generee, indexable, utile :
+
+   "Le [Masseur cervical] est-il encore rentable en 2026 ?"
+   "[Produit X] : sature ou encore vendable ? (donnees reelles)"
+   "Faut-il dropshipper [Produit Y] en 2026 ? Verdict Tandor"
+
+-> Des milliers de pages a forte intention d'achat, alimentees par
+   des donnees que les concurrents NE montrent PAS publiquement.
+   C'est comme ca qu'on bat un gros : par le VOLUME + la donnee.
+
+OWNER LE BON CRENEAU (mots-cles non disputes, bas de funnel) :
+   - "produit dropshipping sature 2026"
+   - "eviter de perdre de l'argent dropshipping"
+   - "verifier produit avant de lancer"
+   - "[produit] encore rentable"
+Minea ne se positionne PAS la-dessus. Ocean bleu.
+
+LINK BAIT / AUTORITE :
+   - Outil GRATUIT public : "Verifie si ton produit est un piege"
+     (1 recherche gratuite sans compte) = aimant a backlinks + partages.
+   - Page comparatif "Tandor vs Minea" (legitime, factuel, edgy).
+
+VIDEO -> SEO (rappel) : 1 demo TikTok/YouTube "ce produit allait te
+   faire perdre 300 euros" pousse du trafic ET des backlinks.
+
+
+==================================================================
+ PARTIE 4 — PLAN D'ATTAQUE (ordre de priorite)
+==================================================================
+   1. Correctifs Partie 2 A->D   (semaine 1, facile)
+   2. Pre-rendu / SSR  (Partie 2-E)   (semaine 2-3, debloque tout)
+   3. SEO programmatique sur la DB  (Partie 3)   (le gros levier)
+   4. Outil gratuit link-bait + comparatif Minea
+   5. hreflang FR/EN + contenu de niche en soutien
+
+
+==================================================================
+ NOTE D'INTEGRITE (chef de projet)
+==================================================================
+Tout ci-dessus est du SEO AGRESSIF mais LEGAL. Pas de faux avis, de
+fausses stats ni de cloaking : Google banit pour ca et ca tue la
+confiance = l'inverse du but. Notre "mensonge" autorise = des claims
+AUDACIEUX appuyes sur nos VRAIES donnees. La force, c'est qu'on a la
+donnee pour les tenir.
+==================================================================

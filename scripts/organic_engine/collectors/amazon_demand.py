@@ -22,6 +22,7 @@ Dépendance : curl_cffi (impersonate Chrome = empreinte TLS/HTTP2 réaliste).
 
 from __future__ import annotations
 
+import gzip
 import hashlib
 import random
 import re
@@ -155,7 +156,12 @@ def _cache_get(kw: str) -> str | None:
     try:
         if time.time() - p.stat().st_mtime > _CACHE_TTL_SECONDS:
             return None
-        return p.read_text()
+        raw = p.read_bytes()
+        # Rétrocompat : nouveaux fichiers en gzip (magic 0x1f 0x8b),
+        # anciens fichiers en HTML clair → on les lit tels quels.
+        if raw[:2] == b"\x1f\x8b":
+            return gzip.decompress(raw).decode("utf-8", "replace")
+        return raw.decode("utf-8", "replace")
     except Exception:
         return None
 
@@ -163,7 +169,31 @@ def _cache_get(kw: str) -> str | None:
 def _cache_put(kw: str, text: str) -> None:
     try:
         _CACHE_DIR.mkdir(parents=True, exist_ok=True)
-        _cache_path(kw).write_text(text)
+        _cache_path(kw).write_bytes(gzip.compress(text.encode("utf-8"), 6))
+    except Exception:
+        pass
+
+
+# Garde-fou : purge best-effort indépendante de daily.sh, au cas où le cron
+# ne tournerait pas. Throttlée (1×/h max) pour ne rien coûter sur le chemin chaud.
+# Marge de sécurité 2× TTL : ne supprime que des fichiers déjà jamais relus.
+_last_purge = 0.0
+
+
+def _purge_stale_cache() -> None:
+    global _last_purge
+    now = time.time()
+    if now - _last_purge < 3600:
+        return
+    _last_purge = now
+    try:
+        cutoff = 2 * _CACHE_TTL_SECONDS
+        for p in _CACHE_DIR.glob("*.html"):
+            try:
+                if now - p.stat().st_mtime > cutoff:
+                    p.unlink()
+            except Exception:
+                pass
     except Exception:
         pass
 
@@ -242,6 +272,7 @@ def fetch_demand(keyword: str, session: "creq.Session | None" = None) -> AmazonD
     Sert le cache si frais ; sinon UNE requête. Si captcha/throttle → ``blocked=True``
     sans réessayer (le runner gère le backoff).
     """
+    _purge_stale_cache()
     cached = _cache_get(keyword)
     if cached is not None:
         return _parse(keyword, cached)

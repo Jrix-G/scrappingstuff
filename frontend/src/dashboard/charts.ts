@@ -142,15 +142,17 @@
     const ay = el('text', { x: 9, y: m.t + ph / 2, class: 'radar-axis', 'text-anchor': 'middle', transform: `rotate(-90 9 ${m.t + ph / 2})` }, svg); ay.textContent = S.momentum + ' →';
 
     const last20 = products.slice().sort((a, b) => b.tandor - a.tandor).slice(0, 20);
-    const maxMargin = Math.max(...last20.map((p) => p.gross));
+    const maxMargin = Math.max(1, ...last20.map((p) => p.gross));
 
     last20.forEach((p, i) => {
       const cx = x(p.maturity), cy = y(p.momentum);
-      const r = 6 + (p.gross / maxMargin) * 12;
+      // Rayon = marge brute. Échelle racine (4–14px) : resserre min/max pour des
+      // bulles lisibles et non chevauchantes (avant : 6–18px + halo → ~22px, géant).
+      const r = 4 + Math.sqrt(p.gross / maxMargin) * 10;
       const col = `var(--${T.PHASES[p.phase].v})`;
       const g = el('g', { class: 'radar-bub', 'data-id': p.id, style: `--d:${i * 35}ms` }, svg);
-      // halo = confidence
-      el('circle', { cx, cy, r: r + 4 * p.confidence, fill: col, 'fill-opacity': (0.10 + 0.10 * p.confidence).toFixed(2) }, g);
+      // halo = confidence (discret quand la confiance est faible — pas de signal inventé)
+      el('circle', { cx, cy, r: r + 3 * p.confidence, fill: col, 'fill-opacity': (0.07 + 0.10 * p.confidence).toFixed(2) }, g);
       const dot = el('circle', { cx, cy, r, fill: col, 'fill-opacity': '.7', stroke: col, 'stroke-width': 1.5 }, g);
       g.style.cursor = 'pointer';
       g.addEventListener('mouseenter', (e) => {
@@ -226,7 +228,8 @@
     products.forEach((p) => {
       const k = p.cat;
       byCat[k] = byCat[k] || { cat: k, value: 0, scoreSum: 0, n: 0 };
-      if (p.verdict === 'BUY' || p.verdict === 'WATCH') byCat[k].value += p.verdict === 'BUY' ? 2 : 1;
+      // Pondère par le verdict anti-perte (VIABLE/RISKY), pas l'ancien BUY (100%).
+      if (p.trapVerdict === 'VIABLE' || p.trapVerdict === 'RISKY') byCat[k].value += p.trapVerdict === 'VIABLE' ? 2 : 1;
       byCat[k].scoreSum += p.tandor; byCat[k].n++;
     });
     let data = Object.values(byCat).filter((d) => d.value > 0).map((d) => ({ cat: d.cat, value: d.value, avg: Math.round(d.scoreSum / d.n) }));

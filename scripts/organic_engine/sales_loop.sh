@@ -5,9 +5,9 @@
 # Lancé par cron quelques fois/jour (cf. crontab). Logue dans ~/tandor-sales.log.
 set -euo pipefail
 
-ENGINE="/home/albator/scrappingstuff/scripts/organic_engine"
+ENGINE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PY="$ENGINE/.venv/bin/python3"
-LOG="/home/albator/tandor-sales.log"
+LOG="$HOME/tandor-sales.log"
 
 # Budget par source et par passage (ceiling single-IP ~30-40/jour/source).
 EBAY_BUDGET="${EBAY_BUDGET:-25}"

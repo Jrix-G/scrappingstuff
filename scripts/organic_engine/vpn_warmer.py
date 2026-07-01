@@ -23,6 +23,8 @@ from pathlib import Path
 ENGINE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(ENGINE_DIR))
 
+from shard import in_shard  # partition multi-nœuds : ne warmer que SON shard de mots-clés
+
 # ─── Extraction de mots-clés (même logique qu'enrich.py) ────────────────────
 
 _STOP = {
@@ -76,6 +78,8 @@ def _universe_keywords(db_path: Path, limit: int) -> list[str]:
         kw = _keyword(name)
         if not kw or len(kw) < 4:
             continue
+        if not in_shard(kw):       # partition multi-nœuds : l'autre nœud s'en charge
+            continue
         freq[kw] = freq.get(kw, 0) + 1
         if kw not in seen:
             seen.add(kw)
@@ -95,8 +99,15 @@ def _ali_fresh(keyword: str) -> bool:
 
 
 def _trends_fresh(keyword: str) -> bool:
-    from collectors.google_trends import _cache_get
-    return _cache_get(f"{keyword}|today 3-m|") is not None
+    # Le signal Trends est servi par suggest_trends (snapshots .trends_cache/suggest_*.json),
+    # pas par l'ancien cache widgetdata de google_trends. On vérifie donc la fraîcheur
+    # du snapshot suggest (TTL ~jour), sinon le drainage par batches ne finirait jamais.
+    from collectors.suggest_trends import _snap_path, _SNAP_TTL
+    try:
+        p = _snap_path(keyword)
+        return p.exists() and (time.time() - p.stat().st_mtime) < _SNAP_TTL
+    except Exception:
+        return False
 
 
 def _tiktok_fresh(keyword: str) -> bool:

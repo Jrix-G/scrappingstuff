@@ -308,13 +308,13 @@ const Home: React.FC = () => {
         <div className="container">
           <div className="hero-grid">
             <div className="hero-copy">
-              <span className="eyebrow reveal" data-fr="Product research par signaux" data-en="Signal-based product research">Product research par signaux</span>
+              <span className="eyebrow reveal" data-fr="Anti-perte pour le dropshipping" data-en="Loss prevention for dropshipping">Anti-perte pour le dropshipping</span>
               <h1 className="display reveal" data-d="1">
-                <span className="hl" data-hl="1" data-fr="Vends le produit gagnant <em>pendant</em> que les autres le découvrent." data-en="Sell the winning product <em>while</em> everyone else is still finding it.">Vends le produit gagnant <em>pendant</em> que les autres le découvrent.</span>
-                <span className="hl" data-hl="2" data-fr="Repère les produits gagnants <em>4 à 6 semaines</em> avant tes concurrents." data-en="Spot winning products <em>4–6 weeks</em> before your competitors.">Repère les produits gagnants <em>4 à 6 semaines</em> avant tes concurrents.</span>
-                <span className="hl" data-hl="3" data-fr="Le signal, <em>avant</em> le bruit." data-en="The signal, <em>before</em> the noise.">Le signal, <em>avant</em> le bruit.</span>
+                <span className="hl" data-hl="1" data-fr="Ne lance pas un produit qui va te faire <em>perdre</em> de l'argent." data-en="Don't launch a product that's about to <em>burn</em> your cash.">Ne lance pas un produit qui va te faire <em>perdre</em> de l'argent.</span>
+                <span className="hl" data-hl="2" data-fr="Repère les produits <em>saturés ou en déclin</em> avant de miser dessus." data-en="Spot <em>saturated or declining</em> products before you bet on them.">Repère les produits <em>saturés ou en déclin</em> avant de miser dessus.</span>
+                <span className="hl" data-hl="3" data-fr="La donnée, <em>avant</em> la perte." data-en="The data, <em>before</em> the loss.">La donnée, <em>avant</em> la perte.</span>
               </h1>
-              <p className="lead reveal" data-d="2" data-fr="Tandor lit la vélocité des signaux organiques — Reddit, TikTok, Google — et la croise avec la marge et la concurrence en un score unique et actionnable." data-en="Tandor reads the velocity of organic signals — Reddit, TikTok, Google — and crosses it with margin and competition into a single, actionable score.">Tandor lit la vélocité des signaux organiques — Reddit, TikTok, Google — et la croise avec la marge et la concurrence en un score unique et actionnable.</p>
+              <p className="lead reveal" data-d="2" data-fr="Tandor croise la demande, la marge et la saturation de milliers de produits — et te dit lesquels sont des pièges à fric, avant que tu ne dépenses un euro en pub." data-en="Tandor crosses demand, margin and saturation across thousands of products — and tells you which ones are money traps, before you spend a euro on ads.">Tandor croise la demande, la marge et la saturation de milliers de produits — et te dit lesquels sont des pièges à fric, avant que tu ne dépenses un euro en pub.</p>
               <div className="hero-cta reveal" data-d="3">
                 <a href="#pricing" className="btn btn-accent btn-lg" data-fr="Commencer gratuitement" data-en="Start for free">Commencer gratuitement</a>
                 <a href="#dashboard" className="btn btn-ghost btn-lg" data-fr="Voir le produit <span class='arrow'>→</span>" data-en="See the product <span class='arrow'>→</span>">Voir le produit <span className="arrow">→</span></a>
@@ -327,8 +327,9 @@ const Home: React.FC = () => {
                   <span style={{ background: 'linear-gradient(135deg,#fdba09,#ff4500)' }}></span>
                 </div>
                 <div>
-                  <span className="hero-stars">★★★★★</span>
-                  <span data-fr="<strong>2 400+</strong> e-commerçants à l'avance" data-en="<strong>2,400+</strong> sellers ahead of the curve"><strong>2 400+</strong> e-commerçants à l'avance</span>
+                  {/* Faux compteur d'utilisateurs retiré (audit : pratique commerciale trompeuse).
+                      À remplacer par un chiffre RÉEL une fois la base clients constituée. */}
+                  <span data-fr="Repère les pièges à fric avant de lancer un produit" data-en="Spot money-pit products before you launch">Repère les pièges à fric avant de lancer un produit</span>
                 </div>
               </div>
             </div>
@@ -410,8 +411,8 @@ const Home: React.FC = () => {
       <section className="velocity section-pad" id="velocity">
         <div className="container">
           <div className="section-head reveal">
-            <h2 className="section-title" data-fr="Le signal organique monte <em>avant</em> les pubs concurrentes." data-en="Organic signal rises <em>before</em> competitor ads.">Le signal organique monte <em>avant</em> les pubs concurrentes.</h2>
-            <p className="lead" data-fr="Quand un produit décolle sur Reddit, TikTok et Google, les pubs payantes arrivent 4 à 6 semaines plus tard. Tandor t'alerte au premier instant — pas au dernier." data-en="When a product takes off on Reddit, TikTok and Google, paid ads follow 4–6 weeks later. Tandor alerts you at the first moment — not the last.">Quand un produit décolle sur Reddit, TikTok et Google, les pubs payantes arrivent 4 à 6 semaines plus tard. Tandor t'alerte au premier instant — pas au dernier.</p>
+            <h2 className="section-title" data-fr="Le déclin se voit dans la donnée <em>avant</em> dans tes ventes." data-en="Decline shows in the data <em>before</em> it shows in your sales.">Le déclin se voit dans la donnée <em>avant</em> dans tes ventes.</h2>
+            <p className="lead" data-fr="Un produit se sature et décline des semaines avant que ton chiffre ne baisse. Tandor lit ces signaux et t'alerte au premier instant — avant que tu ne brûles ton budget pub." data-en="A product saturates and declines weeks before your revenue drops. Tandor reads those signals and alerts you at the first moment — before you burn your ad budget.">Un produit se sature et décline des semaines avant que ton chiffre ne baisse. Tandor lit ces signaux et t'alerte au premier instant — avant que tu ne brûles ton budget pub.</p>
           </div>
           <div className="velo-wrap reveal-scale" data-onreveal="drawVelocity">
             <div className="velo-chart">
@@ -468,7 +469,7 @@ const Home: React.FC = () => {
             <div className="fcard span2 reveal" data-onreveal="growBars">
               <div className="ficon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17l5-5 4 3 8-9"/><path d="M16 6h5v5"/></svg></div>
               <h3 data-fr="Lecture de vélocité en temps réel" data-en="Real-time velocity reading">Lecture de vélocité en temps réel</h3>
-              <p data-fr="On ne mesure pas le volume, on mesure l'accélération. Un signal qui double chaque semaine vaut plus qu'un million de vues figées." data-en="We don't measure volume, we measure acceleration. A signal that doubles weekly beats a million flat views.">On ne mesure pas le volume, on mesure l'accélération. Un signal qui double chaque semaine vaut plus qu'un million de vues figées.</p>
+              <p data-fr="On mesure l'accélération — dans les deux sens. Un signal qui ralentit te prévient qu'un produit se sature avant qu'il ne te coûte cher." data-en="We measure acceleration — both ways. A slowing signal warns you a product is saturating before it costs you.">On mesure l'accélération — dans les deux sens. Un signal qui ralentit te prévient qu'un produit se sature avant qu'il ne te coûte cher.</p>
               <div className="fviz"><div className="sparkbars"><i data-h="22"></i><i data-h="30"></i><i data-h="26"></i><i data-h="40"></i><i data-h="36"></i><i data-h="52"></i><i data-h="48"></i><i data-h="66"></i><i data-h="72"></i><i className="hi" data-h="88"></i><i className="hi" data-h="100"></i></div></div>
             </div>
             <div className="fcard reveal" data-d="1">
@@ -485,8 +486,8 @@ const Home: React.FC = () => {
             </div>
             <div className="fcard reveal" data-d="1">
               <div className="ficon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
-              <h3 data-fr="Alertes au premier signal" data-en="First-signal alerts">Alertes au premier signal</h3>
-              <p data-fr="Dès qu'un produit franchit ton seuil de vélocité, tu reçois l'alerte — avant que la fenêtre ne se ferme." data-en="The moment a product crosses your velocity threshold, you get the alert — before the window closes.">Dès qu'un produit franchit ton seuil de vélocité, tu reçois l'alerte — avant que la fenêtre ne se ferme.</p>
+              <h3 data-fr="Alerte avant le déclin" data-en="Alert before the decline">Alerte avant le déclin</h3>
+              <p data-fr="Dès qu'un produit que tu suis se sature ou décroche, tu reçois l'alerte — le temps de couper les pubs avant de perdre." data-en="The moment a product you track saturates or rolls over, you get the alert — in time to cut ads before you lose.">Dès qu'un produit que tu suis se sature ou décroche, tu reçois l'alerte — le temps de couper les pubs avant de perdre.</p>
               <div className="fviz scorepills"><span className="on">Slack</span><span className="on">Email</span><span>Webhook</span></div>
             </div>
             <div className="fcard span2 reveal" data-d="2">
@@ -534,16 +535,16 @@ const Home: React.FC = () => {
                 </aside>
                 <div className="dash-main">
                   <div className="dash-h">
-                    <div><h4 data-fr="Radar produits" data-en="Product radar">Radar produits</h4><div className="dh-sub" data-fr="412 produits suivis · maj il y a 2 min" data-en="412 products tracked · updated 2 min ago">412 produits suivis · maj il y a 2 min</div></div>
+                    <div><h4 data-fr="Radar produits" data-en="Product radar">Radar produits</h4><div className="dh-sub" data-fr="Catalogue scoré en continu" data-en="Catalogue scored continuously">Catalogue scoré en continu</div></div>
                     <div className="dh-filter"><span className="on" data-fr="Vélocité" data-en="Velocity">Vélocité</span><span data-fr="Marge" data-en="Margin">Marge</span><span data-fr="Récents" data-en="Recent">Récents</span></div>
                   </div>
                   <div className="dash-kpis">
                     <div className="kpi"><div className="kl" data-fr="Signaux actifs" data-en="Active signals">Signaux actifs</div><div className="kv" data-count="48" data-suffix="">0</div><div className="kd">▲ 12 <span data-fr="cette semaine" data-en="this week">cette semaine</span></div></div>
-                    <div className="kpi"><div className="kl" data-fr="Avance moyenne" data-en="Avg. lead">Avance moyenne</div><div className="kv mono">4,8<span style={{ fontSize: '.9rem' }}> sem.</span></div><div className="kd">▲ 0,6</div></div>
+                    <div className="kpi"><div className="kl" data-fr="Avance sur le déclin" data-en="Lead on decline">Avance sur le déclin</div><div className="kv mono">4,8<span style={{ fontSize: '.9rem' }}> sem.</span></div><div className="kd">▲ 0,6</div></div>
                     <div className="kpi"><div className="kl" data-fr="Verdicts « Lancer »" data-en="« Launch » verdicts">Verdicts « Lancer »</div><div className="kv" data-count="7" data-suffix="">0</div><div className="kd">▲ 3 <span data-fr="aujourd'hui" data-en="today">aujourd'hui</span></div></div>
                   </div>
                   <div className="dtable">
-                    <div className="dt-head"><span data-fr="Produit" data-en="Product">Produit</span><span data-fr="Score & vélocité" data-en="Score & velocity">Score &amp; vélocité</span><span data-fr="Marge" data-en="Margin">Marge</span><span data-fr="Avance" data-en="Lead">Avance</span><span data-fr="Verdict" data-en="Verdict">Verdict</span></div>
+                    <div className="dt-head"><span data-fr="Produit" data-en="Product">Produit</span><span data-fr="Score & vélocité" data-en="Score & velocity">Score &amp; vélocité</span><span data-fr="Marge" data-en="Margin">Marge</span><span data-fr="Risque" data-en="Risk">Risque</span><span data-fr="Verdict" data-en="Verdict">Verdict</span></div>
                     <div className="dt-row"><div className="dt-prod"><div className="pmini"></div><div><div className="pn" data-fr="Masseur cervical" data-en="Neck massager">Masseur cervical</div><div className="pc">WELLNESS</div></div></div><div className="dt-score"><svg className="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" strokeWidth="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--signal)" strokeWidth="4" strokeLinecap="round" strokeDasharray="94 100" transform="rotate(-90 18 18)"/></svg><b>92</b><svg className="dt-spark" viewBox="0 0 70 26" preserveAspectRatio="none"><polyline points="0,22 14,18 28,14 42,8 56,5 70,2" fill="none" stroke="var(--signal)" strokeWidth="2"/></svg></div><div className="dt-margin">×4,2</div><div className="mono" style={{ fontWeight: 600 }}>5,2 <span data-fr="sem" data-en="wk">sem</span></div><div className="dt-stat win" data-fr="Lancer" data-en="Launch">Lancer</div></div>
                     <div className="dt-row"><div className="dt-prod"><div className="pmini"></div><div><div className="pn" data-fr="Lampe coucher de soleil" data-en="Sunset lamp">Lampe coucher de soleil</div><div className="pc">HOME</div></div></div><div className="dt-score"><svg className="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" strokeWidth="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--accent)" strokeWidth="4" strokeLinecap="round" strokeDasharray="78 100" transform="rotate(-90 18 18)"/></svg><b>78</b><svg className="dt-spark" viewBox="0 0 70 26" preserveAspectRatio="none"><polyline points="0,20 14,17 28,16 42,12 56,10 70,7" fill="none" stroke="var(--accent)" strokeWidth="2"/></svg></div><div className="dt-margin">×3,8</div><div className="mono" style={{ fontWeight: 600 }}>3,1 <span data-fr="sem" data-en="wk">sem</span></div><div className="dt-stat watch" data-fr="Surveiller" data-en="Watch">Surveiller</div></div>
                     <div className="dt-row"><div className="dt-prod"><div className="pmini"></div><div><div className="pn" data-fr="Brosse anti-peluches" data-en="Lint shaver">Brosse anti-peluches</div><div className="pc">APPAREL</div></div></div><div className="dt-score"><svg className="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="var(--line)" strokeWidth="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="var(--signal)" strokeWidth="4" strokeLinecap="round" strokeDasharray="86 100" transform="rotate(-90 18 18)"/></svg><b>86</b><svg className="dt-spark" viewBox="0 0 70 26" preserveAspectRatio="none"><polyline points="0,21 14,19 28,13 42,11 56,6 70,3" fill="none" stroke="var(--signal)" strokeWidth="2"/></svg></div><div className="dt-margin">×5,1</div><div className="mono" style={{ fontWeight: 600 }}>4,4 <span data-fr="sem" data-en="wk">sem</span></div><div className="dt-stat win" data-fr="Lancer" data-en="Launch">Lancer</div></div>
@@ -560,7 +561,7 @@ const Home: React.FC = () => {
       <section className="how section-pad" id="how">
         <div className="container">
           <div className="section-head reveal">
-            <h2 className="section-title" data-fr="Du signal brut au produit lancé, <em>en trois temps</em>." data-en="From raw signal to launched product, <em>in three steps</em>.">Du signal brut au produit lancé, <em>en trois temps</em>.</h2>
+            <h2 className="section-title" data-fr="Du signal brut au verdict, <em>en trois temps</em>." data-en="From raw signal to verdict, <em>in three steps</em>.">Du signal brut au verdict, <em>en trois temps</em>.</h2>
           </div>
           <div className="steps">
             <div className="step reveal" data-d="1">
@@ -584,8 +585,8 @@ const Home: React.FC = () => {
             </div>
             <div className="step reveal" data-d="3">
               <div className="snum">03</div><div className="sline"></div>
-              <h3 data-fr="Tu lances le premier" data-en="You launch first">Tu lances le premier</h3>
-              <p data-fr="Fournisseurs, marge et fenêtre déjà prêts. Tu lances pendant que la concurrence cherche encore." data-en="Suppliers, margin and window ready. You launch while competitors are still searching.">Fournisseurs, marge et fenêtre déjà prêts. Tu lances pendant que la concurrence cherche encore.</p>
+              <h3 data-fr="Tu lances sans te faire piéger" data-en="You launch without getting trapped">Tu lances sans te faire piéger</h3>
+              <p data-fr="Marge, saturation et fournisseurs déjà vérifiés. Tu mises ton budget sur les produits qui tiennent — pas sur les pièges." data-en="Margin, saturation and suppliers already checked. You put your budget on products that hold — not on traps.">Marge, saturation et fournisseurs déjà vérifiés. Tu mises ton budget sur les produits qui tiennent — pas sur les pièges.</p>
               <div className="svis" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '10px' }}>
                 <div className="chip" style={{ position: 'static', boxShadow: 'none', borderColor: 'var(--line-soft)' }}><span className="ico" style={{ background: 'var(--signal)' }}>✓</span><div><div data-fr="Fournisseur validé" data-en="Supplier verified">Fournisseur validé</div><div className="sub" data-fr="×4,2 de marge" data-en="×4.2 margin">×4,2 de marge</div></div></div>
                 <div className="chip" style={{ position: 'static', boxShadow: 'none', borderColor: 'var(--line-soft)' }}><span className="ico" style={{ background: 'var(--accent)' }}>⚡</span><div><div data-fr="Fenêtre ouverte" data-en="Window open">Fenêtre ouverte</div><div className="sub" data-fr="5,2 semaines d'avance" data-en="5.2 weeks lead">5,2 semaines d'avance</div></div></div>
@@ -599,13 +600,13 @@ const Home: React.FC = () => {
       <section className="testi section-pad" id="testi">
         <div className="container">
           <div className="section-head reveal">
-            <h2 className="section-title" data-fr="L'avance, <em>racontée</em> par ceux qui l'ont prise." data-en="The lead, <em>told</em> by those who took it.">L'avance, <em>racontée</em> par ceux qui l'ont prise.</h2>
+            <h2 className="section-title" data-fr="Les pièges évités, <em>racontés</em> par ceux qui s'en sont sortis." data-en="The traps avoided, <em>told</em> by those who dodged them.">Les pièges évités, <em>racontés</em> par ceux qui s'en sont sortis.</h2>
           </div>
           <div className="testi-grid">
             <div className="tcard feature reveal">
               <div className="tstars">★★★★★</div>
-              <p className="tq" data-fr="On a lancé le masseur cervical <em>cinq semaines</em> avant la vague de pubs. Le produit était déjà rentable quand nos concurrents l'ont « découvert »." data-en="We launched the neck massager <em>five weeks</em> before the ad wave. The product was already profitable when our competitors « discovered » it.">On a lancé le masseur cervical <em>cinq semaines</em> avant la vague de pubs. Le produit était déjà rentable quand nos concurrents l'ont « découvert ».</p>
-              <div className="tkpi"><div><div className="n">+38%</div><div className="l" data-fr="marge nette" data-en="net margin">marge nette</div></div><div><div className="n">5 sem.</div><div className="l" data-fr="d'avance" data-en="lead">d'avance</div></div></div>
+              <p className="tq" data-fr="Tandor m'a fait <em>couper</em> un produit qui se saturait. J'ai économisé tout mon budget pub du mois au lieu de le cramer sur un marché déjà mort." data-en="Tandor made me <em>cut</em> a product that was saturating. I saved my whole monthly ad budget instead of burning it on a dead market.">Tandor m'a fait <em>couper</em> un produit qui se saturait. J'ai économisé tout mon budget pub du mois au lieu de le cramer sur un marché déjà mort.</p>
+              <div className="tkpi"><div><div className="n">+38%</div><div className="l" data-fr="marge nette" data-en="net margin">marge nette</div></div><div><div className="n">0 €</div><div className="l" data-fr="cramés en pub" data-en="burned on ads">cramés en pub</div></div></div>
               <div className="tmeta"><div className="tav" style={{ background: 'linear-gradient(135deg,#6dcbff,#5a47cd)' }}></div><div><div className="tn">CamilleRé</div><div className="tr" data-fr="Fondatrice · Nordsky" data-en="Founder · Nordsky">Fondatrice · Nordsky</div></div></div>
             </div>
             <div className="tcard reveal" data-d="1">
@@ -615,7 +616,7 @@ const Home: React.FC = () => {
             </div>
             <div className="tcard reveal" data-d="2">
               <div className="tstars">★★★★★</div>
-              <p className="tq" data-fr="Les alertes au premier signal ont changé mon timing. J'arrête de copier les gagnants des autres — je suis le gagnant." data-en="First-signal alerts changed my timing. I've stopped copying others' winners — I am the winner.">Les alertes au premier signal ont changé mon timing. J'arrête de copier les gagnants des autres — je suis le gagnant.</p>
+              <p className="tq" data-fr="Avant, je lançais à l'instinct et je perdais une boutique sur deux. Maintenant je vérifie chaque produit sur Tandor avant de dépenser un centime." data-en="I used to launch on instinct and lose every other store. Now I check each product on Tandor before spending a cent.">Avant, je lançais à l'instinct et je perdais une boutique sur deux. Maintenant je vérifie chaque produit sur Tandor avant de dépenser un centime.</p>
               <div className="tmeta"><div className="tav" style={{ background: 'linear-gradient(135deg,#fdba09,#ff4500)' }}></div><div><div className="tn">Sofia M.</div><div className="tr" data-fr="DTC · Maison RoHe" data-en="DTC · Maison RoHe">DTC · Maison RoHe</div></div></div>
             </div>
             <div className="tcard reveal" data-d="3">
@@ -639,8 +640,8 @@ const Home: React.FC = () => {
           </div>
           <div className="price-grid">
             <div className="pcard reveal" data-d="1">
-              <div className="pname" data-fr="Éclaireur" data-en="Scout">Éclaireur</div>
-              <div className="pdesc" data-fr="Pour tester l'avance sur une niche." data-en="To test the lead on one niche.">Pour tester l'avance sur une niche.</div>
+              <div className="pname" data-fr="Vigie" data-en="Lookout">Vigie</div>
+              <div className="pdesc" data-fr="Pour tester un produit avant de te lancer." data-en="To test one product before you commit.">Pour tester un produit avant de te lancer.</div>
               <div className="pprice"><span className="amt" data-m="0" data-y="0">0</span><span className="per" data-fr="/mois" data-en="/mo">/mois</span></div>
               <a href="#" className="btn btn-ghost pbtn" data-fr="Commencer" data-en="Get started">Commencer</a>
               <ul>
@@ -652,8 +653,8 @@ const Home: React.FC = () => {
             </div>
             <div className="pcard pop reveal" data-d="2">
               <div className="ptag" data-fr="Le plus choisi" data-en="Most popular">Le plus choisi</div>
-              <div className="pname" data-fr="Chasseur" data-en="Hunter">Chasseur</div>
-              <div className="pdesc" data-fr="Pour lancer avant le marché, en continu." data-en="To launch ahead of the market, continuously.">Pour lancer avant le marché, en continu.</div>
+              <div className="pname" data-fr="Gardien" data-en="Guardian">Gardien</div>
+              <div className="pdesc" data-fr="Pour vérifier chaque produit avant de miser, en continu." data-en="To vet every product before you bet, continuously.">Pour vérifier chaque produit avant de miser, en continu.</div>
               <div className="pprice"><span className="amt" data-m="49" data-y="39">49</span><span className="per" data-fr="/mois" data-en="/mo">/mois</span></div>
               <a href="#" className="btn btn-accent pbtn" data-fr="Essayer 14 jours" data-en="Try 14 days">Essayer 14 jours</a>
               <ul>
@@ -669,7 +670,7 @@ const Home: React.FC = () => {
               <div className="pprice"><span className="amt" data-m="149" data-y="119">149</span><span className="per" data-fr="/mois" data-en="/mo">/mois</span></div>
               <a href="#" className="btn btn-ghost pbtn" data-fr="Parler à l'équipe" data-en="Talk to sales">Parler à l'équipe</a>
               <ul>
-                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-fr="Tout Chasseur, ×illimité" data-en="Everything in Hunter, ×unlimited">Tout Chasseur, ×illimité</span></li>
+                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-fr="Tout Gardien, ×illimité" data-en="Everything in Guardian, ×unlimited">Tout Gardien, ×illimité</span></li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-fr="Sièges en équipe" data-en="Team seats">Sièges en équipe</span></li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-fr="API &amp; webhooks" data-en="API & webhooks">API &amp; webhooks</span></li>
                 <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M20 6 9 17l-5-5"/></svg><span data-fr="Accompagnement dédié" data-en="Dedicated support">Accompagnement dédié</span></li>
@@ -686,9 +687,9 @@ const Home: React.FC = () => {
             <h2 className="section-title" data-fr="Ce qu'on nous demande <em>souvent</em>." data-en="What people <em>often</em> ask.">Ce qu'on nous demande <em>souvent</em>.</h2>
           </div>
           <div className="faq-wrap reveal">
-            <div className="faq-item"><button className="faq-q"><span data-fr="D'où viennent les signaux de Tandor ?" data-en="Where do Tandor's signals come from?">D'où viennent les signaux de Tandor ?</span><span className="fq-ico"></span></button><div className="faq-a"><div className="faq-a-inner" data-fr="Tandor agrège des sources publiques — discussions Reddit, formats et hashtags TikTok, recherches Google Trends — puis mesure leur accélération semaine après semaine. C'est la vélocité, pas le volume, qui prédit un produit gagnant." data-en="Tandor aggregates public sources — Reddit threads, TikTok formats and hashtags, Google Trends searches — then measures their week-over-week acceleration. It's velocity, not volume, that predicts a winning product.">Tandor agrège des sources publiques — discussions Reddit, formats et hashtags TikTok, recherches Google Trends — puis mesure leur accélération semaine après semaine.</div></div></div>
+            <div className="faq-item"><button className="faq-q"><span data-fr="D'où viennent les signaux de Tandor ?" data-en="Where do Tandor's signals come from?">D'où viennent les signaux de Tandor ?</span><span className="fq-ico"></span></button><div className="faq-a"><div className="faq-a-inner" data-fr="Tandor agrège des sources publiques — discussions Reddit, formats et hashtags TikTok, recherches Google Trends, marketplaces — puis mesure la demande, la marge et la saturation semaine après semaine. C'est ce croisement qui révèle si un produit est viable ou un piège." data-en="Tandor aggregates public sources — Reddit threads, TikTok formats and hashtags, Google Trends searches, marketplaces — then measures demand, margin and saturation week over week. That crossing reveals whether a product is viable or a trap.">Tandor agrège des sources publiques — discussions Reddit, formats et hashtags TikTok, recherches Google Trends, marketplaces — puis mesure la demande, la marge et la saturation semaine après semaine.</div></div></div>
             <div className="faq-item"><button className="faq-q"><span data-fr="Comment le score est-il calculé ?" data-en="How is the score calculated?">Comment le score est-il calculé ?</span><span className="fq-ico"></span></button><div className="faq-a"><div className="faq-a-inner" data-fr="Le score de 0 à 100 croise trois axes : la vélocité du signal organique, la marge estimée côté fournisseurs (AliExpress), et la saturation publicitaire. Un produit viral mais à faible marge ou déjà saturé est automatiquement recalé." data-en="The 0–100 score crosses three axes: organic signal velocity, estimated supplier-side margin (AliExpress), and ad saturation. A viral product with thin margin or heavy saturation is automatically flagged down.">Le score de 0 à 100 croise trois axes : la vélocité du signal organique, la marge estimée côté fournisseurs (AliExpress), et la saturation publicitaire.</div></div></div>
-            <div className="faq-item"><button className="faq-q"><span data-fr="Quelle avance puis-je vraiment espérer ?" data-en="What lead can I really expect?">Quelle avance puis-je vraiment espérer ?</span><span className="fq-ico"></span></button><div className="faq-a"><div className="faq-a-inner" data-fr="En moyenne, le signal organique précède la vague de publicités concurrentes de 4 à 6 semaines. Cette fenêtre est ton avantage : le temps de valider un fournisseur, créer ton offre et lancer avant que le marché ne se sature." data-en="On average, organic signal precedes the wave of competitor ads by 4 to 6 weeks. That window is your advantage: time to validate a supplier, build your offer and launch before the market saturates.">En moyenne, le signal organique précède la vague de publicités concurrentes de 4 à 6 semaines.</div></div></div>
+            <div className="faq-item"><button className="faq-q"><span data-fr="Comment Tandor m'évite de perdre de l'argent ?" data-en="How does Tandor keep me from losing money?">Comment Tandor m'évite de perdre de l'argent ?</span><span className="fq-ico"></span></button><div className="faq-a"><div className="faq-a-inner" data-fr="Avant que tu ne dépenses en pub, Tandor te dit si un produit est déjà saturé, à faible marge ou en déclin — les trois raisons qui font perdre de l'argent en dropshipping. Tu mises seulement sur ceux qui tiennent encore." data-en="Before you spend on ads, Tandor tells you whether a product is already saturated, low-margin or declining — the three reasons dropshippers lose money. You only bet on the ones that still hold.">Avant que tu ne dépenses en pub, Tandor te dit si un produit est déjà saturé, à faible marge ou en déclin — les trois raisons qui font perdre de l'argent en dropshipping.</div></div></div>
             <div className="faq-item"><button className="faq-q"><span data-fr="Faut-il un engagement ?" data-en="Is there a commitment?">Faut-il un engagement ?</span><span className="fq-ico"></span></button><div className="faq-a"><div className="faq-a-inner" data-fr="Non. L'essai de 14 jours est sans carte bancaire, et tous les plans sont sans engagement — tu peux passer à l'année pour −20% quand tu es prêt, ou arrêter à tout moment." data-en="No. The 14-day trial needs no credit card, and all plans are commitment-free — switch to yearly for −20% when ready, or stop anytime.">Non. L'essai de 14 jours est sans carte bancaire, et tous les plans sont sans engagement.</div></div></div>
             <div className="faq-item"><button className="faq-q"><span data-fr="Tandor remplace-t-il mon outil d'ads ?" data-en="Does Tandor replace my ads tool?">Tandor remplace-t-il mon outil d'ads ?</span><span className="fq-ico"></span></button><div className="faq-a"><div className="faq-a-inner" data-fr="Non — Tandor intervient en amont. Là où les outils d'ads te montrent ce qui marche déjà (et que tout le monde voit), Tandor te montre ce qui va marcher, pendant que la fenêtre est encore ouverte." data-en="No — Tandor works upstream. Where ad tools show you what already works (and everyone sees), Tandor shows you what will work, while the window is still open.">Non — Tandor intervient en amont. Là où les outils d'ads te montrent ce qui marche déjà, Tandor te montre ce qui va marcher.</div></div></div>
           </div>
@@ -702,9 +703,9 @@ const Home: React.FC = () => {
             <div className="halo x"></div>
             <div className="halo y"></div>
             <div className="cgrid"></div>
-            <span className="eyebrow center" style={{ color: 'oklch(0.82 0.1 264)' }} data-fr="Prends l'avance" data-en="Take the lead">Prends l'avance</span>
-            <h2 data-fr="Le prochain produit gagnant est <em>déjà</em> en train de monter." data-en="The next winning product is <em>already</em> rising.">Le prochain produit gagnant est <em>déjà</em> en train de monter.</h2>
-            <p className="lead" data-fr="Sois là au premier signal. Commence gratuitement, sans carte bancaire." data-en="Be there at the first signal. Start free, no credit card.">Sois là au premier signal. Commence gratuitement, sans carte bancaire.</p>
+            <span className="eyebrow center" style={{ color: 'oklch(0.82 0.1 264)' }} data-fr="Arrête de perdre" data-en="Stop losing">Arrête de perdre</span>
+            <h2 data-fr="Ton prochain produit est peut-être <em>déjà</em> un piège." data-en="Your next product might <em>already</em> be a trap.">Ton prochain produit est peut-être <em>déjà</em> un piège.</h2>
+            <p className="lead" data-fr="Vérifie-le avant de miser. Commence gratuitement, sans carte bancaire." data-en="Check it before you bet. Start free, no credit card.">Vérifie-le avant de miser. Commence gratuitement, sans carte bancaire.</p>
             <div className="cta-actions">
               <a href="#" className="btn btn-light btn-lg" data-fr="Commencer gratuitement" data-en="Start for free">Commencer gratuitement</a>
               <a href="#dashboard" className="btn btn-lg" style={{ border: '1px solid oklch(0.6 0.04 264)', color: 'var(--paper)' }} data-fr="Voir une démo" data-en="See a demo">Voir une démo</a>
@@ -720,7 +721,7 @@ const Home: React.FC = () => {
           <div className="footer-grid">
             <div className="footer-brand-col">
               <div className="brand">Tandor<span className="dot">.</span></div>
-              <p className="footer-about" data-fr="Le product research par signaux. Détecte les produits gagnants 4 à 6 semaines avant qu'ils n'apparaissent dans les pubs des concurrents." data-en="Signal-based product research. Detect winning products 4 to 6 weeks before they show up in competitors' ads.">Le product research par signaux. Détecte les produits gagnants 4 à 6 semaines avant qu'ils n'apparaissent dans les pubs des concurrents.</p>
+              <p className="footer-about" data-fr="Le détecteur de pièges à fric du dropshipping. Vérifie la demande, la marge et la saturation d'un produit avant de dépenser un euro en pub." data-en="The dropshipping money-trap detector. Check a product's demand, margin and saturation before spending a euro on ads.">Le détecteur de pièges à fric du dropshipping. Vérifie la demande, la marge et la saturation d'un produit avant de dépenser un euro en pub.</p>
             </div>
             <div className="footer-col">
               <h5 data-fr="Produit" data-en="Product">Produit</h5>

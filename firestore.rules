@@ -16,9 +16,31 @@ service cloud.firestore {
 
     // A user may read/write ONLY their own profile and anything nested
     // beneath it (e.g. users/{uid}/watchlist/{productId}).
+    //
+    // SÉCURITÉ MONÉTISATION : les champs de plan/abonnement sont VERROUILLÉS côté
+    // client. Seul le SDK Admin (webhook Stripe) peut les écrire — et il IGNORE
+    // ces rules, donc le webhook continue de fonctionner. Sans ce verrou, un user
+    // pouvait écrire {plan:'pro', subscription_active:true} et se débloquer gratis.
     match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      function locked() { return ['plan', 'subscription_active', 'stripe_customer_id']; }
 
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      // Création : autorisée seulement si le doc ne pose aucun champ verrouillé,
+      // ou s'il pose les valeurs gratuites par défaut.
+      allow create: if request.auth != null && request.auth.uid == uid
+                    && (!request.resource.data.keys().hasAny(locked())
+                        || (request.resource.data.get('plan', 'free') == 'free'
+                            && request.resource.data.get('subscription_active', false) == false));
+
+      // Mise à jour : refusée si elle touche un champ verrouillé.
+      allow update: if request.auth != null && request.auth.uid == uid
+                    && !request.resource.data.diff(resource.data)
+                          .affectedKeys().hasAny(locked());
+
+      allow delete: if false;
+
+      // Sous-collections (watchlist, alertes…) : pleinement contrôlées par le user.
       match /{document=**} {
         allow read, write: if request.auth != null && request.auth.uid == uid;
       }

@@ -1,51 +1,62 @@
 /* eslint-disable */
 // @ts-nocheck
 /* ============================================================
-   TANDOR — page-account.js   (Account)
-   Profile, security (password / 2FA / sessions), API keys,
-   data export & account deletion (danger zone).
+   TANDOR — page-account.ts   (Account)
+   Profile, security and data export — branchés sur le SDK
+   Firebase Auth (plus aucune action cosmétique).
    ============================================================ */
+import { auth } from '../auth/firebase';
+import { updateProfile, sendPasswordResetEmail, signOut } from 'firebase/auth';
+
 export function mountAccount() {
   'use strict';
   const Sh = window.Shell;
   const $ = Sh.$, $$ = Sh.$$, ic = Sh.ic;
 
   const STR = {
-    en: { title: 'Account', sub: 'profile · security · API',
+    en: { title: 'Account', sub: 'profile · security · data',
       profile: 'Profile', profile_s: 'How you appear across Tandor',
-      name: 'Full name', email: 'Email', role: 'Role', role_v: 'Owner',
-      sec: 'Security', sec_s: 'Password, 2FA and active sessions',
-      pwd: 'Password', pwd_s: 'Last changed 3 months ago', pwd_btn: 'Change password',
-      twofa: 'Two-factor authentication', twofa_s: 'Authenticator app · adds a second step at sign-in',
-      sessions: 'Active sessions', this_device: 'This device', revoke: 'Revoke',
-      api: 'API & keys', api_s: 'Tokens for JSON export and webhooks', new_key: 'Generate key', key_created: 'New key generated', copied: 'Copied to clipboard',
+      name: 'Full name', email: 'Email', member_since: 'Member since', unknown: 'unknown',
+      sec: 'Security', sec_s: 'Password and sign-in',
+      pwd: 'Password', pwd_s: 'We email you a secure reset link', pwd_btn: 'Change password',
+      twofa: 'Two-factor authentication', twofa_s: 'Not available on this plan yet', na: 'Unavailable',
+      sessions: 'Active sessions', sessions_na: 'Session management is not available from the browser.',
       data: 'Data', data_s: 'Export or delete your account data', export: 'Export my data (GDPR)', export_s: 'Full JSON archive of your account',
       danger: 'Delete account', danger_s: 'Permanently remove your account, watchlists and history. This cannot be undone.', delete_btn: 'Delete account',
-      save: 'Save', saved: 'Profile saved', revoked: 'Session revoked', exporting: 'Preparing export' },
-    fr: { title: 'Compte', sub: 'profil · sécurité · API',
+      save: 'Save', saved: 'Profile saved', save_err: 'Could not save profile', save_empty: 'Please enter a name',
+      pwd_sent: 'Reset link sent to', pwd_err: 'Could not send reset email',
+      exporting: 'Export downloaded', signout: 'Sign out', signout_err: 'Sign out failed',
+      del_soon: 'confirmation required — contact support',
+      not_signed_t: 'Not signed in', not_signed_s: 'Sign in to manage your account.', go_login: 'Go to sign in' },
+    fr: { title: 'Compte', sub: 'profil · sécurité · données',
       profile: 'Profil', profile_s: 'Votre identité dans Tandor',
-      name: 'Nom complet', email: 'Email', role: 'Rôle', role_v: 'Propriétaire',
-      sec: 'Sécurité', sec_s: 'Mot de passe, 2FA et sessions actives',
-      pwd: 'Mot de passe', pwd_s: 'Modifié il y a 3 mois', pwd_btn: 'Changer le mot de passe',
-      twofa: 'Authentification à deux facteurs', twofa_s: 'Application authentificateur · ajoute une étape à la connexion',
-      sessions: 'Sessions actives', this_device: 'Cet appareil', revoke: 'Révoquer',
-      api: 'API & clés', api_s: 'Jetons pour l’export JSON et les webhooks', new_key: 'Générer une clé', key_created: 'Nouvelle clé générée', copied: 'Copié dans le presse-papiers',
+      name: 'Nom complet', email: 'Email', member_since: 'Membre depuis', unknown: 'inconnu',
+      sec: 'Sécurité', sec_s: 'Mot de passe et connexion',
+      pwd: 'Mot de passe', pwd_s: 'Nous vous envoyons un lien de réinitialisation sécurisé', pwd_btn: 'Changer le mot de passe',
+      twofa: 'Authentification à deux facteurs', twofa_s: 'Pas encore disponible sur cette offre', na: 'Indisponible',
+      sessions: 'Sessions actives', sessions_na: 'La gestion des sessions n’est pas accessible depuis le navigateur.',
       data: 'Données', data_s: 'Exporter ou supprimer les données de votre compte', export: 'Exporter mes données (RGPD)', export_s: 'Archive JSON complète de votre compte',
       danger: 'Supprimer le compte', danger_s: 'Supprime définitivement votre compte, vos watchlists et votre historique. Action irréversible.', delete_btn: 'Supprimer le compte',
-      save: 'Enregistrer', saved: 'Profil enregistré', revoked: 'Session révoquée', exporting: 'Préparation de l’export' },
+      save: 'Enregistrer', saved: 'Profil enregistré', save_err: 'Échec de l’enregistrement du profil', save_empty: 'Veuillez saisir un nom',
+      pwd_sent: 'Lien de réinitialisation envoyé à', pwd_err: 'Échec de l’envoi de l’email',
+      exporting: 'Export téléchargé', signout: 'Se déconnecter', signout_err: 'Échec de la déconnexion',
+      del_soon: 'confirmation requise — contactez le support',
+      not_signed_t: 'Non connecté', not_signed_s: 'Connectez-vous pour gérer votre compte.', go_login: 'Aller à la connexion' },
   };
   const L = () => STR[Sh.lang];
 
-  const KEYS = [
-    { name: 'production', key: 'tnd_live_8f3a••••••••••••••••2b91', created: '12 Apr 2026' },
-    { name: 'ci-export', key: 'tnd_live_4c0e••••••••••••••••7d22', created: '2 Jun 2026' },
-  ];
-  const SESSIONS = {
-    en: [['Chrome · macOS', 'Paris, FR · now', true], ['Safari · iPhone', 'Paris, FR · 2h ago', false], ['Firefox · Windows', 'Lyon, FR · 3d ago', false]],
-    fr: [['Chrome · macOS', 'Paris, FR · maintenant', true], ['Safari · iPhone', 'Paris, FR · il y a 2 h', false], ['Firefox · Windows', 'Lyon, FR · il y a 3 j', false]],
-  };
+  function fmtDate(iso) {
+    try {
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return null;
+      return d.toLocaleDateString(Sh.lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    } catch (e) { return null; }
+  }
 
-  function render() {
+  function user() { return auth.currentUser; }
+
+  /* ---------- état non connecté ---------- */
+  function renderSignedOut() {
     const s = L();
     $('#canvas').innerHTML = `
       <div class="page-head rv">
@@ -54,36 +65,63 @@ export function mountAccount() {
       </div>
       <div class="set-stack rv" style="max-width:760px">
         <section class="set-card">
+          <div class="set-pad" style="padding:40px;text-align:center">
+            <div class="sl-l" style="font-size:16px;margin-bottom:6px">${s.not_signed_t}</div>
+            <div class="sl-s" style="margin-bottom:18px">${s.not_signed_s}</div>
+            <button class="btn-pri" id="goLogin">${s.go_login}</button>
+          </div>
+        </section>
+      </div>`;
+    $('#goLogin').addEventListener('click', () => { window.location.href = '/login'; });
+  }
+
+  /* ---------- état connecté ---------- */
+  function render() {
+    const u = user();
+    if (!u) { renderSignedOut(); return; }
+
+    const s = L();
+    const email = u.email || '';
+    const displayName = u.displayName || (email ? email.split('@')[0] : '');
+    const avatarInitial = (displayName[0] || email[0] || '?').toUpperCase();
+    const created = fmtDate(u.metadata && u.metadata.creationTime) || s.unknown;
+    const avatar = u.photoURL
+      ? `<img src="${u.photoURL}" alt="" class="avatar-lg" style="object-fit:cover;padding:0" />`
+      : `<div class="avatar-lg">${avatarInitial}</div>`;
+
+    $('#canvas').innerHTML = `
+      <div class="page-head rv">
+        <div><h1 class="page-title">${s.title}</h1>
+          <div class="page-sub"><span class="live-dot"></span><span>${s.sub}</span></div></div>
+        <button class="btn-ghost" id="signoutBtn">${ic('lock')}${s.signout}</button>
+      </div>
+      <div class="set-stack rv" style="max-width:760px">
+        <section class="set-card">
           <div class="set-card-h"><div class="ttl">${s.profile}</div><div class="sub">${s.profile_s}</div></div>
           <div class="set-pad" style="display:flex;gap:18px;align-items:center">
-            <div class="avatar-lg">A</div>
+            ${avatar}
             <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-              <div class="field"><span class="field-lbl">${s.name}</span><input class="inp" value="Alex Morel" /></div>
-              <div class="field"><span class="field-lbl">${s.role}</span><input class="inp" value="${s.role_v}" disabled style="opacity:.7" /></div>
-              <div class="field" style="grid-column:1/-1"><span class="field-lbl">${s.email}</span><input class="inp" value="alex@tandor.io" /></div>
+              <div class="field"><span class="field-lbl">${s.name}</span><input class="inp" id="inpName" value="${displayName.replace(/"/g, '&quot;')}" /></div>
+              <div class="field"><span class="field-lbl">${s.member_since}</span><input class="inp" value="${created}" disabled style="opacity:.7" /></div>
+              <div class="field" style="grid-column:1/-1"><span class="field-lbl">${s.email}</span><input class="inp" value="${email}" readonly style="opacity:.8" /></div>
             </div>
           </div>
-          <div class="set-foot"><button class="btn-pri" data-toast="saved">${s.save}</button></div>
+          <div class="set-foot"><button class="btn-pri" id="saveBtn">${s.save}</button></div>
         </section>
 
         <section class="set-card">
           <div class="set-card-h"><div class="ttl">${s.sec}</div><div class="sub">${s.sec_s}</div></div>
           <div class="set-body">
-            <div class="set-line"><div><div class="sl-l">${s.pwd}</div><div class="sl-s">${s.pwd_s}</div></div><div class="sl-ctl"><button class="btn-ghost" data-toast="pwd_btn">${ic('lock')}${s.pwd_btn}</button></div></div>
-            <div class="set-line"><div><div class="sl-l">${s.twofa}</div><div class="sl-s">${s.twofa_s}</div></div><div class="sl-ctl"><div class="switch on" id="twofa"></div></div></div>
+            <div class="set-line"><div><div class="sl-l">${s.pwd}</div><div class="sl-s">${s.pwd_s}</div></div><div class="sl-ctl"><button class="btn-ghost" id="pwdBtn">${ic('lock')}${s.pwd_btn}</button></div></div>
+            <div class="set-line"><div><div class="sl-l">${s.twofa}</div><div class="sl-s">${s.twofa_s}</div></div><div class="sl-ctl"><span class="status-pill" style="opacity:.7">${s.na}</span></div></div>
           </div>
           <div class="set-card-h" style="border-top:1px solid var(--border-subtle)"><div class="ttl" style="font-size:13.5px">${s.sessions}</div></div>
-          <div class="set-body" id="sessions"></div>
-        </section>
-
-        <section class="set-card">
-          <div class="set-card-h" style="display:flex;align-items:center;justify-content:space-between"><div><div class="ttl">${s.api}</div><div class="sub">${s.api_s}</div></div><button class="btn-ghost btn-sm" id="newKey">${ic('plus')}${s.new_key}</button></div>
-          <div id="keys"></div>
+          <div class="set-body"><div class="set-line" style="border:none"><div class="sl-s">${s.sessions_na}</div></div></div>
         </section>
 
         <section class="set-card">
           <div class="set-card-h"><div class="ttl">${s.data}</div><div class="sub">${s.data_s}</div></div>
-          <div class="set-line set-pad" style="padding-top:18px;padding-bottom:18px;border:none"><div><div class="sl-l">${s.export}</div><div class="sl-s">${s.export_s}</div></div><div class="sl-ctl"><button class="btn-ghost" data-toast="exporting">${ic('download')}${s.export.split(' ')[0]}</button></div></div>
+          <div class="set-line set-pad" style="padding-top:18px;padding-bottom:18px;border:none"><div><div class="sl-l">${s.export}</div><div class="sl-s">${s.export_s}</div></div><div class="sl-ctl"><button class="btn-ghost" id="exportBtn">${ic('download')}${s.export.split(' ')[0]}</button></div></div>
         </section>
 
         <section class="set-card danger-zone">
@@ -91,43 +129,99 @@ export function mountAccount() {
           <div class="set-line set-pad" style="padding-top:16px;padding-bottom:16px;border:none"><div><div class="sl-s" style="max-width:520px">${s.danger_s}</div></div><div class="sl-ctl"><button class="btn-ghost btn-danger" id="delBtn">${ic('trash')}${s.delete_btn}</button></div></div>
         </section>
       </div>`;
-    renderSessions(); renderKeys(); wire();
+
+    wire();
   }
 
-  function renderSessions() {
+  /* ---------- actions réelles ---------- */
+  async function doSave() {
     const s = L();
-    $('#sessions').innerHTML = SESSIONS[Sh.lang].map(([dev, loc, cur], i) => `
-      <div class="set-line">
-        <div style="display:flex;align-items:center;gap:11px"><span style="width:30px;height:30px;border-radius:8px;background:var(--bg-sunken);display:grid;place-items:center;color:var(--text-secondary)">${ic('globe')}</span>
-          <div><div class="sl-l">${dev} ${cur ? `<span class="status-pill active" style="margin-left:6px">${s.this_device}</span>` : ''}</div><div class="sl-s">${loc}</div></div></div>
-        <div class="sl-ctl">${cur ? '' : `<button class="btn-ghost btn-sm" data-revoke="${i}">${s.revoke}</button>`}</div></div>`).join('');
-    $$('#sessions [data-revoke]').forEach((b) => b.addEventListener('click', () => { b.closest('.set-line').style.opacity = '.4'; b.disabled = true; Sh.toast(L().revoked); }));
+    const u = user();
+    if (!u) { renderSignedOut(); return; }
+    const name = ($('#inpName').value || '').trim();
+    if (!name) { Sh.toast(s.save_empty); return; }
+    try {
+      await updateProfile(u, { displayName: name });
+      try { window.__TANDOR_USER__ = auth.currentUser; } catch (e) {}
+      Sh.toast(s.saved);
+    } catch (e) {
+      console.error('[account] updateProfile', e);
+      Sh.toast(s.save_err);
+    }
   }
 
-  let keys = KEYS.slice();
-  function renderKeys() {
+  async function doPasswordReset() {
     const s = L();
-    $('#keys').innerHTML = keys.map((k, i) => `
-      <div class="key-row">
-        <div style="flex:none;width:90px"><div class="sl-l" style="font-size:13px">${k.name}</div><div class="sl-s">${k.created}</div></div>
-        <span class="key-mono">${k.key}</span>
-        <button class="icon-btn" data-copy="${i}" title="copy">${ic('copy')}</button>
-        <button class="icon-btn" data-revk="${i}" title="revoke">${ic('trash')}</button>
-      </div>`).join('');
-    $$('#keys [data-copy]').forEach((b) => b.addEventListener('click', () => Sh.toast(L().copied)));
-    $$('#keys [data-revk]').forEach((b) => b.addEventListener('click', () => { keys.splice(+b.dataset.revk, 1); renderKeys(); }));
+    const u = user();
+    if (!u || !u.email) { renderSignedOut(); return; }
+    try {
+      await sendPasswordResetEmail(auth, u.email);
+      Sh.toast(`${s.pwd_sent} ${u.email}`);
+    } catch (e) {
+      console.error('[account] sendPasswordResetEmail', e);
+      Sh.toast(s.pwd_err);
+    }
+  }
+
+  function lsJSON(key) {
+    try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
+    catch (e) { return null; }
+  }
+
+  function doExport() {
+    const s = L();
+    const u = user();
+    if (!u) { renderSignedOut(); return; }
+    const payload = {
+      exported_at: new Date().toISOString(),
+      account: {
+        uid: u.uid,
+        email: u.email || null,
+        displayName: u.displayName || null,
+        photoURL: u.photoURL || null,
+        emailVerified: !!u.emailVerified,
+        createdAt: (u.metadata && u.metadata.creationTime) || null,
+        lastSignInAt: (u.metadata && u.metadata.lastSignInTime) || null,
+        providers: (u.providerData || []).map((p) => p && p.providerId).filter(Boolean),
+      },
+      saved: lsJSON('tandor_saved'),
+      watchlist: lsJSON('tandor_watchlist'),
+    };
+    try {
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tandor-export-${(u.email || u.uid || 'account').replace(/[^a-z0-9]+/gi, '-')}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      Sh.toast(s.exporting);
+    } catch (e) {
+      console.error('[account] export', e);
+      Sh.toast(L().pwd_err);
+    }
+  }
+
+  async function doSignOut() {
+    const s = L();
+    try {
+      await signOut(auth);
+      window.location.href = '/login';
+    } catch (e) {
+      console.error('[account] signOut', e);
+      Sh.toast(s.signout_err);
+    }
   }
 
   function wire() {
     const s = L();
-    $$('[data-toast]').forEach((b) => b.addEventListener('click', () => Sh.toast(s[b.dataset.toast] === undefined ? s.saved : (b.dataset.toast === 'saved' ? s.saved : b.dataset.toast === 'exporting' ? s.exporting : s.saved))));
-    $('#twofa').addEventListener('click', () => $('#twofa').classList.toggle('on'));
-    $('#newKey').addEventListener('click', () => {
-      const rnd = Math.random().toString(36).slice(2, 6);
-      keys.unshift({ name: 'new-key', key: `tnd_live_${rnd}••••••••••••••••${Math.random().toString(36).slice(2, 6)}`, created: Sh.lang === 'fr' ? 'à l’instant' : 'just now' });
-      renderKeys(); Sh.toast(s.key_created);
-    });
-    $('#delBtn').addEventListener('click', () => Sh.toast(L().danger + ' · ' + (Sh.lang === 'fr' ? 'confirmation requise' : 'confirmation required')));
+    $('#saveBtn').addEventListener('click', doSave);
+    $('#pwdBtn').addEventListener('click', doPasswordReset);
+    $('#exportBtn').addEventListener('click', doExport);
+    $('#signoutBtn').addEventListener('click', doSignOut);
+    $('#delBtn').addEventListener('click', () => Sh.toast(`${s.danger} · ${s.del_soon}`));
   }
 
   Sh.start({ active: 'n_account', render });

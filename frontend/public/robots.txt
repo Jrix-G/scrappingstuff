@@ -1,3 +1,13 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+
+# Espace privé (dashboard) inutile à indexer
+Disallow: /dashboard
+Disallow: /validate
+Disallow: /account
+Disallow: /billing
+Disallow: /settings
+
+# TODO: remplacer le domaine
+Sitemap: https://tandor.app/sitemap.xml

@@ -75,6 +75,51 @@ export function mountDashboard() {
   const S = () => T.STR[lang];
 
   /* ============================================================
+     META RÉELLE (/api/meta + /api/health) — SEULE source d'agrégat.
+     Aucune série temporelle d'agrégats n'existe : on n'invente donc
+     ni delta de période, ni sparkline. `meta`/`health` restent null
+     tant que le fetch n'a pas abouti → empty-states honnêtes.
+     ============================================================ */
+  let meta = null;   // { generated_at, count, total_in_db, enriched, geo } | null
+  let health = null; // 'ok' | 'down' | null (inconnu)
+  function apiBase() {
+    try {
+      const pg = window.__TANDOR_PAGE__;
+      const b = pg && pg.apiBase;
+      return (b ? String(b) : window.location.origin).replace(/\/$/, '');
+    } catch (e) { return ''; }
+  }
+  // Fraîcheur réelle dérivée de meta.generated_at (heures écoulées + péremption >48h).
+  function freshness() {
+    if (!meta || !meta.generated_at) return null;
+    const t = Date.parse(meta.generated_at);
+    if (isNaN(t)) return null;
+    const hours = Math.max(0, (Date.now() - t) / 3.6e6);
+    return { hours, stale: hours > 48 };
+  }
+  function freshAgo() {
+    const f = freshness();
+    if (!f) return lang === 'fr' ? 'fraîcheur inconnue' : 'freshness unknown';
+    const h = f.hours;
+    if (h < 1) { const m = Math.max(1, Math.round(h * 60)); return lang === 'fr' ? `il y a ${m} min` : `${m} min ago`; }
+    if (h < 48) { return lang === 'fr' ? `il y a ${Math.round(h)} h` : `${Math.round(h)} h ago`; }
+    const d = Math.round(h / 24); return lang === 'fr' ? `il y a ${d} j` : `${d} d ago`;
+  }
+  function loadMeta() {
+    const base = apiBase();
+    fetch(`${base}/api/meta`)
+      .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+      .then((j) => { meta = (j && typeof j === 'object') ? j : null; })
+      .catch((err) => { console.warn('[Tandor] /api/meta a échoué :', err); meta = null; })
+      .finally(() => { renderHeader(); renderKPIs(); fitKpiGrid(); if ($('#livePop').classList.contains('show')) buildLivePop(); renderTopbar(); });
+    fetch(`${base}/api/health`)
+      .then((r) => { health = r.ok ? 'ok' : 'down'; return r.json().catch(() => null); })
+      .then((j) => { if (j && j.status) health = j.status === 'ok' ? 'ok' : 'down'; })
+      .catch(() => { health = 'down'; })
+      .finally(() => { renderTopbar(); if ($('#livePop').classList.contains('show')) buildLivePop(); });
+  }
+
+  /* ============================================================
      Tooltip
      ============================================================ */
   const tipEl = $('#tip');
@@ -137,15 +182,9 @@ export function mountDashboard() {
   const phaseOrder = ['EMERGENT', 'EARLY_GROWTH', 'GROWTH', 'MATURE', 'PEAK', 'DECLINING'];
   const phaseCount = {}; phaseOrder.forEach((k) => phaseCount[k] = P.filter((p) => p.phase === k).length);
 
-  const PERIOD_DELTA = {
-    '24h': { active: 2, score: 1.1, margin: 0.5, emerg: 1 },
-    '7d': { active: 5, score: 2.3, margin: 1.2, emerg: 2 },
-    '30d': { active: 9, score: 4.0, margin: 2.1, emerg: 3 },
-  };
-  // synthetic 14-pt sparkline series for KPI score & margin
-  function synth(base, rise, n) { const out = []; for (let i = 0; i < n; i++) { const f = i / (n - 1); out.push(base - rise + rise * f + Math.sin(i * 1.7) * rise * 0.18); } return out; }
-  const scoreSeries = synth(avgScore, 5, 14);
-  const marginSeries = synth(medMargin, 2.4, 14);
+  // PAS de delta de période ni de sparkline KPI : aucune série historique réelle
+  // n'existe (cf. /api/meta, agrégat instantané). Tout ce qui était ici était
+  // fabriqué (PERIOD_DELTA codé en dur, synth()) → supprimé pour rester honnête.
 
   /* ============================================================
      SIDEBAR
@@ -201,7 +240,15 @@ export function mountDashboard() {
     const mk = T.MARKETS.find((m) => m.code === (LS.get('market', 'FR'))) || T.MARKETS[0];
     $('#marketBtn').innerHTML = `<span class="flag">${mk.flag}</span><span class="mname">${mk.code}</span>${ic('chev')}`;
     $('#marketBtn').querySelector('svg').style.width = '13px';
-    $('#liveLabel').textContent = `${s.live} · ${s.live_ago}`;
+    // Libellé "live" RÉEL : statut dérivé de la fraîcheur du dernier export (meta)
+    // + santé API (/api/health). Plus de « il y a 2 h » codé en dur.
+    const f = freshness();
+    let liveTxt;
+    if (health === 'down') liveTxt = lang === 'fr' ? 'API injoignable' : 'API unreachable';
+    else if (!f) liveTxt = `${s.live_pipeline} · ${freshAgo()}`;
+    else if (f.stale) liveTxt = `${lang === 'fr' ? 'Données périmées' : 'Data stale'} · ${freshAgo()}`;
+    else liveTxt = `${s.live} · ${freshAgo()}`;
+    $('#liveLabel').textContent = liveTxt;
     $$('#langToggle button').forEach((b) => b.classList.toggle('on', b.dataset.l === lang));
   }
 
@@ -211,12 +258,18 @@ export function mountDashboard() {
   function renderHeader() {
     const s = S();
     $('#pageTitle').textContent = `${s.greeting}, Alex`;
-    $('#pageSub').textContent = s.sub_n(7);
+    // Sous-titre RÉEL : taille de l'échantillon analysé + total catalogue (si /api/meta chargé).
+    // L'ancien « 7 nouvelles opportunités depuis hier » était inventé (aucun delta J-1 réel).
+    const n = P.length;
+    const sample = lang === 'fr' ? `Échantillon de ${n} produits analysés` : `Sample of ${n} analysed products`;
+    const cat = meta && meta.total_in_db != null
+      ? (lang === 'fr' ? ` · ${(+meta.total_in_db).toLocaleString('fr-FR')} en catalogue` : ` · ${(+meta.total_in_db).toLocaleString('en-US')} in catalogue`)
+      : '';
+    $('#pageSub').textContent = sample + cat;
+    // Sélecteur de période RETIRÉ : aucune donnée par période n'existe (pas de série
+    // temporelle d'agrégats) → un sélecteur qui ne filtre rien serait trompeur.
     const seg = $('#periodSeg');
-    seg.innerHTML = `<div class="seg-thumb"></div>` +
-      ['24h', '7d', '30d'].map((p) => `<button data-p="${p}" class="${p === period ? 'on' : ''}">${s['p_' + (p === '24h' ? '24h' : p === '7d' ? '7d' : '30d')]}</button>`).join('');
-    $$('#periodSeg button').forEach((b) => b.addEventListener('click', () => { period = b.dataset.p; $$('#periodSeg button').forEach((x) => x.classList.toggle('on', x === b)); positionSeg(seg); renderKPIs(); }));
-    positionSeg(seg);
+    if (seg) { seg.innerHTML = ''; seg.style.display = 'none'; }
   }
   function positionSeg(seg) {
     const on = $('.on', seg); const thumb = $('.seg-thumb', seg);
@@ -227,28 +280,46 @@ export function mountDashboard() {
   /* ============================================================
      KPI CARDS
      ============================================================ */
+  // Ajuste la grille KPI à 5 colonnes sur grand écran ; laisse le CSS (media
+  // queries) reprendre la main en dessous de 1180px. Inline only, pas de CSS global.
+  function fitKpiGrid() {
+    const el = $('#kpiRow'); if (!el) return;
+    if (innerWidth > 1180) el.style.gridTemplateColumns = 'repeat(5, 1fr)';
+    else el.style.gridTemplateColumns = '';
+  }
   function renderKPIs() {
-    const s = S(), d = PERIOD_DELTA[period];
+    const s = S();
     const phaseBar = phaseOrder.map((k) => `<i style="flex:${phaseCount[k] || 0.0001};background:var(--${T.PHASES[k].v})"></i>`).join('');
     const phaseLegend = ['EMERGENT', 'EARLY_GROWTH', 'GROWTH'].map((k) => `<span><i class="pdot" style="background:var(--${T.PHASES[k].v})"></i>${T.PHASES[k][lang]}</span>`).join('');
+    // Note de contexte HONNÊTE sous chaque valeur : aucune comparaison de période
+    // fabriquée. On rappelle simplement la base de calcul réelle (l'échantillon).
+    const n = P.length;
+    const sampleNote = lang === 'fr' ? `sur ${n} produits analysés` : `over ${n} analysed products`;
+    const catLabel = lang === 'fr' ? 'Catalogue total' : 'Total catalogue';
+    const catLoaded = !!(meta && meta.total_in_db != null);
+    const catNote = catLoaded
+      ? (lang === 'fr' ? 'produits en base · /api/meta' : 'products in DB · /api/meta')
+      : (lang === 'fr' ? 'chargement… /api/meta' : 'loading… /api/meta');
     const cards = [
-      { ico: 'target', label: s.kpi_active, val: buyCount, dec: 0, delta: d.active, deltaTxt: '+' + d.active, kind: 'spark', series: P.map((p) => p.tandor).slice(0, 14), col: 'var(--signal)' },
-      { ico: 'gauge', label: s.kpi_score, val: avgScore, dec: 0, delta: d.score, deltaTxt: '+' + d.score.toFixed(1), kind: 'spark', series: scoreSeries, col: 'var(--buy)' },
-      { ico: 'coins', label: s.kpi_margin, val: medMargin, dec: 1, unit: '€', delta: d.margin, deltaTxt: '+' + d.margin.toFixed(1) + '€', kind: 'spark', series: marginSeries, col: 'var(--signal)' },
-      { ico: 'sparkles', label: s.kpi_emerg, val: emergCount, dec: 0, delta: d.emerg, deltaTxt: '+' + d.emerg, kind: 'phase' },
+      { ico: 'target', label: s.kpi_active, val: buyCount, dec: 0, note: sampleNote, kind: 'plain' },
+      { ico: 'gauge', label: s.kpi_score, val: avgScore, dec: 0, note: sampleNote, kind: 'plain' },
+      { ico: 'coins', label: s.kpi_margin, val: medMargin, dec: 1, unit: '€', note: sampleNote, kind: 'plain' },
+      { ico: 'bars', label: catLabel, val: catLoaded ? +meta.total_in_db : null, dec: 0, note: catNote, kind: 'catalogue' },
+      { ico: 'sparkles', label: s.kpi_emerg, val: emergCount, dec: 0, note: sampleNote, kind: 'phase' },
     ];
     $('#kpiRow').innerHTML = cards.map((c) => `
       <div class="kpi">
         <div class="k-label"><span class="k-ico">${ic(c.ico)}</span><span class="micro">${c.label}</span></div>
-        <div class="k-val"><span class="cv" data-to="${c.val}" data-dec="${c.dec}">0</span>${c.unit ? `<span class="unit">${c.unit}</span>` : ''}</div>
+        <div class="k-val">${c.val == null
+          ? `<span style="color:var(--text-tertiary)">—</span>`
+          : `<span class="cv" data-to="${c.val}" data-dec="${c.dec}">0</span>${c.unit ? `<span class="unit">${c.unit}</span>` : ''}`}</div>
         <div class="k-foot">
-          <span class="k-delta up">${ic('arrowUR')}${c.deltaTxt}<span class="vs">${s.vs_prev}</span></span>
-          ${c.kind === 'spark' ? `<span class="k-spark">${C.sparkline(c.series, { w: 108, h: 30, stroke: c.col, dot: true })}</span>` : ''}
+          <span class="micro" style="color:var(--text-tertiary)">${c.note}</span>
         </div>
         ${c.kind === 'phase' ? `<div class="phase-bar">${phaseBar}</div><div class="phase-legend">${phaseLegend}</div>` : ''}
       </div>`).join('');
-    $$('#kpiRow .k-delta svg').forEach((sv) => sv.style.width = '13px');
     $$('#kpiRow .cv').forEach((el) => countUp(el, +el.dataset.to, +el.dataset.dec));
+    fitKpiGrid();
   }
 
   /* ============================================================
@@ -292,10 +363,8 @@ export function mountDashboard() {
       <div class="feed-list">${rows}</div>`;
     $('#feedPanel .panel-link svg').style.width = '13px';
     $('#feedPanel .panel-link').addEventListener('click', () => goTo('n_discovery'));
-    $$('#feedPanel .feed-row').forEach((r) => r.addEventListener('click', () => {
-      const p = P.find((x) => x.id === r.dataset.id);
-      toast(`${p.name} · ${s.open_detail} · ${s.soon}`);
-    }));
+    // Clic produit sur l'overview -> page Discovery (fiche détail fonctionnelle).
+    $$('#feedPanel .feed-row').forEach((r) => r.addEventListener('click', () => goTo('n_discovery')));
   }
 
   /* ============================================================
@@ -307,7 +376,7 @@ export function mountDashboard() {
       <div class="panel-h"><div><div class="ttl">${s.radar}</div><div class="sub">${s.radar_sub}</div></div></div>
       <div class="radar-wrap"><div class="radar-box" id="radarBox"></div></div>
       <div class="signals" id="signals"></div>`;
-    C.renderRadar($('#radarBox'), P, { lang, onSelect: (p) => toast(`${p.name} · ${s.open_detail} · ${s.soon}`) });
+    C.renderRadar($('#radarBox'), P, { lang, onSelect: () => goTo('n_discovery') });
     renderSignals();
   }
   function renderSignals() {
@@ -335,9 +404,17 @@ export function mountDashboard() {
   function renderBottom() {
     const s = S();
     $('#treePanel').innerHTML = `<div class="panel-h"><div><div class="ttl">${s.cat_dist}</div><div class="sub">${s.cat_sub}</div></div></div><div class="chart-box"><div class="tm-box" id="tmBox"></div></div>`;
-    $('#heatPanel').innerHTML = `<div class="panel-h"><div><div class="ttl">${s.season}</div><div class="sub">${s.season_sub}</div></div></div><div class="chart-box"><div class="hm-box" id="hmBox"></div></div>`;
-    C.renderTreemap($('#tmBox'), P, { lang, onCat: (cat) => toast(`${T.CATS[cat][lang]} · ${s.n_discovery} · ${s.soon}`) });
-    C.renderHeatmap($('#hmBox'), { lang });
+    // La heatmap de saisonnalité était alimentée par seasonMatrix() (motif PROCÉDURAL
+    // inventé, aucune donnée d'historique réelle) → empty-state honnête à la place.
+    const heatEmptyT = lang === 'fr' ? 'Données insuffisantes' : 'Insufficient data';
+    const heatEmptyS = lang === 'fr'
+      ? 'La saisonnalité par mois × catégorie demande un historique pluriannuel encore inexistant. Rien n’est affiché tant que la donnée réelle n’est pas collectée.'
+      : 'Month × category seasonality needs multi-year history that does not exist yet. Nothing is shown until real data is collected.';
+    $('#heatPanel').innerHTML = `<div class="panel-h"><div><div class="ttl">${s.season}</div><div class="sub">${s.season_sub}</div></div></div>
+      <div class="chart-box"><div class="hm-box" style="display:flex"><div class="empty" style="padding:24px;margin:auto">
+        <div class="e-art">${ic('bars')}</div><div class="e-t">${heatEmptyT}</div><div class="e-s">${heatEmptyS}</div>
+      </div></div></div>`;
+    C.renderTreemap($('#tmBox'), P, { lang, onCat: () => goTo('n_discovery') });
   }
 
   /* ============================================================
@@ -387,7 +464,7 @@ export function mountDashboard() {
   function runCmdk(idx) {
     const i = cmdkItems[idx]; if (!i) return; const s = S();
     closeAll();
-    if (i.type === 'product') toast(`${i.label} · ${s.open_detail} · ${s.soon}`);
+    if (i.type === 'product') goTo('n_discovery');
     else if (i.type === 'action' && i.act === 'density') { setDensity(density === 'comfort' ? 'compact' : 'comfort'); }
     else if (i.type === 'page' && ROUTE_BY_KEY[i.key]) { goTo(i.key); }
     else toast(`${i.label} · ${s.soon}`);
@@ -443,12 +520,32 @@ export function mountDashboard() {
   }
   function buildLivePop() {
     const s = S();
+    // Statut RÉEL : on ne connaît pas l'état par source (CJ/Trends/Reddit) — ces
+    // 'ok'/'warn' étaient inventés. On expose ce qui est réellement mesurable :
+    //   1) santé de l'API (/api/health)
+    //   2) fraîcheur du dernier export (meta.generated_at) : à jour / périmé (>48h)
+    //   3) volume du dernier export (meta.count) + catalogue (meta.total_in_db)
+    const f = freshness();
+    const apiSt = health === 'ok' ? 'ok' : health === 'down' ? 'warn' : '';
+    const apiLbl = health === 'ok' ? (lang === 'fr' ? 'en ligne' : 'online')
+      : health === 'down' ? (lang === 'fr' ? 'injoignable' : 'unreachable')
+      : (lang === 'fr' ? 'inconnu' : 'unknown');
+    const freshSt = !f ? '' : (f.stale ? 'warn' : 'ok');
+    const freshLbl = !f ? (lang === 'fr' ? 'inconnue' : 'unknown')
+      : (f.stale ? (lang === 'fr' ? `périmé · ${freshAgo()}` : `stale · ${freshAgo()}`)
+                 : (lang === 'fr' ? `à jour · ${freshAgo()}` : `up to date · ${freshAgo()}`));
+    const apiRow = lang === 'fr' ? 'API' : 'API';
+    const freshRow = lang === 'fr' ? 'Dernier export' : 'Last export';
+    const volRow = lang === 'fr' ? 'Volume export' : 'Export volume';
+    const volVal = meta && meta.count != null
+      ? `${(+meta.count).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US')}${meta.total_in_db != null ? ` / ${(+meta.total_in_db).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-US')}` : ''}`
+      : '—';
     $('#livePop').innerHTML = `<div class="pop-h">${s.live_pipeline}</div>
-      ${[['run_cj', 'ok', s.ok], ['run_trends', 'warn', s.limited], ['run_reddit', 'ok', s.ok]].map(([k, st, lbl]) => `
-        <div class="pipe-row"><span class="name">${k === 'run_reddit' ? 'r/' : k === 'run_trends' ? 'G' : 'CJ'} ${s[k]}</span><span class="st ${st}"><span class="pdot"></span>${lbl}</span></div>`).join('')}
+      <div class="pipe-row"><span class="name">${ic('refresh')}${apiRow}</span><span class="st ${apiSt}"><span class="pdot"></span>${apiLbl}</span></div>
+      <div class="pipe-row"><span class="name">${freshRow}</span><span class="st ${freshSt}"><span class="pdot"></span>${freshLbl}</span></div>
       <div class="pop-sep"></div>
-      <div class="pipe-row"><span class="name">${ic('refresh')}${s.next_run}</span><span class="st" style="color:var(--text-secondary)">${s.in_min}</span></div>`;
-    $('#livePop .pipe-row svg').style.width = '14px';
+      <div class="pipe-row"><span class="name">${volRow}</span><span class="st" style="color:var(--text-secondary)">${volVal}</span></div>`;
+    const sv = $('#livePop .pipe-row svg'); if (sv) sv.style.width = '14px';
   }
   function buildAvatarPop() {
     const s = S();
@@ -549,11 +646,11 @@ export function mountDashboard() {
      ============================================================ */
   let rt;
   function reflowCharts() {
-    if ($('#radarBox')) C.renderRadar($('#radarBox'), P, { lang, onSelect: (p) => toast(`${p.name} · ${S().open_detail} · ${S().soon}`) });
-    if ($('#tmBox')) C.renderTreemap($('#tmBox'), P, { lang, onCat: (cat) => toast(`${T.CATS[cat][lang]} · ${S().n_discovery} · ${S().soon}`) });
-    if ($('#hmBox')) C.renderHeatmap($('#hmBox'), { lang });
+    if ($('#radarBox')) C.renderRadar($('#radarBox'), P, { lang, onSelect: () => goTo('n_discovery') });
+    if ($('#tmBox')) C.renderTreemap($('#tmBox'), P, { lang, onCat: () => goTo('n_discovery') });
+    // heatmap : empty-state statique (pas de re-render — c'était une donnée inventée).
   }
-  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { positionSeg($('#periodSeg')); reflowCharts(); }, 180); });
+  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { positionSeg($('#periodSeg')); fitKpiGrid(); reflowCharts(); }, 180); });
 
   /* ============================================================
      RENDER ALL
@@ -614,5 +711,7 @@ export function mountDashboard() {
   if (density === 'compact') document.body.classList.add('dense');
   wire();
   renderAll();
+  fitKpiGrid();
+  loadMeta(); // récupère /api/meta + /api/health puis re-render KPIs/topbar/pipeline
   revealObserve();
 }

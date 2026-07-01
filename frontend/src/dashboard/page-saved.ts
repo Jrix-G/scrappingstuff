@@ -29,7 +29,10 @@ export function mountSaved() {
   };
   const L = () => STR[Sh.lang];
 
-  const DEFAULT_SAVED = ['CJ-4471', 'CJ-3344', 'CJ-1130', 'CJ-2289', 'CJ-3380', 'CJ-2255', 'CJ-9988', 'CJ-3702', 'CJ-1907'];
+  // Bibliothèque vide par défaut : ne JAMAIS pré-remplir avec des produits que
+  // l'utilisateur n'a pas sauvegardés (honnêteté). L'empty-state s'affiche tant
+  // qu'aucun produit n'a été ajouté depuis Discovery/le radar.
+  const DEFAULT_SAVED = [];
   const NOTES = {
     en: { 'CJ-4471': 'Test angle: desk workers 30–45. Hook on the “2-min reset” ritual.', 'CJ-1130': 'Margin is the story here — bundle 2-pack to lift AOV.', 'CJ-3344': 'Very early. Watch seller count weekly before committing ad budget.' },
     fr: { 'CJ-4471': 'Angle test : employés de bureau 30–45 ans. Accroche sur le rituel « reset 2 min ».', 'CJ-1130': 'La marge est l’argument — bundle x2 pour augmenter le panier.', 'CJ-3344': 'Très précoce. Surveiller le nombre de vendeurs chaque semaine avant d’engager du budget pub.' },
@@ -73,7 +76,7 @@ export function mountSaved() {
     if (!arr.length) {
       $('#savedBody').innerHTML = `<div class="dg-wrap"><div class="empty">
         <div class="e-art">${ic('bookmark')}</div><div class="e-t">${s.empty_t}</div><div class="e-s">${s.empty_s}</div>
-        <div class="e-actions"><a class="btn-pri" href="Tandor Discovery.html">${ic('compass')}${s.explore}</a></div></div></div>`;
+        <div class="e-actions"><a class="btn-pri" href="/discovery">${ic('compass')}${s.explore}</a></div></div></div>`;
       return;
     }
     let html = `<div style="margin-bottom:14px" class="count mono">${arr.length} ${s.count}</div>`;
@@ -155,7 +158,7 @@ export function mountSaved() {
       renderBody();
     }));
     $$('#savedBody [data-act="watch"]').forEach((b) => b.addEventListener('click', (e) => {
-      e.stopPropagation(); location.href = 'Tandor Watchlists.html';
+      e.stopPropagation(); location.href = '/watchlists';
     }));
   }
 

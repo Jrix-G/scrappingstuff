@@ -33,6 +33,10 @@ LOWRATE_AMBER = 0.10    # >10% => orange
 NET_THIN = 5.0
 # Niveau de saturation (listed_num CJ).
 SAT_DENSE = 15
+# Demande prouvée : achats Amazon (« bought in past month ») au-dessus desquels la
+# demande est considérée RÉELLE (signal positif). En dessous (mais mesuré) = faible.
+# JAMAIS de rouge : l'absence de demande prouvée est un risque, pas une perte certaine.
+DEMAND_PROVEN = 100
 # Bande de prix d'impulsion (retail €). Hors zone = mauvais produit dropship :
 # trop cher = pas d'achat impulsif + retours/shipping qui tuent ; trop bas = pas de marge.
 PRICE_MIN, PRICE_MAX = 12.0, 70.0
@@ -83,6 +87,11 @@ class LossRiskResult:
     headline: str
     flags: list[LossFlag]
     breakeven_cpa_eur: float | None   # CPA pub à partir duquel on perd de l'argent
+    # Couverture : combien des signaux de risque ont été RÉELLEMENT mesurés (level
+    # != unknown) sur le total. Un VIABLE à 2/5 signaux mesurés ne « vaut » pas un
+    # VIABLE à 5/5 : l'UI affiche ce ratio pour qualifier l'absence de preuve.
+    coverage_measured: int = 0
+    coverage_total: int = 0
 
     def as_dict(self) -> dict:
         return {
@@ -91,6 +100,8 @@ class LossRiskResult:
             "headline": self.headline,
             "breakevenCpaEur": (round(self.breakeven_cpa_eur, 1)
                                 if self.breakeven_cpa_eur is not None else None),
+            "coverageMeasured": self.coverage_measured,
+            "coverageTotal": self.coverage_total,
             "flags": [{"name": f.name, "level": f.level, "reason": f.reason}
                       for f in self.flags],
         }
@@ -184,6 +195,30 @@ def _decline_flag(
                     f"demande stable/en hausse (~{pct:+.0f}%/mois)")
 
 
+def _demand_flag(demand_level: float | None) -> LossFlag:
+    """Demande RÉELLE via Amazon « bought in past month » (achats/mois mesurés).
+
+    C'est le signal POSITIF du verdict : un « viable » + demande prouvée est un vrai
+    feu vert, pas une simple absence de drapeau rouge. Couverture large (~4900
+    mots-clés) — bien meilleure que les avis ou les ventes AliExpress.
+
+    Loss-framed : JAMAIS rouge (ne pas avoir de demande prouvée n'est pas une perte
+    certaine). None = non mesuré (« inconnu », n'altère pas le verdict mais baisse
+    la couverture) ; 0/faible = amber ; au-dessus du seuil = green.
+    """
+    if demand_level is None:
+        return LossFlag("demande", "unknown", "demande Amazon non mesurée")
+    lvl = int(demand_level)
+    if lvl <= 0:
+        return LossFlag("demande", "amber",
+                        "aucun achat Amazon mesuré — demande non prouvée")
+    if lvl < DEMAND_PROVEN:
+        return LossFlag("demande", "amber",
+                        f"demande faible (~{lvl} achats/mois sur Amazon)")
+    return LossFlag("demande", "green",
+                    f"demande prouvée (~{lvl} achats/mois sur Amazon)")
+
+
 def _price_flag(retail_eur: float | None) -> LossFlag:
     if not retail_eur or retail_eur <= 0:
         return LossFlag("prix", "unknown", "prix retail inconnu")
@@ -204,6 +239,7 @@ def assess_loss_risk(
     pct_low_rating: float | None,
     listed_num: int | None,
     retail_eur: float | None = None,
+    demand_level: float | None = None,
     demand_velocity: float | None = None,
     demand_points: int = 0,
     demand_volatility: float | None = None,
@@ -220,6 +256,7 @@ def assess_loss_risk(
     flags = [
         _margin_flag(net_after_cpa_eur, gross_margin_eur),
         _price_flag(retail_eur),
+        _demand_flag(demand_level),
         _return_flag(pct_low_rating),
         _saturation_flag(listed_num),
         _decline_flag(demand_velocity, demand_points, demand_volatility,
@@ -242,10 +279,13 @@ def assess_loss_risk(
         else:
             headline = "✅ Viable"
 
+    measured = sum(1 for f in flags if f.level != "unknown")
     return LossRiskResult(
         product_id=product_id,
         verdict=verdict,
         headline=headline,
         flags=flags,
         breakeven_cpa_eur=gross_margin_eur,
+        coverage_measured=measured,
+        coverage_total=len(flags),
     )

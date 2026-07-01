@@ -24,7 +24,10 @@ from pathlib import Path
 
 logger = logging.getLogger("tandor.discord")
 
-_BOT_ENV = Path("/home/albator/discord/.env")
+# Chemin du .env du bot : configurable (TANDOR_DISCORD_ENV) avec repli sur
+# ~/discord/.env. Sur le Pi (home=albator) cela vaut /home/albator/discord/.env →
+# identique à avant ; sur un autre nœud (ex. VPS opc) cela suit son propre HOME.
+_BOT_ENV = Path(os.getenv("TANDOR_DISCORD_ENV") or (Path.home() / "discord" / ".env"))
 _API = "https://discord.com/api/v10/channels/{channel}/messages"
 
 
@@ -46,6 +49,9 @@ def _load_env_file(path: Path) -> dict[str, str]:
 _file_env = _load_env_file(_BOT_ENV)
 _TOKEN = os.getenv("DISCORD_TOKEN") or _file_env.get("DISCORD_TOKEN")
 _CHANNEL = os.getenv("DISCORD_CHANNEL_ID") or _file_env.get("DISCORD_CHANNEL_ID")
+# Préfixe de nœud (ex. « [2] ») pour distinguer la source quand plusieurs machines
+# postent dans le MÊME salon. Vide sur le Pi → messages inchangés.
+_PREFIX = os.getenv("TANDOR_NOTIFY_PREFIX") or _file_env.get("TANDOR_NOTIFY_PREFIX") or ""
 
 _enabled = bool(_TOKEN and _CHANNEL)
 if not _enabled:
@@ -54,6 +60,8 @@ if not _enabled:
 
 def _post(content: str, ping: bool = False) -> None:
     url = _API.format(channel=_CHANNEL)
+    if _PREFIX:
+        content = f"{_PREFIX.rstrip()} {content}"
     payload: dict = {"content": content[:1900]}
     if ping:
         # @here réellement notifiant : il FAUT allowed_mentions pour que Discord ping.

@@ -1,6 +1,23 @@
 data/
 .cj_token.json
-.reddit_cache/
 __pycache__/
 *.pyc
 .venv/
+.pytest_cache/
+
+.ali_block_state.json
+
+# Caches de scraping HTML — volumineux, jetables, régénérés. NE JAMAIS versionner
+# (cf. audit : 4000+ fichiers suivis, .git à 391 Mo, .amazon_cache à 5,3 Go).
+.amazon_cache/
+.aliexpress_cache/
+.dhgate_cache/
+.ebay_sold_cache/
+.tiktok_cache/
+.trends_cache/
+.wayback_cache/
+.reddit_cache/
+
+# Backups DB (cf. deploy/backup_db.sh)
+tandor-backups/
+*.db.gz

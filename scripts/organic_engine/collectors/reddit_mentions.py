@@ -42,7 +42,7 @@ DEFAULT_SUBREDDITS = [
 ]
 
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 _ATOM = {"a": "http://www.w3.org/2005/Atom"}
 _CACHE_DIR = Path(__file__).resolve().parent.parent / ".reddit_cache"
 _CACHE_TTL_SECONDS = 6 * 3600          # 6 h : frais sans marteler Reddit

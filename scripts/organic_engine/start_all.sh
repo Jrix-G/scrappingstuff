@@ -189,7 +189,7 @@ echo ""
 # ── 8. Notification Discord (via le bot existant — notify_discord.py) ───────────
 cd "$ENGINE" && "$VENV/bin/python3" - >> "$LOG_DIR/tandor-start.log" 2>&1 <<PYEOF
 import notify_discord as notify
-api = "✅" if $API_OK else "❌"
-dem = "✅" if $DEMAND_OK else "❌"
+api = "✅" if "$API_OK" == "true" else "❌"
+dem = "✅" if "$DEMAND_OK" == "true" else "❌"
 notify.send(f"🟢 **Tandor Pi — démarrage** · API {api} · Demand runner {dem} · crons OK", ping=True)
 PYEOF

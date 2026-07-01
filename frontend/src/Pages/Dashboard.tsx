@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import '../dashboard/app.css';
+import { authedFetch } from '../auth/api';
 
 /**
  * Dashboard Home — portage du prototype Tandor (HTML/JS vanilla) en React.
@@ -23,7 +24,7 @@ export default function Dashboard() {
         // L'Accueil n'affiche que le top enrichi : un lot de 60 suffit (il occupe
         // les premiers offsets). On pose tout de même le curseur de pagination
         // pour cohérence avec data.ts (loadMore reste dispo si une page l'utilise).
-        const res = await fetch(`${base}/api/products?limit=60&offset=0`);
+        const res = await authedFetch(`${base}/api/products?limit=60&offset=0`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         if (Array.isArray(json.products) && json.products.length) {

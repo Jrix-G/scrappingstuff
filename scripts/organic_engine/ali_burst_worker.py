@@ -40,6 +40,7 @@ Usage :
 from __future__ import annotations
 
 import argparse
+import json
 import sqlite3
 import sys
 import time
@@ -52,6 +53,12 @@ sys.path.insert(0, str(ENGINE))
 import notify_discord as notify  # noqa: E402
 from collectors.ali_page_parser import parse_page, page_to_demand, is_blocked  # noqa: E402
 
+# Régulateur de cadence AIMD par IP (best-effort : jamais bloquant pour le worker).
+try:
+    import ali_pacer  # noqa: E402
+except Exception:  # pragma: no cover — le collecteur doit tourner sans le pacer
+    ali_pacer = None
+
 EXIT_ALL_DONE = 0
 EXIT_MORE_WORK = 1
 EXIT_BLOCKED = 2
@@ -63,6 +70,19 @@ ALI_HOT_THRESHOLD = 1000  # max_sold AliExpress min pour notifier une confirmati
 
 DB = ENGINE / "data" / "cj.db"
 CACHE_DIR = ENGINE / ".aliexpress_cache"
+
+# ─── Détection d'anomalie de blocage (anti-spam Discord) ─────────────────────
+# Un PUNISH AliExpress est NOMINAL : le blocage est par IP (~1-4 req propres puis
+# cooldown ~35 min). Notifier à chaque PUNISH = ~35 notifs/jour de bruit. On ne
+# veut alerter QUE sur une anomalie = scraping probablement HS. Comme chaque
+# invocation du worker est éphémère (relancée par ali_single_ip_loop.sh), un
+# compteur en mémoire ne survit pas : on persiste un petit état JSON entre runs.
+BLOCK_STATE_FILE = ENGINE / ".ali_block_state.json"
+# Seuil : N PUNISH consécutifs SANS aucun succès intercalé → anomalie probable.
+# 10 d'affilée est bien au-delà du rate-limit normal (1-4/IP, succès fréquents).
+ALI_BLOCK_STREAK_ALERT = 10
+# Anti-flood : au plus 1 alerte d'anomalie par cette fenêtre (secondes).
+ALI_BLOCK_ALERT_COOLDOWN = 3600  # 1 h
 
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
        "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
@@ -96,9 +116,10 @@ def _select_keywords(c: sqlite3.Connection, limit: int) -> list[str]:
     except sqlite3.OperationalError:
         rows = []
     from datetime import datetime, timezone
+    from shard import in_shard  # partition multi-nœuds : ne confirmer que SON shard
     now = datetime.now(timezone.utc)
     for kw, last in rows:
-        if kw in seen:
+        if kw in seen or not in_shard(kw):
             continue
         if last is None:
             out.append(kw); seen.add(kw)
@@ -120,7 +141,7 @@ def _select_keywords(c: sqlite3.Connection, limit: int) -> list[str]:
     except sqlite3.OperationalError:
         extra = []
     for (kw,) in extra:
-        if kw not in seen:
+        if kw not in seen and in_shard(kw):
             out.append(kw); seen.add(kw)
         if len(out) >= limit:
             break
@@ -252,6 +273,72 @@ def _cache_write(keyword: str, html: str) -> None:
         pass
 
 
+# ─── État de blocage persistant (anti-spam Discord) ──────────────────────────
+
+def _load_block_state() -> dict:
+    """Lit l'état persistant : {streak: int, last_alert_ts: float}.
+    Tolérant : tout problème → état neutre (pas de crash du worker)."""
+    try:
+        d = json.loads(BLOCK_STATE_FILE.read_text())
+        return {
+            "streak": int(d.get("streak", 0)),
+            "last_alert_ts": float(d.get("last_alert_ts", 0.0)),
+        }
+    except Exception:
+        return {"streak": 0, "last_alert_ts": 0.0}
+
+
+def _save_block_state(state: dict) -> None:
+    """Persiste l'état (best-effort, jamais bloquant)."""
+    try:
+        BLOCK_STATE_FILE.write_text(json.dumps(state))
+    except Exception:
+        pass
+
+
+def _on_punish(dry_run: bool) -> None:
+    """À chaque PUNISH : incrémente le streak consécutif et n'alerte Discord QUE
+    si l'anomalie est franchie (≥ ALI_BLOCK_STREAK_ALERT d'affilée) et que le
+    cooldown anti-flood est respecté. Le PUNISH isolé reste silencieux (nominal)."""
+    if dry_run:
+        return
+    state = _load_block_state()
+    state["streak"] += 1
+    now = time.time()
+    if (state["streak"] >= ALI_BLOCK_STREAK_ALERT
+            and now - state["last_alert_ts"] >= ALI_BLOCK_ALERT_COOLDOWN):
+        notify.send(
+            f"⚠️ **AliExpress scraping possiblement HS** — "
+            f"{state['streak']} blocages (PUNISH) consécutifs sans aucun succès. "
+            f"Le rate-limit normal n'excède jamais quelques req/IP : "
+            f"vérifier le worker / la rotation d'IP."
+        )
+        state["last_alert_ts"] = now
+    _save_block_state(state)
+
+
+def _on_success(dry_run: bool) -> None:
+    """Un succès prouve que le scraping fonctionne → reset du streak consécutif."""
+    if dry_run:
+        return
+    state = _load_block_state()
+    if state["streak"] != 0:
+        state["streak"] = 0
+        _save_block_state(state)
+
+
+def _pace(dry_run: bool, outcome: str) -> None:
+    """Nourrit le régulateur AIMD (ali_pacer) avec le résultat de chaque requête.
+    Best-effort : toute erreur est avalée (le pacer ne doit jamais casser la
+    collecte). En dry_run on n'écrit pas l'état de cadence."""
+    if dry_run or ali_pacer is None:
+        return
+    try:
+        ali_pacer.observe(None, outcome)  # ip = TANDOR_PACER_IP ou "self"
+    except Exception:
+        pass
+
+
 # ─── Boucle burst ───────────────────────────────────────────────────────────
 
 def run(budget: int, batch: int, max_keywords: int, dry_run: bool) -> int:
@@ -284,10 +371,15 @@ def run(budget: int, batch: int, max_keywords: int, dry_run: bool) -> int:
         if blocked or is_blocked(html):
             print(f"[burst] ✗ « {kw} » → PUNISH ({len(html)}o, {dt:.1f}s) "
                   f"— IP épuisée après {fired} req", flush=True)
-            if not dry_run:
-                notify.blocked(kw, source="AliExpress")
+            # PUNISH nominal : on NE notifie PAS à chaque fois (rate-limit attendu).
+            # _on_punish n'alerte Discord que sur une vraie anomalie (streak élevé).
+            _on_punish(dry_run)
+            _pace(dry_run, "punish")   # AIMD : recul multiplicatif (interval↑, cooldown↑)
             blocked_hit = True
             break
+        # Succès : le scraping fonctionne → on remet à zéro le streak de blocage.
+        _on_success(dry_run)
+        _pace(dry_run, "success")      # AIMD : accélération additive (interval↓)
         page = parse_page(html, keyword=kw)
         d = page_to_demand(page, keyword=kw)
         observed = _now()

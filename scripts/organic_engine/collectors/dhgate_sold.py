@@ -33,20 +33,18 @@ Aucune dépendance externe : urllib + gzip + json + re (stdlib) uniquement.
 
 from __future__ import annotations
 
-import gzip
 import hashlib
 import json
 import re
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
-import zlib
 from dataclasses import dataclass
 from pathlib import Path
 
+from utils import http  # transport partagé curl_cffi chrome131 (→ urllib de repli)
+
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+       "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36")
 _HOME_URL = "https://www.dhgate.com/"
 _SEARCH_URL = "https://www.dhgate.com/wholesale/search.do?searchkey="
 _CACHE_DIR = Path(__file__).resolve().parent.parent / ".dhgate_cache"
@@ -54,8 +52,9 @@ _CACHE_TTL_SECONDS = 24 * 3600          # 24 h : une recherche/jour suffit
 _MIN_REQUEST_INTERVAL = 3.0             # politesse entre requêtes DHgate
 _last_request_ts = 0.0
 
-# Opener partagé : porte le cookie jar de session (posé par la home page).
-_OPENER: urllib.request.OpenerDirector | None = None
+# Session partagée : porte le cookie jar de session (posé par la home page).
+# curl_cffi (via utils.http) persiste les cookies entre le warm-up et les recherches.
+_SESSION: "http.Session | None" = None
 _WARMED = False
 
 # Marqueurs de page anti-bot / blocage DHgate (PerimeterX & co).
@@ -119,11 +118,13 @@ def _cache_put(kw: str, text: str) -> None:
 
 # --- Récupération HTML (cookies + politesse) -------------------------------
 
-def _build_opener() -> urllib.request.OpenerDirector:
-    global _OPENER
-    if _OPENER is None:
-        _OPENER = urllib.request.build_opener(urllib.request.HTTPCookieProcessor())
-    return _OPENER
+def _session() -> "http.Session":
+    """Session partagée (cookie jar persistant) : la home warm-up pose les cookies
+    anti-bot, réutilisés par search.do dans le MÊME process."""
+    global _SESSION
+    if _SESSION is None:
+        _SESSION = http.Session()
+    return _SESSION
 
 
 def _http_get(url: str) -> str:
@@ -132,31 +133,20 @@ def _http_get(url: str) -> str:
     wait = _MIN_REQUEST_INTERVAL - (time.time() - _last_request_ts)
     if wait > 0:
         time.sleep(wait)
-    req = urllib.request.Request(url, headers={
-        "User-Agent": _UA,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate",
-        "Upgrade-Insecure-Requests": "1",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Connection": "keep-alive",
-    })
     try:
-        with _build_opener().open(req, timeout=25) as resp:
-            raw = resp.read()
-            enc = resp.headers.get("Content-Encoding") or ""
-            if "gzip" in enc:
-                raw = gzip.decompress(raw)
-            elif "deflate" in enc:
-                raw = zlib.decompress(raw)
-            body = raw.decode("utf-8", "replace")
-    except urllib.error.HTTPError as exc:
-        # 403 = anti-bot DHgate (IP pas/plus « warmée »).
-        raise DHgateBlocked(f"HTTP {exc.code} sur {url}") from exc
+        res = _session().get_text(url, headers={
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+        }, timeout=25)
     finally:
         _last_request_ts = time.time()
+    # 403 = anti-bot DHgate (IP pas/plus « warmée ») ; 0 = échec transport ; 429/503 idem.
+    if res.status == 403 or res.status == 0 or res.status in (429, 503):
+        raise DHgateBlocked(f"HTTP {res.status} sur {url}")
+    body = res.text
     if any(m in body for m in _BLOCK_MARKERS) or len(body) < 20000:
         raise DHgateBlocked("Page anti-bot DHgate (IP en cooldown).")
     return body
@@ -223,7 +213,8 @@ def fetch_demand(keyword: str) -> DHgateDemand:
             body = _fetch_search_html(keyword)
         except DHgateBlocked:
             return DHgateDemand(keyword=keyword, blocked=True)
-        except (urllib.error.URLError, TimeoutError, ConnectionError):
+        except Exception:
+            # Le transport (utils.http) ne lève pas ; tout imprévu = indisponible.
             return DHgateDemand(keyword=keyword, blocked=True)
         _cache_put(keyword, body)
 

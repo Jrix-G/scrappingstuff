@@ -123,6 +123,14 @@ import * as WL from './watchlist';
   /* page-runtime hooks */
   let pageRender = null, pageResize = null, activeKey = 'n_home';
 
+  /* alertes RÉELLES chargées depuis GET /api/alerts (jamais inventées). */
+  let alerts = [];
+
+  /* échappement HTML pour les champs texte venant du backend. */
+  function esc(str) {
+    return String(str == null ? '' : str).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
   /* ---------- number helpers ---------- */
   const loc = () => (lang === 'fr' ? 'fr-FR' : 'en-US');
   function fmt(v, dec) { dec = dec || 0; return (+v).toLocaleString(loc(), { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
@@ -186,7 +194,7 @@ import * as WL from './watchlist';
           <div class="lang-toggle" id="langToggle"><button data-l="en">EN</button><button data-l="fr">FR</button></div>
           <button class="tb-btn tb-icon" id="bellBtn" aria-label="Notifications">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-            <span class="tb-badge" id="bellBadge">3</span>
+            <span class="tb-badge" id="bellBadge" style="display:none"></span>
           </button>
           <div class="tb-avatar" id="avatarBtn">A</div>
         </div>
@@ -277,24 +285,28 @@ import * as WL from './watchlist';
     return `<a class="sb-item${on ? ' on' : ''}" ${a} data-key="${key}" title="${s[key]}">${ic(icn)}<span class="sb-label">${s[key]}</span>${badge}</a>`;
   }
 
-  /* ---- live decline-alert counter for the nav badge ---- */
-  function declineAlertCount(ids) {
-    let n = 0;
-    ids.forEach((id) => {
-      const p = P.find((x) => x.id === id);
-      if (p && (p.lossFlags || []).some((f) => f && f.name === 'déclin' && f.level === 'red')) n++;
-    });
-    return n;
-  }
-  function paintAlertBadge(n) {
-    const el = $('#navAlertBadge');
+  /* ---- badges d'alertes RÉELLES (GET /api/alerts) ----
+     Le compteur = nombre d'alertes NON LUES. Une alerte est « non lue » tant
+     qu'elle n'a pas été marquée comme remise (`delivered` falsy). 0 → badge caché
+     (jamais de « 0 »). On ne fabrique aucune alerte. */
+  function paintBadge(el, n) {
     if (!el) return;
     if (n > 0) { el.textContent = String(n); el.style.display = ''; }
     else { el.style.display = 'none'; }
   }
+  function unreadAlertCount() { return alerts.filter((a) => a && !a.delivered).length; }
+  function paintAlertBadge() {
+    const n = unreadAlertCount();
+    paintBadge($('#navAlertBadge'), n); // badge nav « Alertes »
+    paintBadge($('#bellBadge'), n);     // badge cloche topbar
+  }
+  // Charge les VRAIES alertes du backend, puis repeint badges + drawer notifs.
   async function refreshAlertBadge() {
-    try { paintAlertBadge(declineAlertCount(await WL.getWatchlist())); }
-    catch (e) { paintAlertBadge(0); }
+    try { alerts = await T.fetchAlerts(); }
+    catch (e) { alerts = []; }
+    if (!Array.isArray(alerts)) alerts = [];
+    paintAlertBadge();
+    if ($('#notifBody')) renderNotif();
   }
   function renderSidebar() {
     const s = S();
@@ -328,29 +340,35 @@ import * as WL from './watchlist';
   /* ============================================================
      NOTIFICATIONS / POPOVERS / CMDK  (ported from Home)
      ============================================================ */
+  /* Drawer notifs alimenté par les VRAIES alertes (`alerts`, via /api/alerts).
+     Empty-state honnête si aucune alerte. La sévérité pilote icône + couleur. */
   function renderNotif() {
-    const s = S();
+    const s = S(), fr = lang === 'fr';
     $('#notifTitle').textContent = s.notif;
-    $('#notifSub').textContent = `3 ${s.notif_unread}`;
+    $('#notifSub').textContent = `${unreadAlertCount()} ${s.notif_unread}`;
     $('#markRead').textContent = s.mark_read;
-    const items = lang === 'fr' ? [
-      { ic: 'flame', col: 'var(--signal)', t: '<b>Cervical Neck Massager</b> a franchi votre seuil de vélocité.', time: 'il y a 18 min', unread: true },
-      { ic: 'sparkles', col: 'var(--ph-emergent)', t: '<b>LED Dog Collar</b> est passé en phase <b>Émergent</b>.', time: 'il y a 1 h', unread: true },
-      { ic: 'signal', col: 'var(--watch)', t: 'Alerte saturation : <b>Sunset Projection Lamp</b> — vendeurs +14%.', time: 'il y a 3 h', unread: true },
-      { ic: 'list', col: 'var(--azure)', t: 'Votre watchlist <b>Wellness FR</b> a gagné +2,4 de score moyen.', time: 'il y a 6 h', unread: false },
-      { ic: 'check', col: 'var(--buy)', t: 'Collecte CJ terminée — 412 produits réévalués.', time: 'il y a 8 h', unread: false },
-    ] : [
-      { ic: 'flame', col: 'var(--signal)', t: '<b>Cervical Neck Massager</b> crossed your velocity threshold.', time: '18 min ago', unread: true },
-      { ic: 'sparkles', col: 'var(--ph-emergent)', t: '<b>LED Dog Collar</b> moved into the <b>Emergent</b> phase.', time: '1 h ago', unread: true },
-      { ic: 'signal', col: 'var(--watch)', t: 'Saturation alert: <b>Sunset Projection Lamp</b> — sellers +14%.', time: '3 h ago', unread: true },
-      { ic: 'list', col: 'var(--azure)', t: 'Your watchlist <b>Wellness FR</b> gained +2.4 avg score.', time: '6 h ago', unread: false },
-      { ic: 'check', col: 'var(--buy)', t: 'CJ collection finished — 412 products re-scored.', time: '8 h ago', unread: false },
-    ];
-    $('#notifBody').innerHTML = items.map((n) => `
-      <div class="notif-item${n.unread ? ' unread' : ''}">
-        <span class="notif-ico" style="background:${n.col}">${ic(n.ic)}</span>
-        <div><div class="notif-t">${n.t}</div><div class="notif-time">${n.time}</div></div>
-      </div>`).join('');
+    const body = $('#notifBody');
+    if (!body) return;
+    if (!alerts.length) {
+      body.innerHTML = `<div style="padding:34px 18px;text-align:center;color:var(--text-tertiary);font-size:13px">${fr ? 'Aucune alerte' : 'No alerts'}</div>`;
+      return;
+    }
+    const SEV = {
+      high: { col: 'var(--ph-decline)', ic: 'flame' },
+      warn: { col: 'var(--watch)', ic: 'signal' },
+      info: { col: 'var(--azure)', ic: 'info' },
+    };
+    body.innerHTML = alerts.map((a) => {
+      const m = SEV[a && a.severity] || SEV.info;
+      const name = a && a.product_name ? `<b>${esc(a.product_name)}</b>` : '';
+      const msg = a && a.message ? esc(a.message) : '';
+      const txt = name && msg ? `${name} — ${msg}` : (name || msg || (fr ? 'Alerte' : 'Alert'));
+      const time = agoFromISO(a && a.created_at) || '';
+      return `<div class="notif-item${a && !a.delivered ? ' unread' : ''}">
+        <span class="notif-ico" style="background:${m.col}">${ic(m.ic)}</span>
+        <div><div class="notif-t">${txt}</div>${time ? `<div class="notif-time">${time}</div>` : ''}</div>
+      </div>`;
+    }).join('');
   }
   function placePop(pop, anchor, align) {
     const r = anchor.getBoundingClientRect();
@@ -456,21 +474,30 @@ import * as WL from './watchlist';
      PRODUCT DETAIL DRAWER (shared "dossier" preview)
      ============================================================ */
   function gaugeRow(label, val, col) {
+    // val null/undefined = signal non mesuré : on n'affiche PAS un faux 0.
+    if (val == null || Number.isNaN(val)) {
+      const na = Sh.lang === 'fr' ? 'non mesuré' : 'not measured';
+      return `<div class="pd-gauge"><span class="pd-g-l">${label}</span><span class="pd-g-v mono" style="color:var(--text-tertiary);margin-left:auto">${na}</span></div>`;
+    }
     return `<div class="pd-gauge"><span class="pd-g-l">${label}</span>${C.microGauge(val, col)}<span class="pd-g-v mono">${Math.round(val)}</span></div>`;
   }
   function openProduct(p) {
     const s = S(), L = pdStr();
     const ph = T.PHASES[p.phase], col = `var(--${ph.v})`;
-    const ringCol = p.verdict === 'BUY' ? col : p.verdict === 'WATCH' ? 'var(--watch)' : 'var(--pass)';
-    const up = p.growth >= 0;
+    // Couleur d'anneau pilotée par le verdict ANTI-PERTE (trapVerdict), pas par
+    // l'ancien verdict BUY (qui valait BUY pour tous).
+    const ringCol = p.trapVerdict === 'VIABLE' ? col : p.trapVerdict === 'RISKY' ? 'var(--watch)' : 'var(--pass)';
+    const tm = T.trapMeta(p, lang);
+    const up = (p.growth || 0) >= 0;
+    const gTxt = p.hasGrowth ? `${up ? '+' : ''}${Math.round(p.growth * 100)}%` : (lang === 'fr' ? 'n.d.' : 'n/a');
     const riskCls = p.risk, riskLbl = p.risk === 'low' ? s.risk_low : p.risk === 'mod' ? s.risk_mod : s.risk_high;
     const opp = p.tandor >= 78 ? L.high : p.tandor >= 60 ? L.med : L.low;
     const satInv = 100 - clamp(p.listed, 0, 100);
     // contribution bars
     const contribs = [
-      { k: L.c_trends, v: (p.trendsScore - 50) / 50, col: 'var(--azure)' },
-      { k: L.c_reddit, v: (p.redditScore - 50) / 50, col: 'var(--reddit)' },
-      { k: L.c_growth, v: (p.growthScore - 50) / 50, col: 'var(--signal)' },
+      { k: L.c_trends, v: p.hasTrends ? (p.trendsScore - 50) / 50 : 0, col: 'var(--azure)' },
+      { k: L.c_reddit, v: p.hasReddit ? (p.redditScore - 50) / 50 : 0, col: 'var(--reddit)' },
+      { k: L.c_growth, v: p.hasGrowth ? (p.growthScore - 50) / 50 : 0, col: 'var(--signal)' },
       { k: L.c_margin, v: (p.margin_pct - 0.45) / 0.45, col: 'var(--buy)' },
       { k: L.c_sat, v: (satInv - 50) / 50, col: 'var(--ph-mature)' },
     ];
@@ -494,7 +521,7 @@ import * as WL from './watchlist';
             <div class="pd-fact"><span>${s.risk}</span><b class="risk ${riskCls}"><span class="rdot"></span>${riskLbl}</b></div>
             <div class="pd-fact"><span>${s.conf}</span><b class="mono">${pct(p.confidence * 100)}</b></div>
             <div class="pd-fact"><span>${L.phase}</span><b><span class="badge phase-badge"><span class="pdot" style="background:${col}"></span>${ph[lang]}</span></b></div>
-            <div class="pd-fact"><span>${s.verdict}</span><b><span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][lang]}</span></b></div>
+            <div class="pd-fact"><span>${s.verdict}</span><b><span class="verdict ${tm.v}">${tm.label}</span>${tm.coverage ? `<span class="mono" style="margin-left:8px;font-size:10px;color:var(--text-tertiary)">· ${tm.coverage}</span>` : ''}</b></div>
           </div>
         </div>
         <div class="pd-econ">${economy.map((e) => `<div class="pd-econ-tile${e.hot ? ' hot' : ''}"><span class="micro">${e.l}</span><b class="mono">${e.v}</b></div>`).join('')}</div>
@@ -508,10 +535,14 @@ import * as WL from './watchlist';
         </div>
 
         <div class="pd-charts">
-          <div class="pd-chart"><div class="pd-chart-h"><span class="micro">${L.trends90}</span><span class="feed-growth ${up ? 'up' : 'down'} mono">${up ? '+' : ''}${Math.round(p.growth * 100)}%</span></div>
+          <div class="pd-chart"><div class="pd-chart-h"><span class="micro">${L.trends90}</span><span class="feed-growth ${up ? 'up' : 'down'} mono">${gTxt}</span></div>
             ${C.sparkline(p.trend, { w: 300, h: 60, stroke: 'var(--signal)', fill: true, sw: 2, dot: true })}</div>
           <div class="pd-chart"><div class="pd-chart-h"><span class="micro">${L.reddit12}</span></div>
             ${miniBars(p.reddit, 'var(--reddit)')}</div>
+        </div>
+
+        <div class="pd-sec" id="pdHistory"><div class="pd-sec-t">${L.demandHist}</div>
+          <div id="pdHistBody"><div class="micro" style="color:var(--text-tertiary);padding:8px 0">${L.histLoading}</div></div>
         </div>
 
         <div class="pd-sec"><div class="pd-sec-t">${s.why}</div>
@@ -626,7 +657,7 @@ import * as WL from './watchlist';
     $('#searchBtn').addEventListener('click', openCmdk);
     $('#bellBtn').addEventListener('click', (e) => { e.stopPropagation(); const open = $('#notifDrawer').classList.contains('show'); closeAll(); if (!open) { $('#scrim').classList.add('show'); $('#notifDrawer').classList.add('show'); } });
     $('#notifClose').addEventListener('click', closeAll);
-    $('#markRead').addEventListener('click', () => { $$('#notifBody .notif-item').forEach((n) => n.classList.remove('unread')); $('#bellBadge').style.display = 'none'; $('#notifSub').textContent = '0 ' + S().notif_unread; });
+    $('#markRead').addEventListener('click', () => { alerts.forEach((a) => { if (a) a.delivered = true; }); paintAlertBadge(); renderNotif(); });
     $('#marketBtn').addEventListener('click', (e) => { e.stopPropagation(); togglePop($('#marketPop'), $('#marketBtn'), 'left', buildMarketPop); });
     $('#liveBtn').addEventListener('click', (e) => { e.stopPropagation(); togglePop($('#livePop'), $('#liveBtn'), 'left', buildLivePop); });
     $('#avatarBtn').addEventListener('click', (e) => { e.stopPropagation(); togglePop($('#avatarPop'), $('#avatarBtn'), 'right', buildAvatarPop); });

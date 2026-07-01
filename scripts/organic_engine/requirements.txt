@@ -8,6 +8,7 @@ pytrends>=4.9         # Google Trends (série historique)
 # API (optionnel — le moteur s'importe sans)
 fastapi>=0.110
 uvicorn>=0.27
+firebase-admin>=6.5   # vérification serveur des ID tokens Firebase + plan/quota (api/auth.py)
 
 # Tests
 pytest>=8.0

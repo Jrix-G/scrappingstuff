@@ -20,6 +20,7 @@ import os
 import re
 import sqlite3
 import sys
+import threading
 import time
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeout
@@ -27,9 +28,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+
+from api.auth import require_user, plan_for, charge_quota, VALIDATE_COST
+from api import alerts as alerts_mod
 
 # Rend les modules organic_engine importables depuis api/server.py
 _ENGINE_ROOT = Path(__file__).resolve().parent.parent
@@ -198,6 +202,61 @@ def _map_category(name: str | None, category: str | None) -> str:
     return "HOME"
 
 
+def _demand_map(conn: sqlite3.Connection, table: str, value_col: str,
+                keywords: set[str]) -> dict[str, list[tuple]]:
+    """{keyword -> [(observed_at, value), …]} pour une table de snapshots.
+
+    Une SEULE requête ``IN`` pour toute la page (pas de N+1). Lecture DB pure :
+    c'est ce qui apporte la demande RÉELLE aux milliers de produits du catalogue
+    servis à la volée, sans aucun appel réseau.
+    """
+    out: dict[str, list[tuple]] = {}
+    kws = [k for k in keywords if k]
+    if not kws:
+        return out
+    rows = conn.execute(
+        f"SELECT keyword, observed_at, {value_col} FROM {table} "
+        f"WHERE keyword IN ({','.join('?' * len(kws))}) AND {value_col} IS NOT NULL "
+        f"ORDER BY keyword, observed_at",
+        tuple(kws),
+    ).fetchall()
+    for k, ts, val in rows:
+        out.setdefault(k, []).append((ts, val))
+    return out
+
+
+def _level_and_velocity(series: list[tuple]) -> tuple[Any, Any, Any]:
+    """(niveau = dernière valeur, vélocité log/j si ≥2 points, série pour le front)."""
+    if not series:
+        return None, None, None
+    level = series[-1][1]
+    velocity = None
+    if len(series) >= 2:
+        try:
+            from signals.timeseries import extract_trend
+            t0 = datetime.fromisoformat(series[0][0])
+            days = [(datetime.fromisoformat(t) - t0).total_seconds() / 86400.0
+                    for t, _ in series]
+            vals = [float(v) for _, v in series]
+            velocity = round(extract_trend(days, vals).velocity, 5)
+        except Exception:
+            velocity = None
+    return level, velocity, series
+
+
+def _series_to_block(series: list[tuple] | None) -> dict | None:
+    """Série [(observed_at, valeur)] -> bloc { points, dates, days, values } ou None."""
+    if not series or len(series) < 2:
+        return None
+    t0 = datetime.fromisoformat(series[0][0])
+    dates = [t for t, _ in series]
+    days = [round((datetime.fromisoformat(t) - t0).total_seconds() / 86400.0, 3)
+            for t, _ in series]
+    vals = [float(v) for _, v in series]
+    return {"points": len(series), "dates": dates, "days": days,
+            "values": vals, "spanDays": days[-1]}
+
+
 def _catalogue_total(conn: sqlite3.Connection, exclude_ids: set[str]) -> int:
     """Nombre EXACT de produits du catalogue NON déjà servis par le cache enrichi.
 
@@ -216,6 +275,168 @@ def _catalogue_total(conn: sqlite3.Connection, exclude_ids: set[str]) -> int:
     return max(0, total - excluded)
 
 
+def _catalogue_light(
+    conn: sqlite3.Connection,
+    exclude_ids: set[str],
+) -> tuple[list[dict[str, Any]], dict[str, sqlite3.Row]]:
+    """Scan COMPLET du catalogue cj.db, scoré LÉGER (vendabilité pure, aucun réseau).
+
+    Renvoie ``(descripteurs, rows_by_pid)``. Un descripteur ne porte QUE ce qu'il
+    faut pour TRIER (score Tandor) et FILTRER (cat/verdict/trapVerdict/min_score/q/
+    phase) sur tout l'univers : id, name, cat, verdict (vendabilité BUY/WATCH/PASS),
+    trapVerdict (anti-piège VIABLE/RISKY/TRAP), sellability, organic(=0), phase,
+    tandor. Le travail LOURD (demande/déclin RÉELS) est volontairement reporté à la
+    seule page renvoyée (cf. :func:`_hydrate_rows`), à partir des lignes brutes
+    conservées dans ``rows_by_pid`` — donc sans refaire de requête SQL.
+
+    ``trapVerdict`` est calculé ICI à partir des seuls drapeaux financiers (marge,
+    prix, saturation) — assez pour filtrer/trier tout le catalogue. Les drapeaux
+    demande/déclin (DB, batchés) ne sont ajoutés qu'à l'hydratation de la page : sur
+    la frange de produits qui ont un historique, le trapVerdict AFFICHÉ peut donc
+    être plus sévère que celui du filtre. Le gros du catalogue (sans historique) est
+    identique des deux côtés.
+
+    Coût mesuré : ~0,32 s pour ~15 k lignes (fetch + sellability + loss_risk pur)
+    sur le Pi ; seule la page (≈30) subit ensuite l'hydratation lourde.
+    """
+    from scoring.sellability import score_sellability
+    from scoring.loss_risk import assess_loss_risk
+
+    if exclude_ids:
+        placeholders = ",".join("?" * len(exclude_ids))
+        where = f"WHERE substr(p.pid, -7) NOT IN ({placeholders})"
+        params: tuple = tuple(exclude_ids)
+    else:
+        where = ""
+        params = ()
+
+    rows = conn.execute(
+        f"""
+        SELECT p.pid, p.name, p.category, p.image, p.create_time,
+               s.price, s.listed_num, d.suggest_price
+        FROM cj_products p
+        LEFT JOIN cj_snapshots s ON s.pid = p.pid
+            AND s.observed_at = (
+                SELECT MAX(observed_at) FROM cj_snapshots WHERE pid = p.pid
+            )
+        LEFT JOIN cj_details d ON d.pid = p.pid
+        {where}
+        """,
+        params,
+    ).fetchall()
+
+    descriptors: list[dict[str, Any]] = []
+    rows_by_pid: dict[str, sqlite3.Row] = {}
+    for r in rows:
+        pid = r["pid"]
+        cost = float(r["price"]) if r["price"] else None
+        listed = int(r["listed_num"]) if r["listed_num"] is not None else 0
+        age = _age_days(r["create_time"])
+        suggest = float(r["suggest_price"]) if r["suggest_price"] else None
+        sr = score_sellability(pid, cost, listed, age, retail_override=suggest)
+        sell = round(sr.sellability)
+        # Verdict anti-piège LÉGER (drapeaux financiers seuls, pas de demande/déclin).
+        loss = assess_loss_risk(
+            pid,
+            net_after_cpa_eur=sr.net_after_cpa_eur,
+            gross_margin_eur=sr.gross_margin_eur,
+            pct_low_rating=None,
+            listed_num=listed,
+            retail_eur=sr.retail_eur,
+        )
+        rows_by_pid[pid] = r
+        descriptors.append({
+            "id": pid,                              # pid COMPLET (cf. _hydrate_rows)
+            "name": r["name"],
+            "cat": _map_category(r["name"], r["category"]),
+            "verdict": sr.verdict,
+            "trapVerdict": loss.verdict,            # VIABLE / RISKY / TRAP
+            "sellability": sell,
+            "organic": 0,                           # pas de signal organique réel
+            "phase": "EMERGENT",
+            # Score Tandor LÉGER : organic=0 sur le catalogue brut -> 0.45*sellability.
+            "tandor": 0.45 * sell,
+        })
+    return descriptors, rows_by_pid
+
+
+# ---------------------------------------------------------------------------
+# Cache mémoire du catalogue léger (scan COMPLET cj.db, scoré pur)
+# ---------------------------------------------------------------------------
+#
+# `_catalogue_light()` coûte ~0,7 s (scan de ~15 k lignes + scoring pur) et son
+# résultat est IDENTIQUE entre deux requêtes : seuls le filtrage, le tri et la
+# pagination changent côté `query_products`. On mémorise donc le scan complet et
+# on ne le recalcule que si (a) le TTL expire ou (b) le mtime de cj.db change.
+#
+# Le scan est mémorisé SANS exclusion (`exclude_ids` vide) : l'exclusion des pids
+# déjà enrichis dépend du cache JSON et se fait à la volée, en Python, côté
+# `query_products` (comparaison de suffixe). On garde ainsi UN seul scan partagé,
+# indépendant du contenu du cache enrichi.
+
+_CATALOGUE_TTL = float(os.environ.get("TANDOR_CATALOGUE_TTL", "300"))  # secondes
+_catalogue_lock = threading.Lock()
+_catalogue_cache: dict[str, Any] = {
+    "key": None,            # (chemin cj.db, mtime) — invalide si le fichier change
+    "expires": 0.0,         # horloge monotone d'expiration TTL
+    "descriptors": None,    # list[dict] : descripteurs légers (univers complet)
+    "rows_by_pid": None,    # dict[str, sqlite3.Row] : lignes brutes pour l'hydratation
+}
+# Compteur de scans RÉELS de la DB (cache MISS) — instrumenté pour les tests.
+_catalogue_builds = 0
+
+
+def _reset_catalogue_cache() -> None:
+    """Vide le cache catalogue (utilisé par les tests pour repartir à froid)."""
+    with _catalogue_lock:
+        _catalogue_cache.update(key=None, expires=0.0,
+                                descriptors=None, rows_by_pid=None)
+
+
+def _load_catalogue_cached() -> tuple[list[dict[str, Any]], dict[str, sqlite3.Row]]:
+    """Renvoie ``(descripteurs, rows_by_pid)`` du catalogue COMPLET, depuis le cache.
+
+    Le scan léger n'est refait que si le cache est froid, expiré (TTL) ou si le
+    ``mtime`` de cj.db a changé. Thread-safe (un seul scan à la fois ; les requêtes
+    concurrentes attendent le scan en cours puis lisent le cache chaud). Renvoie
+    ``([], {})`` proprement si cj.db est absente ou illisible.
+    """
+    global _catalogue_builds
+    if not CJ_DB.exists():
+        return [], {}
+    try:
+        mtime = os.path.getmtime(CJ_DB)
+    except OSError:
+        return [], {}
+    key = (str(CJ_DB), mtime)
+    now = time.monotonic()
+    with _catalogue_lock:
+        if (_catalogue_cache["key"] == key
+                and _catalogue_cache["descriptors"] is not None
+                and now < _catalogue_cache["expires"]):
+            return _catalogue_cache["descriptors"], _catalogue_cache["rows_by_pid"]
+
+        # Cache MISS : scan complet (lecture seule). Réalisé SOUS le verrou afin de
+        # ne le faire qu'une fois même sous requêtes parallèles (coût ~0,7 s, et
+        # seulement toutes les ~300 s grâce au TTL).
+        try:
+            conn = sqlite3.connect(f"file:{CJ_DB}?mode=ro", uri=True, timeout=5)
+            conn.row_factory = sqlite3.Row
+            try:
+                descs, rows_by_pid = _catalogue_light(conn, set())
+            finally:
+                conn.close()
+        except sqlite3.Error:
+            return [], {}
+
+        _catalogue_builds += 1
+        _catalogue_cache.update(
+            key=key, expires=time.monotonic() + _CATALOGUE_TTL,
+            descriptors=descs, rows_by_pid=rows_by_pid,
+        )
+        return descs, rows_by_pid
+
+
 def _catalogue_page(
     conn: sqlite3.Connection,
     exclude_ids: set[str],
@@ -224,15 +445,10 @@ def _catalogue_page(
 ) -> list[dict[str, Any]]:
     """Lit une page du catalogue cj.db et la met à la forme BASE du dashboard.
 
-    Tri stable par listed_num desc puis pid (déterministe entre requêtes, donc pas
-    de doublon/saut entre pages successives). Les pids déjà servis par le cache
-    enrichi sont exclus DIRECTEMENT en SQL (substr(pid,-7) NOT IN exclude_ids) :
-    ainsi l'OFFSET SQL == l'offset logique du catalogue, et chaque page contient
-    exactement ``sql_limit`` lignes. Aucune ligne au-delà de la page n'est chargée.
+    Conservé pour rétro-compat (tri par listed_num desc puis pid). Délègue toute la
+    mise en forme à :func:`_hydrate_rows`. ``list_products`` ne l'utilise plus : il
+    trie désormais l'univers complet par score Tandor (cf. _catalogue_light).
     """
-    from scoring.sellability import score_sellability
-    from scoring.loss_risk import assess_loss_risk
-
     if exclude_ids:
         placeholders = ",".join("?" * len(exclude_ids))
         where = f"WHERE substr(p.pid, -7) NOT IN ({placeholders})"
@@ -257,6 +473,47 @@ def _catalogue_page(
         """,
         params,
     ).fetchall()
+    return _hydrate_rows(conn, rows)
+
+
+def _hydrate_rows(
+    conn: sqlite3.Connection,
+    rows: list[sqlite3.Row],
+) -> list[dict[str, Any]]:
+    """Hydrate des lignes catalogue DÉJÀ lues à la forme BASE du dashboard.
+
+    Travail LOURD par ligne : demande RÉELLE jointe par mot-clé (batchée pour tout
+    le lot), détecteur de pièges + déclin (lecture DB pure, aucun réseau). Réservé
+    à la SEULE page renvoyée — jamais à l'univers entier — pour rester rapide même
+    sur le Pi. ``rows`` provient soit d'une page LIMIT/OFFSET (_catalogue_page),
+    soit du scan léger (_catalogue_light), donc l'``id`` rendu = pid COMPLET.
+    """
+    from scoring.sellability import score_sellability
+    from scoring.loss_risk import assess_loss_risk
+
+    if not rows:
+        return []
+
+    # Demande RÉELLE par mot-clé (lecture DB pure, batchée pour toute la page).
+    # Candidats = mot-clé nettoyé + repli historique (ré-aligne les snapshots
+    # indexés avec l'ancienne clé). On joint Amazon (« bought ») et AliExpress.
+    try:
+        from enrich import keyword_candidates
+    except Exception:
+        keyword_candidates = lambda n: []  # noqa: E731 - dégradation propre
+    row_cands: dict[str, list[str]] = {
+        r["pid"]: keyword_candidates(r["name"]) for r in rows
+    }
+    all_kw: set[str] = {k for cands in row_cands.values() for k in cands}
+    amazon_series = _demand_map(conn, "amazon_snapshots", "max_bought", all_kw)
+    amazon_median = _demand_map(conn, "amazon_snapshots", "median_bought", all_kw)
+    sales_series = _demand_map(conn, "sales_snapshots", "max_sold", all_kw)
+
+    def _pick(series_map: dict[str, list[tuple]], cands: list[str]) -> list[tuple] | None:
+        for k in cands:
+            if series_map.get(k):
+                return series_map[k]
+        return None
 
     out: list[dict[str, Any]] = []
     for r in rows:
@@ -267,6 +524,33 @@ def _catalogue_page(
         suggest = float(r["suggest_price"]) if r["suggest_price"] else None
 
         sr = score_sellability(pid, cost, listed, age, retail_override=suggest)
+
+        # Demande RÉELLE jointe par mot-clé (lecture DB) : niveau + vélocité.
+        cands = row_cands.get(pid, [])
+        amz_s = _pick(amazon_series, cands)
+        amz_m = _pick(amazon_median, cands)
+        sales_s = _pick(sales_series, cands)
+        amz_level, amz_vel, _ = _level_and_velocity(amz_s)
+        amz_med_level = amz_m[-1][1] if amz_m else None
+        sale_level, sale_vel, _ = _level_and_velocity(sales_s)
+
+        # Tendance de demande (déclin) -> détecteur de pièges, comme dans l'export.
+        # Le garde-fou « < 3 points = inconnu » vit dans assess_loss_risk : aucune
+        # conclusion sur série trop courte, donc pas de changement de sémantique.
+        dec_velocity = dec_points = dec_vol = dec_se = dec_span = None
+        if sales_s and len(sales_s) >= 2:
+            try:
+                from signals.timeseries import extract_trend
+                t0 = datetime.fromisoformat(sales_s[0][0])
+                days = [(datetime.fromisoformat(t) - t0).total_seconds() / 86400.0
+                        for t, _ in sales_s]
+                vals = [float(v) for _, v in sales_s]
+                tf = extract_trend(days, vals)
+                dec_velocity, dec_points = tf.velocity, tf.n_points
+                dec_vol, dec_se, dec_span = tf.volatility, tf.velocity_se, tf.span_days
+            except Exception:
+                pass
+
         loss = assess_loss_risk(
             pid,
             net_after_cpa_eur=sr.net_after_cpa_eur,
@@ -274,7 +558,13 @@ def _catalogue_page(
             pct_low_rating=None,
             listed_num=listed,
             retail_eur=sr.retail_eur,
+            demand_velocity=dec_velocity,
+            demand_points=dec_points or 0,
+            demand_volatility=dec_vol,
+            demand_velocity_se=dec_se,
+            demand_span_days=dec_span,
         )
+        has_demand = amz_s is not None or sales_s is not None
 
         out.append({
             # Le cache enrichi expose un id = 7 derniers chiffres du pid. Pour le
@@ -299,8 +589,14 @@ def _catalogue_page(
             "redditScore": 0,
             "trendsScore": 0,
             "salesScore": None,
-            "aliExpressSold": None,
+            "aliExpressSold": sale_level,
             "aliExpressMedianSold": None,
+            # Demande Amazon RÉELLE (« bought in past month ») jointe par mot-clé en
+            # lecture DB — couvre la majorité du catalogue servi à la volée.
+            "amazonBought": amz_level,
+            "amazonMedianBought": amz_med_level,
+            "amazonVelocity": amz_vel,
+            "demandLevel": amz_level if amz_level is not None else sale_level,
             "seasonPeak": 6,
             "seasonMult": 1.0,
             "reason": {"en": sr.reason, "fr": sr.reason},
@@ -312,12 +608,16 @@ def _catalogue_page(
             ],
             "breakevenCpa": (round(loss.breakeven_cpa_eur, 1)
                              if loss.breakeven_cpa_eur is not None else None),
-            # Pas d'historique réel pour le catalogue brut -> hasRealHistory=false côté UI.
-            "history": {"sales": None, "amazon": None},
+            # Courbes RÉELLES de demande (séries snapshotées) jointes par mot-clé.
+            # `null` par série tant qu'il n'y a pas ≥2 points.
+            "history": {"sales": _series_to_block(sales_s),
+                        "amazon": _series_to_block(amz_s)},
             "lastCollection": None,
             "detectedHrs": None,
             "image": r["image"],
+            # `enriched`=False (pas de Trends/Reddit live) mais demande DB réelle si dispo.
             "enriched": False,
+            "hasRealHistory": has_demand,
             "dossier": {
                 "hasDetail": suggest is not None,
                 "priceFromCJ": suggest is not None,
@@ -344,129 +644,297 @@ def health() -> dict[str, str]:
 
 
 @app.get("/api/meta")
-def meta() -> dict[str, Any]:
+def meta(user: dict = Depends(require_user)) -> dict[str, Any]:
     """Fraîcheur des données : quand, combien, enrichi ou non."""
     return _load_cache().get("meta", {})
 
 
-@app.get("/api/products")
-def list_products(
-    cat: str | None = Query(None, description="Bucket catégorie (HOME, TECH, ...)"),
-    verdict: str | None = Query(None, description="BUY / WATCH / PASS"),
-    min_score: float = Query(0, ge=0, le=100, description="Score Tandor minimum"),
-    limit: int = Query(200, ge=1, le=1000),
-    offset: int = Query(0, ge=0, description="Décalage pour la pagination / infinite scroll"),
-) -> dict[str, Any]:
-    """Produits du dashboard, paginés sur L'UNIVERS COMPLET (cache enrichi + cj.db).
+# Plafond navigable DUR : on ne pagine jamais au-delà du top 2000 par score Tandor.
+PRODUCTS_CAP = 2000
 
-    Stratégie de pagination unifiée :
-      * Les ~60 produits ENRICHIS (cache JSON, Trends/Reddit/vélocité) occupent les
-        premiers offsets, triés par score Tandor décroissant.
-      * Au-delà, on sert le reste du catalogue cj.db (~6100 produits) page par page
-        en SQL (LIMIT/OFFSET), scoré à la volée par les fonctions pures (aucun
-        réseau). Ces produits ont les champs CJ de base mais organic=0 / pas
-        d'historique réel — le front les affiche en empty-state « History building ».
+# Deux dimensions de verdict coexistent et le param ``verdict`` accepte les deux :
+#   * vendabilité financière  : BUY / WATCH / PASS         (champ ``verdict``)
+#   * anti-piège (le pivot)    : VIABLE / RISKY / TRAP       (champ ``trapVerdict``)
+# Le front du dashboard envoie en pratique les valeurs ANTI-PIÈGE (les pastilles).
+_SELL_VERDICTS = {"BUY", "WATCH", "PASS"}
+_TRAP_VERDICTS = {"VIABLE", "RISKY", "TRAP"}
 
-    Rétro-compat : un appel sans ``offset`` repart de 0 et fonctionne comme avant.
-    Les filtres (cat/verdict/min_score) ne s'appliquent qu'à la partie enrichie
-    (le catalogue brut est servi tel quel ; le front filtre côté client).
 
-    La réponse expose ``meta.total`` (univers complet), ``meta.has_more`` et
-    ``meta.next_offset`` pour piloter l'infinite scroll côté front.
+def _parse_verdict_filter(raw: str | None) -> tuple[set[str], set[str]]:
+    """``verdict`` (CSV, insensible à la casse) -> (set vendabilité, set anti-piège).
+
+    La dimension est auto-détectée PAR LA VALEUR : VIABLE/RISKY/TRAP ciblent
+    ``trapVerdict`` ; BUY/WATCH/PASS ciblent ``verdict``. On peut mélanger (le match
+    est un OU), mais en pratique le front n'envoie qu'un seul jeu. Valeurs inconnues
+    ignorées. Renvoie deux sets vides si ``raw`` est vide -> aucun filtre verdict.
     """
+    if not raw:
+        return set(), set()
+    vals = {v.strip().upper() for v in raw.split(",") if v.strip()}
+    return vals & _SELL_VERDICTS, vals & _TRAP_VERDICTS
+
+
+def query_products(
+    *,
+    cat: str | None = None,
+    verdict: str | None = None,
+    min_score: float = 0.0,
+    q: str | None = None,
+    phase: str | None = None,
+    sort: str = "tandor",
+    limit: int = 30,
+    offset: int = 0,
+    page: int | None = None,
+) -> dict[str, Any]:
+    """Logique PURE de /api/products (sans auth/quota) — directement testable.
+
+    TOP 2000 produits par score Tandor décroissant sur L'UNIVERS COMPLET.
+    Univers = cache enrichi (~60, Trends/Reddit/vélocité réels) UNION catalogue
+    cj.db (~15 k, scoré à la volée par les fonctions PURES, aucun réseau). Tous les
+    filtres (cat/verdict/min_score/q/phase) et le tri Tandor s'appliquent à
+    L'ENSEMBLE du set — plus seulement à la partie enrichie.
+
+    ``verdict`` accepte une LISTE CSV et auto-détecte la dimension par la valeur :
+    VIABLE/RISKY/TRAP filtrent sur ``trapVerdict`` (le pivot anti-piège, calculé
+    aussi pour tout le catalogue) ; BUY/WATCH/PASS filtrent sur ``verdict``
+    (vendabilité). Insensible à la casse ; match = OU sur les valeurs fournies.
+
+    Stratégie performante :
+      1. Scan LÉGER du catalogue (vendabilité pure) : assez pour trier + filtrer.
+      2. Fusion avec le cache enrichi, filtres + tri Tandor, plafond dur à 2000.
+      3. Hydratation LOURDE (demande RÉELLE, pièges, déclin) de la SEULE page
+         renvoyée (≈30 lignes) — verdict + lossFlags portés aussi par le catalogue.
+
+    Pagination : ``page`` (1-indexée) prime sur ``offset`` ; ``page=1`` -> offset 0.
+    ``meta.total`` = min(nb correspondants, 2000) ; la pagination ne dépasse jamais
+    2000. Rétro-compat : un appel sans ``page``/``offset`` repart de 0.
+
+    Dégradation : si cj.db est absente/illisible, on sert la seule partie enrichie.
+    Si le cache est petit (60 aujourd'hui), le catalogue complète jusqu'à 2000.
+    """
+    import math
+
+    # ``page`` (1-indexée) prime sur ``offset`` ; page=1 -> offset 0.
+    if page is not None:
+        offset = (page - 1) * limit
+
     data = _load_cache()
     enriched = data.get("products", [])
 
     def tandor(p: dict) -> float:
         return 0.55 * p.get("organic", 0) + 0.45 * p.get("sellability", 0)
 
-    # Filtres appliqués sur la partie enrichie uniquement.
-    filtered = [
-        p for p in enriched
-        if (cat is None or p.get("cat") == cat)
-        and (verdict is None or p.get("verdict") == verdict)
-        and tandor(p) >= min_score
-    ]
-    filtered.sort(key=tandor, reverse=True)
-    n_enriched = len(filtered)
+    ql = q.strip().lower() if q and q.strip() else None
+    # Filtre verdict : CSV multi-valeurs + auto-détection de dimension par la valeur.
+    sell_filter, trap_filter = _parse_verdict_filter(verdict)
+    has_verdict_filter = bool(sell_filter or trap_filter)
+
+    def keep(p_cat: Any, p_verdict: Any, p_trap: Any, p_tandor: float,
+             p_name: Any, p_phase: Any) -> bool:
+        """Prédicat de filtre commun — appliqué à TOUT l'univers."""
+        if cat is not None and p_cat != cat:
+            return False
+        if has_verdict_filter and not (
+            (p_verdict in sell_filter) or (p_trap in trap_filter)
+        ):
+            return False
+        if p_tandor < min_score:
+            return False
+        if phase is not None and p_phase != phase:
+            return False
+        if ql is not None and ql not in (p_name or "").lower():
+            return False
+        return True
+
+    # 1. Partie enrichie (cache) — filtres appliqués. (score, type, payload)
+    combined: list[tuple[float, str, dict]] = []
+    for p in enriched:
+        t = tandor(p)
+        if keep(p.get("cat"), p.get("verdict"), p.get("trapVerdict"),
+                t, p.get("name"), p.get("phase")):
+            combined.append((t, "enriched", p))
 
     # Le cache ne stocke que l'``id`` = 7 derniers chiffres du pid CJ. On exclut donc
     # du catalogue les pids dont le suffixe correspond à un produit déjà enrichi.
     enriched_ids = {str(p.get("id")) for p in enriched if p.get("id")}
 
-    page: list[dict[str, Any]] = []
+    # 2. Catalogue cj.db — scan LÉGER depuis le CACHE mémoire (mutualisé entre
+    #    requêtes ; refait seulement sur TTL/mtime). L'exclusion des pids déjà
+    #    enrichis est faite ICI en Python (le scan caché est, lui, sans exclusion).
+    descs, rows_by_pid = _load_catalogue_cached()
+    for d in descs:
+        if str(d["id"])[-7:] in enriched_ids:
+            continue
+        if keep(d["cat"], d["verdict"], d["trapVerdict"],
+                d["tandor"], d["name"], d["phase"]):
+            combined.append((d["tandor"], "light", d))
 
-    # 1. Tranche dans la partie enrichie.
-    if offset < n_enriched:
-        page.extend(filtered[offset:offset + limit])
+    # 3. Tri global par score Tandor décroissant (id en départage => déterministe).
+    combined.sort(key=lambda x: (-x[0], str(x[2].get("id"))))
 
-    # 2. Complément depuis le catalogue cj.db si la page n'est pas pleine.
-    has_more = False
-    cat_total = 0
-    # Le catalogue brut n'est servi que sans filtre enrichi (sinon incohérent) :
-    # avec un filtre actif, on reste sur la partie enrichie.
-    serve_catalogue = cat is None and verdict is None and min_score <= 0
-    if CJ_DB.exists() and serve_catalogue:
+    # 4. Plafond navigable DUR à 2000, puis tranche de page.
+    total = min(len(combined), PRODUCTS_CAP)
+    window = combined[:PRODUCTS_CAP]
+    page_items = window[offset:offset + limit]
+
+    # 5. Hydratation LOURDE de la SEULE page (lignes catalogue) : demande/pièges/déclin.
+    #    Reste PAR REQUÊTE (dépend de la page) : on ouvre une connexion ro éphémère
+    #    uniquement s'il y a des lignes catalogue à hydrater. Les ``rows_by_pid`` du
+    #    cache sont des lignes déjà fetchées (détachées) : valides hors connexion.
+    hydrated: dict[str, dict] = {}
+    light_pids = [pl["id"] for _, kind, pl in page_items if kind == "light"]
+    if light_pids and CJ_DB.exists():
+        conn: sqlite3.Connection | None = None
         try:
-            conn = sqlite3.connect(CJ_DB, timeout=5)
+            conn = sqlite3.connect(f"file:{CJ_DB}?mode=ro", uri=True, timeout=5)
             conn.row_factory = sqlite3.Row
-            try:
-                cat_total = _catalogue_total(conn, enriched_ids)
-                remaining = limit - len(page)
-                if remaining > 0:
-                    # Offset dans le catalogue = ce qui dépasse la partie enrichie.
-                    # L'exclusion étant faite en SQL, cet offset est exact.
-                    cat_offset = max(0, offset - n_enriched)
-                    raw = _catalogue_page(conn, enriched_ids, cat_offset, remaining)
-                    page.extend(raw)
-                next_offset = offset + len(page)
-                has_more = next_offset < (n_enriched + cat_total)
-            finally:
-                conn.close()
+            page_rows = [rows_by_pid[pid] for pid in light_pids if pid in rows_by_pid]
+            hydrated = {rec["id"]: rec for rec in _hydrate_rows(conn, page_rows)}
         except sqlite3.Error:
-            # DB indisponible : on dégrade proprement sur la seule partie enrichie.
-            cat_total = 0
-            has_more = offset + len(page) < n_enriched
-    else:
-        has_more = offset + len(page) < n_enriched
+            hydrated = {}
+        finally:
+            if conn is not None:
+                conn.close()
 
-    total = n_enriched + cat_total
-    next_offset = offset + len(page)
+    out: list[dict[str, Any]] = []
+    for _, kind, pl in page_items:
+        if kind == "enriched":
+            out.append(pl)
+        else:
+            # Repli sur le descripteur léger si l'hydratation a échoué (DB partie).
+            out.append(hydrated.get(pl["id"], pl))
+
+    # 6. Méta de pagination.
+    page_size = limit
+    page_count = math.ceil(total / page_size) if page_size else 0
+    current_page = (offset // page_size) + 1 if page_size else 1
+    returned = len(out)
+    next_offset = offset + page_size
+    has_more = next_offset < total
 
     meta = dict(data.get("meta", {}))
     meta.update({
         "total": total,
-        "enriched_count": n_enriched,
-        "catalogue_count": cat_total,
+        "page": current_page,
+        "page_size": page_size,
+        "page_count": page_count,
         "offset": offset,
         "limit": limit,
-        "returned": len(page),
-        "next_offset": next_offset if has_more else None,
+        "returned": returned,
         "has_more": has_more,
+        "next_offset": next_offset if has_more else None,
     })
 
     return {
         "meta": meta,
-        "count": len(page),
+        "count": returned,
         "total": total,
+        "page": current_page,
+        "page_count": page_count,
         "has_more": has_more,
         "next_offset": next_offset if has_more else None,
-        "products": page,
+        "products": out,
     }
 
 
+@app.get("/api/products")
+def list_products(
+    cat: str | None = Query(None, description="Bucket catégorie (HOME, TECH, ...)"),
+    verdict: str | None = Query(
+        None,
+        description="CSV ; VIABLE/RISKY/TRAP -> trapVerdict, BUY/WATCH/PASS -> verdict "
+                    "(ex. « VIABLE,RISKY »). Insensible à la casse.",
+    ),
+    min_score: float = Query(0, ge=0, le=100, description="Score Tandor minimum"),
+    q: str | None = Query(None, description="Recherche plein texte (sous-chaîne du nom)"),
+    phase: str | None = Query(None, description="Phase (EMERGENT/GROWTH/MATURE/...)"),
+    sort: str = Query("tandor", description="Tri (seul « tandor » est implémenté)"),
+    limit: int = Query(30, ge=1, le=1000, description="Taille de page (défaut 30)"),
+    offset: int = Query(0, ge=0, description="Décalage (ignoré si ``page`` est fourni)"),
+    page: int | None = Query(None, ge=1, description="Page 1-indexée (alternative à offset)"),
+    user: dict = Depends(require_user),
+) -> dict[str, Any]:
+    """Route /api/products : auth + quota, puis délègue à :func:`query_products`."""
+    charge_quota(user["uid"], plan_for(user))
+    return query_products(
+        cat=cat, verdict=verdict, min_score=min_score, q=q, phase=phase,
+        sort=sort, limit=limit, offset=offset, page=page,
+    )
+
+
 @app.get("/api/product/{product_id}")
-def product_detail(product_id: str) -> dict[str, Any]:
+def product_detail(product_id: str, user: dict = Depends(require_user)) -> dict[str, Any]:
     """Détail d'un produit par son id (les 7 derniers chiffres du pid CJ)."""
+    charge_quota(user["uid"], plan_for(user))
     for p in _load_cache().get("products", []):
         if p.get("id") == product_id:
             return p
     raise HTTPException(status_code=404, detail="Produit inconnu")
 
 
+@app.get("/api/alerts")
+def list_alerts_route(undelivered_only: bool = False,
+                      user: dict = Depends(require_user)) -> dict[str, Any]:
+    """Alertes courantes, dérivées des signaux RÉELS (déclin, saturation, nouveautés)
+    — voir api/alerts.py. Jamais fabriquées : liste vide si aucun signal. Pas de
+    quota facturé (lecture légère, pollée par le badge de la cloche)."""
+    return {"alerts": alerts_mod.list_alerts(undelivered_only)}
+
+
+@app.post("/api/checkout")
+def create_checkout(body: dict, user: dict = Depends(require_user)) -> dict[str, Any]:
+    """Crée une session Stripe Checkout pour un plan payant ('pro' ou 'scale').
+
+    Variables d'env requises : STRIPE_SECRET_KEY, STRIPE_PRICE_PRO, STRIPE_PRICE_SCALE ;
+    optionnel : TANDOR_SITE_URL (URL de retour, défaut http://localhost:3000).
+    Tant que STRIPE_SECRET_KEY est absent -> 503 propre (aucun crash au démarrage,
+    aucun faux paiement). Le front gère le 503 en « bientôt disponible »."""
+    import os
+    plan = (body or {}).get("plan", "")
+    price_env = {"pro": "STRIPE_PRICE_PRO", "scale": "STRIPE_PRICE_SCALE"}.get(plan)
+    if not price_env:
+        raise HTTPException(400, "Plan inconnu (attendu : 'pro' ou 'scale').")
+    secret = os.environ.get("STRIPE_SECRET_KEY")
+    if not secret:
+        raise HTTPException(503, "Stripe non configuré (STRIPE_SECRET_KEY manquant).")
+    price_id = os.environ.get(price_env)
+    if not price_id:
+        raise HTTPException(503, f"Stripe non configuré ({price_env} manquant).")
+    try:
+        import stripe
+    except ImportError:
+        raise HTTPException(503, "Dépendance 'stripe' absente côté serveur.")
+    stripe.api_key = secret
+    site = os.environ.get("TANDOR_SITE_URL", "http://localhost:3000").rstrip("/")
+    try:
+        session = stripe.checkout.Session.create(
+            mode="subscription",
+            line_items=[{"price": price_id, "quantity": 1}],
+            client_reference_id=user.get("uid"),
+            success_url=f"{site}/dashboard?checkout=success",
+            cancel_url=f"{site}/dashboard?checkout=cancel",
+        )
+    except Exception as exc:  # noqa: BLE001 — on remonte une erreur propre au front
+        raise HTTPException(502, f"Échec création session Stripe : {exc}")
+    return {"url": session.url}
+
+
+import threading as _threading
+
+# Throttle GLOBAL des scrapes live (toutes IP/utilisateurs confondus) : protège
+# l'unique IP du Pi d'un bannissement par abus de /api/validate.
+_VALIDATE_LOCK = _threading.Lock()
+_LAST_VALIDATE = [0.0]
+_VALIDATE_MIN_INTERVAL = 8.0  # secondes minimum entre deux scrapes live
+
+
 @app.post("/api/validate")
-def validate_product(body: ValidateRequest) -> dict[str, Any]:
+def validate_product(body: ValidateRequest,
+                     user: dict = Depends(require_user)) -> dict[str, Any]:
     """Analyse à la demande d'un produit (URL Amazon/AliExpress ou nom libre).
+
+    Réservé aux plans payants (déclenche du scraping live, ressource sensible) et
+    throttlé globalement pour ne pas faire bannir l'IP du Pi.
 
     Pipeline :
       1. Extraction du mot-clé depuis l'input.
@@ -477,6 +945,15 @@ def validate_product(body: ValidateRequest) -> dict[str, Any]:
       6. Saisonnalité.
       7. Score Tandor combiné + verdict final.
     """
+    plan = plan_for(user)
+    if plan == "free":
+        raise HTTPException(403, "Validation live réservée aux plans payants.")
+    charge_quota(user["uid"], plan, cost=VALIDATE_COST)
+    with _VALIDATE_LOCK:
+        if time.time() - _LAST_VALIDATE[0] < _VALIDATE_MIN_INTERVAL:
+            raise HTTPException(429, "Trop de validations rapprochées, réessaie dans quelques secondes.")
+        _LAST_VALIDATE[0] = time.time()
+
     t0 = time.time()
 
     # 1. Keyword

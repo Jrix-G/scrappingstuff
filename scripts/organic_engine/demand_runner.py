@@ -29,6 +29,7 @@ sys.path.insert(0, str(ENGINE))
 import demand_queue as q
 import notify_discord as notify
 from collectors import amazon_demand as amz
+from collectors import parse_health as ph
 
 # ── Pacing (demandé : 5–10 s aléatoire entre produits Amazon) ────────────────
 PACE_MIN, PACE_MAX = 3.0, 6.0    # cadence accélérée (ban mesuré ~0,2 %, backoff couvre la dérive)
@@ -117,6 +118,7 @@ def main() -> None:
             consec_blocks += 1
             blocks_this_hour += 1
             q.record_amazon(c, d)
+            ph.record(c, "amazon", readable=False, extracted=0)
             idx = min(consec_blocks - 1, len(COOLDOWNS) - 1)
             base = COOLDOWNS[idx]
             sleep = base + random.uniform(0, base * 0.5)
@@ -141,6 +143,9 @@ def main() -> None:
         # Breakout AVANT l'insert : le snapshot courant ne doit pas fausser le record.
         is_breakout = q.amazon_breakout(c, kw, d.max_bought)
         q.record_amazon(c, d)
+        # Santé parseur : page lisible (non bloquée) -> on suit le taux de pages
+        # portant ≥1 badge « bought ». S'effondre à ~0 si _BADGE_RE casse.
+        ph.record(c, "amazon", readable=True, extracted=d.n_with_velocity)
         done += 1
         if is_breakout:
             notify.amazon_hot(kw, d.max_bought, d.median_bought,

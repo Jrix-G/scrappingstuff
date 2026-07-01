@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { authedFetch } from '../auth/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -155,7 +156,7 @@ export default function Validate() {
     setResult(null);
     setError(null);
     try {
-      const res = await fetch(`${api.replace(/\/$/, '')}/api/validate`, {
+      const res = await authedFetch(`${api.replace(/\/$/, '')}/api/validate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: query.trim(), geo: geo.trim() }),

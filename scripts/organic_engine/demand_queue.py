@@ -21,6 +21,7 @@ from pathlib import Path
 ENGINE = Path(__file__).resolve().parent
 sys.path.insert(0, str(ENGINE))
 from vpn_warmer import _keyword  # même extraction de mots-clés que le reste du pipeline
+from shard import in_shard       # partition multi-nœuds : ne tirer que SON shard de mots-clés
 
 DB = ENGINE / "data" / "cj.db"
 
@@ -53,6 +54,43 @@ def init_schema(c: sqlite3.Connection) -> None:
             median_bought INTEGER, n_with_velocity INTEGER, n_results INTEGER
         );
         CREATE INDEX IF NOT EXISTS idx_amzsnap_kw ON amazon_snapshots(keyword);
+
+        -- Snapshots de signaux organiques précoces (alimentent le scoring via
+        -- signals/db_signals.py). Mêmes conventions que amazon_snapshots :
+        -- 1 ligne = 1 photo datée d'un mot-clé ; la vélocité se calcule sur ≥2 lignes.
+        -- TikTok : view_count/video_count du hashtag (cf. tiktok_trending.py).
+        CREATE TABLE IF NOT EXISTS tiktok_snapshots (
+            keyword TEXT, observed_at TEXT,
+            view_count INTEGER, video_count INTEGER,
+            PRIMARY KEY (keyword, observed_at)
+        );
+        CREATE INDEX IF NOT EXISTS idx_tiktoksnap_kw ON tiktok_snapshots(keyword);
+
+        -- Google Suggest (autocomplete) : score 0..100, saturation 0..1.
+        -- direction = dérivée série-niveau (non per-snapshot) -> NULL au flush.
+        CREATE TABLE IF NOT EXISTS suggest_snapshots (
+            keyword TEXT, observed_at TEXT,
+            score REAL, saturation REAL, direction REAL,
+            PRIMARY KEY (keyword, observed_at)
+        );
+        CREATE INDEX IF NOT EXISTS idx_suggestsnap_kw ON suggest_snapshots(keyword);
+
+        -- VAGUE 2 (tables créées maintenant, NON alimentées pour l'instant) :
+        -- Reddit : nb de mentions + score agrégé par mot-clé.
+        CREATE TABLE IF NOT EXISTS reddit_snapshots (
+            keyword TEXT, observed_at TEXT,
+            mentions INTEGER, score REAL,
+            PRIMARY KEY (keyword, observed_at)
+        );
+        CREATE INDEX IF NOT EXISTS idx_redditsnap_kw ON reddit_snapshots(keyword);
+
+        -- YouTube : nb de vidéos + total de vues par mot-clé.
+        CREATE TABLE IF NOT EXISTS youtube_snapshots (
+            keyword TEXT, observed_at TEXT,
+            video_count INTEGER, view_count INTEGER,
+            PRIMARY KEY (keyword, observed_at)
+        );
+        CREATE INDEX IF NOT EXISTS idx_youtubesnap_kw ON youtube_snapshots(keyword);
 
         CREATE TABLE IF NOT EXISTS amazon_queue (
             keyword TEXT PRIMARY KEY,
@@ -131,14 +169,16 @@ def _refresh_interval_h(max_bought: int | None) -> int:
 
 def next_amazon_keyword(c: sqlite3.Connection) -> str | None:
     """Prochain mot-clé Amazon à scraper : pending (couverture max) puis refresh dû
-    (vélocité décroissante)."""
+    (vélocité décroissante). Filtré sur le shard du nœud (partition multi-machines)."""
     # 1. Cold start : jamais scrapé, le plus de produits couverts d'abord.
-    row = c.execute(
+    #    On parcourt par couverture décroissante et on s'arrête au 1er du shard.
+    pend = c.execute(
         "SELECT keyword FROM amazon_queue WHERE scrape_count=0 "
-        "ORDER BY n_products DESC LIMIT 1"
-    ).fetchone()
-    if row:
-        return row[0]
+        "ORDER BY n_products DESC"
+    ).fetchall()
+    for (kw,) in pend:
+        if in_shard(kw):
+            return kw
     # 2. Refresh : dû selon la vélocité, les plus chauds d'abord.
     now = datetime.now(timezone.utc)
     cand = c.execute(
@@ -146,6 +186,8 @@ def next_amazon_keyword(c: sqlite3.Connection) -> str | None:
         "WHERE last_scraped IS NOT NULL ORDER BY last_max_bought DESC NULLS LAST"
     ).fetchall()
     for kw, last, mx in cand:
+        if not in_shard(kw):
+            continue
         try:
             age_h = (now - datetime.fromisoformat(last)).total_seconds() / 3600
         except Exception:
@@ -198,6 +240,8 @@ def next_aliexpress_keyword(c: sqlite3.Connection, min_age_h: int = 24) -> str |
         "SELECT keyword, last_scraped FROM aliexpress_queue ORDER BY priority DESC"
     ).fetchall()
     for kw, last in cand:
+        if not in_shard(kw):
+            continue
         if last is None:
             return kw
         try:
@@ -268,6 +312,8 @@ def next_sales_keyword(c: sqlite3.Connection, queue_table: str, min_age_h: int =
         f"SELECT keyword, last_scraped FROM {queue_table} ORDER BY priority DESC"
     ).fetchall()
     for kw, last in cand:
+        if not in_shard(kw):
+            continue
         if last is None:
             return kw
         try:

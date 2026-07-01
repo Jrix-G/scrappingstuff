@@ -5,7 +5,52 @@
    Preferences with a section sub-nav. The signature control is
    the CPA / markup widget that recomputes net margin + verdict
    live on a witness product.
+
+   PERSISTENCE — chaque réglage est lu au montage et sauvegardé
+   au changement. Socle fiable : localStorage (clé `tandor.settings`).
+   Miroir best-effort dans Firestore `users/{uid}.settings` quand un
+   utilisateur est connecté (try/catch — n'échoue jamais l'UI).
+   Langue / densité / marché restent pilotés par le Shell (clés
+   `tandor_lang` / `tandor_density` / `tandor_market`) via Sh.*.
    ============================================================ */
+import { auth, db } from '../auth/firebase';
+import { doc, setDoc } from 'firebase/firestore';
+
+const SETTINGS_KEY = 'tandor.settings';
+
+function defaultSettings(fallbackGeo) {
+  return {
+    tz: 'Europe/Paris (UTC+1)',
+    geo: fallbackGeo || 'FR',          // code marché pour la géographie Trends
+    src: { trends: true, reddit: true, cj: true },
+    cpa: 10,
+    markup: 4.2,
+    view: 'table',                     // vue par défaut : 'table' | 'cards'
+    notif: { em: true, pu: true, wk: false },
+  };
+}
+
+function loadSettings(fallbackGeo) {
+  const d = defaultSettings(fallbackGeo);
+  let v = {};
+  try { v = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') || {}; } catch (e) { v = {}; }
+  return {
+    ...d, ...v,
+    src: { ...d.src, ...(v.src || {}) },
+    notif: { ...d.notif, ...(v.notif || {}) },
+  };
+}
+
+function saveSettings(st) {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(st)); } catch (e) {}
+  // Miroir Firestore best-effort — ne bloque ni n'échoue jamais l'UI.
+  try {
+    if (auth && auth.currentUser && db) {
+      setDoc(doc(db, 'users', auth.currentUser.uid), { settings: st }, { merge: true }).catch(() => {});
+    }
+  } catch (e) {}
+}
+
 export function mountSettings() {
   'use strict';
   const Sh = window.Shell, T = window.TANDOR, P = T.PRODUCTS;
@@ -49,7 +94,9 @@ export function mountSettings() {
   const L = () => STR[Sh.lang];
 
   const NAV = [['nav_gen', 'gen', 'settings'], ['nav_mkt', 'mkt', 'globe'], ['nav_src', 'src', 'layers'], ['nav_disp', 'disp', 'eye'], ['nav_notif', 'notif', 'bell']];
-  let cpa = 10, markup = 4.2; // markup multiple
+  // État persisté (lu au montage). cpa/markup en miroir pour le widget témoin.
+  const st = loadSettings(Sh.market());
+  let cpa = st.cpa, markup = st.markup; // markup multiple
   const witnessId = 'CJ-4471';
 
   function render() {
@@ -74,17 +121,17 @@ export function mountSettings() {
       ${card('gen', s.gen, s.gen_s, `
         ${line(s.lang, s.lang_s, `<div class="seg-inline" id="langSeg"><button data-l="en" class="${Sh.lang === 'en' ? 'on' : ''}">EN</button><button data-l="fr" class="${Sh.lang === 'fr' ? 'on' : ''}">FR</button></div>`)}
         ${line(s.theme, s.theme_s, densitySeg())}
-        ${line(s.tz, s.tz_s, `<div class="sel-wrap"><select class="sel">${['Europe/Paris (UTC+1)', 'Europe/London (UTC+0)', 'America/New_York (UTC−5)'].map((t) => `<option>${t}</option>`).join('')}</select></div>`)}
+        ${line(s.tz, s.tz_s, `<div class="sel-wrap"><select class="sel" id="tzSel">${['Europe/Paris (UTC+1)', 'Europe/London (UTC+0)', 'America/New_York (UTC−5)'].map((t) => `<option ${t === st.tz ? 'selected' : ''}>${t}</option>`).join('')}</select></div>`)}
       `)}
       ${card('mkt', s.mkt, s.mkt_s, `
         ${line(s.def_mkt, s.def_mkt_s, marketSel())}
-        ${line(s.geo, s.geo_s, `<div class="sel-wrap"><select class="sel">${T.MARKETS.map((m) => `<option>${m.flag} ${m[Sh.lang]}</option>`).join('')}</select></div>`)}
+        ${line(s.geo, s.geo_s, `<div class="sel-wrap"><select class="sel" id="geoSel">${T.MARKETS.map((m) => `<option value="${m.code}" ${m.code === st.geo ? 'selected' : ''}>${m.flag} ${m[Sh.lang]}</option>`).join('')}</select></div>`)}
       `)}
       ${cardRaw('src', s.src, s.src_s, `
         <div class="set-body">
-          ${line(s.s_trends, s.s_trends_s, switchEl('trends', true))}
-          ${line(s.s_reddit, s.s_reddit_s, switchEl('reddit', true))}
-          ${line(s.s_cj, s.s_cj_s, switchEl('cj', true))}
+          ${line(s.s_trends, s.s_trends_s, switchEl('trends', st.src.trends))}
+          ${line(s.s_reddit, s.s_reddit_s, switchEl('reddit', st.src.reddit))}
+          ${line(s.s_cj, s.s_cj_s, switchEl('cj', st.src.cj))}
         </div>
         <div class="set-card-h" style="border-top:1px solid var(--border-subtle)"><div class="ttl" style="font-size:13.5px">${s.cpa}</div><div class="sub">${s.cpa_s}</div></div>
         <div class="cpa-impact">
@@ -96,12 +143,12 @@ export function mountSettings() {
         </div>`)}
       ${cardRaw('disp', s.disp, s.disp_s, `<div class="set-body">
         ${line(s.d_density, '', densitySeg('2'))}
-        ${line(s.d_view, '', `<div class="seg-inline"><button class="on">${s.v_table}</button><button>${s.v_cards}</button></div>`)}
+        ${line(s.d_view, '', `<div class="seg-inline" id="viewSeg"><button data-v="table" class="${st.view === 'table' ? 'on' : ''}">${s.v_table}</button><button data-v="cards" class="${st.view === 'cards' ? 'on' : ''}">${s.v_cards}</button></div>`)}
       </div>`)}
       ${cardRaw('notif', s.notif, s.notif_s, `<div class="set-body">
-        ${line(s.n_email, s.n_email_s, switchEl('em', true))}
-        ${line(s.n_push, s.n_push_s, switchEl('pu', true))}
-        ${line(s.n_weekly, s.n_weekly_s, switchEl('wk', false))}
+        ${line(s.n_email, s.n_email_s, switchEl('em', st.notif.em))}
+        ${line(s.n_push, s.n_push_s, switchEl('pu', st.notif.pu))}
+        ${line(s.n_weekly, s.n_weekly_s, switchEl('wk', st.notif.wk))}
       </div>
       <div class="set-foot"><button class="btn-pri" id="saveBtn">${s.save}</button></div>`)}
     `;
@@ -117,7 +164,11 @@ export function mountSettings() {
   function marketSel() { const cur = Sh.market(); return `<div class="sel-wrap"><select class="sel" id="mktSel">${T.MARKETS.map((m) => `<option value="${m.code}" ${m.code === cur ? 'selected' : ''}>${m.flag} ${m[Sh.lang]}</option>`).join('')}</select></div>`; }
 
   function renderWitness() {
-    const s = L(), p = P.find((x) => x.id === witnessId);
+    const s = L();
+    // Produit témoin : l'ID de démo peut ne pas exister sur la donnée live —
+    // on retombe alors sur le 1er produit du catalogue. Empty-state si vide.
+    const p = P.find((x) => x.id === witnessId) || P[0];
+    if (!p) { $('#witness').innerHTML = ''; return; }
     const retail = p.cost * markup;
     const gross = retail - p.cost;
     const net = Math.max(0, gross - cpa);
@@ -147,13 +198,34 @@ export function mountSettings() {
 
   function wireControls() {
     const s = L();
+    // Langue / densité / marché : pilotés (et persistés) par le Shell.
     $$('#langSeg button').forEach((b) => b.addEventListener('click', () => { if (b.dataset.l !== Sh.lang) Sh.setLang(b.dataset.l); }));
     $$('[id^="densitySeg"] button').forEach((b) => b.addEventListener('click', () => { Sh.setDensity(b.dataset.d, true); $$('[id^="densitySeg"] button').forEach((x) => x.classList.toggle('on', x.dataset.d === b.dataset.d)); }));
-    $$('#setStack .switch').forEach((sw) => sw.addEventListener('click', () => sw.classList.toggle('on')));
     if ($('#mktSel')) $('#mktSel').addEventListener('change', (e) => { Sh.LS.set('market', e.target.value); Sh.toast(s.saved); });
+
+    // Switches sources (trends/reddit/cj) + notifications (em/pu/wk) → tandor.settings.
+    const SRC_KEYS = { trends: 1, reddit: 1, cj: 1 };
+    $$('#setStack .switch').forEach((sw) => sw.addEventListener('click', () => {
+      sw.classList.toggle('on');
+      const k = sw.dataset.sw, on = sw.classList.contains('on');
+      if (SRC_KEYS[k]) st.src[k] = on; else st.notif[k] = on;
+      saveSettings(st);
+    }));
+
+    // Fuseau horaire (préférence — pas d'effet client réel, persistée honnêtement).
+    if ($('#tzSel')) $('#tzSel').addEventListener('change', (e) => { st.tz = e.target.value; saveSettings(st); Sh.toast(s.saved); });
+    // Géographie Trends (code marché).
+    if ($('#geoSel')) $('#geoSel').addEventListener('change', (e) => { st.geo = e.target.value; saveSettings(st); Sh.toast(s.saved); });
+    // Vue par défaut (table/cards).
+    $$('#viewSeg button').forEach((b) => b.addEventListener('click', () => { st.view = b.dataset.v; $$('#viewSeg button').forEach((x) => x.classList.toggle('on', x === b)); saveSettings(st); }));
+
+    // CPA / markup : aperçu live à l'input, persistance au relâchement (change).
     $('#cpaRng').addEventListener('input', (e) => { cpa = +e.target.value; $('#cpaVal').textContent = money(cpa, 1); renderWitness(); });
+    $('#cpaRng').addEventListener('change', () => { st.cpa = cpa; saveSettings(st); });
     $('#muRng').addEventListener('input', (e) => { markup = +e.target.value; $('#muVal').textContent = '×' + markup.toFixed(1); renderWitness(); });
-    if ($('#saveBtn')) $('#saveBtn').addEventListener('click', () => Sh.toast(s.saved));
+    $('#muRng').addEventListener('change', () => { st.markup = markup; saveSettings(st); });
+
+    if ($('#saveBtn')) $('#saveBtn').addEventListener('click', () => { st.cpa = cpa; st.markup = markup; saveSettings(st); Sh.toast(s.saved); });
   }
 
   Sh.start({ active: 'n_settings', render });

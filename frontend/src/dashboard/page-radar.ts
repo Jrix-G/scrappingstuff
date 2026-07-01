@@ -70,7 +70,7 @@ export function mountRadar() {
 
     $('#catSel').addEventListener('change', (e) => { catFilter = e.target.value; selectedId = pool()[0] ? pool().slice().sort((a, b) => b.tandor - a.tandor)[0].id : null; render(); });
 
-    C.renderRadar($('#radarBox'), arr, { lang: Sh.lang, onSelect: (p) => { selectedId = p.id; renderDetail(); highlightSel(); } });
+    renderRadarBox($('#radarBox'), arr, (p) => { selectedId = p.id; renderDetail(); highlightSel(); });
     renderDetail();
     requestAnimationFrame(highlightSel);
   }
@@ -91,10 +91,13 @@ export function mountRadar() {
     if (!p) { $('#rdPanel').innerHTML = `<div class="rd-empty"><div class="e-art" style="margin:0 auto 16px">${ic('radar')}</div><div class="e-t">${s.select}</div><div class="e-s">${s.select_s}</div></div>`; return; }
     selectedId = p.id;
     const ph = T.PHASES[p.phase], col = `var(--${ph.v})`;
-    const ringCol = p.verdict === 'BUY' ? col : p.verdict === 'WATCH' ? 'var(--watch)' : 'var(--pass)';
-    const up = p.growth >= 0;
+    const ringCol = p.trapVerdict === 'VIABLE' ? col : p.trapVerdict === 'RISKY' ? 'var(--watch)' : 'var(--pass)';
+    const tm = T.trapMeta(p, Sh.lang);
+    const up = (p.growth || 0) >= 0;
+    const gTxt = p.hasGrowth ? `${up ? '+' : ''}${Math.round(p.growth * 100)}%` : (Sh.lang === 'fr' ? 'n.d.' : 'n/a');
     const opp = p.tandor >= 78 ? s.high : p.tandor >= 60 ? s.med : s.low;
     const riskLbl = p.risk === 'low' ? T.STR[Sh.lang].risk_low : p.risk === 'mod' ? T.STR[Sh.lang].risk_mod : T.STR[Sh.lang].risk_high;
+    // Jauges : la valeur peut être null (non mesuré) -> rendu « non mesuré », pas un faux 0.
     const gauges = [[s.velocity, p.growthScore, 'var(--signal)'], [s.margin, Math.round(p.margin_pct * 100), 'var(--buy)'], ['Reddit', p.redditScore, 'var(--reddit)'], ['Trends', p.trendsScore, 'var(--azure)']];
     $('#rdPanel').innerHTML = `
       <div class="rd-hero">
@@ -107,7 +110,7 @@ export function mountRadar() {
       </div>
       <div style="padding:14px 18px;display:flex;flex-direction:column;gap:9px">
         <div class="pd-fact" style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--text-tertiary)">${s.opportunity}</span><b style="color:${ringCol}">${opp} ${up ? '▲' : '▼'}</b></div>
-        <div class="pd-fact" style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--text-tertiary)">${s.verdict}</span><span class="verdict ${T.VERDICTS[p.verdict].v}">${T.VERDICTS[p.verdict][Sh.lang]}</span></div>
+        <div class="pd-fact" style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--text-tertiary)">${s.verdict}</span><span><span class="verdict ${tm.v}">${tm.label}</span>${tm.coverage ? `<span class="mono" style="margin-left:6px;font-size:10px;color:var(--text-tertiary)">· ${tm.coverage}</span>` : ''}</span></div>
         <div class="pd-fact" style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--text-tertiary)">${s.phase}</span><span class="badge phase-badge"><span class="pdot" style="background:${col}"></span>${ph[Sh.lang]}</span></div>
         <div class="pd-fact" style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--text-tertiary)">${s.risk}</span><b class="risk ${p.risk}" style="white-space:nowrap"><span class="rdot"></span>${riskLbl}</b></div>
         <div class="pd-fact" style="display:flex;justify-content:space-between;font-size:12.5px"><span style="color:var(--text-tertiary)">${s.conf}</span><b class="mono">${pct(p.confidence * 100)}</b></div>
@@ -115,15 +118,111 @@ export function mountRadar() {
       <div style="padding:0 18px 6px">
         <div class="pd-econ" style="grid-template-columns:1fr 1fr">
           <div class="pd-econ-tile"><span class="micro">${s.margin}</span><b class="mono">${money(p.net, 1)}</b></div>
-          <div class="pd-econ-tile"><span class="micro">${s.velocity}</span><b class="mono" style="color:${up ? 'var(--buy)' : 'var(--pass)'}">${up ? '+' : ''}${Math.round(p.growth * 100)}%</b></div>
+          <div class="pd-econ-tile"><span class="micro">${s.velocity}</span><b class="mono" style="color:${up ? 'var(--buy)' : 'var(--pass)'}">${gTxt}</b></div>
           ${(p.aliExpressSold != null && p.aliExpressSold > 0) ? `<div class="pd-econ-tile"><span class="micro">${Sh.lang === 'fr' ? 'Vendus (AliExpress)' : 'Sold (AliExpress)'}</span><b class="mono">${Sh.fmt(p.aliExpressSold)}</b></div>` : ''}
           ${(p.salesScore != null) ? `<div class="pd-econ-tile"><span class="micro">${Sh.lang === 'fr' ? 'Score demande' : 'Demand score'}</span><b class="mono">${Math.round(p.salesScore)}</b></div>` : ''}
         </div>
       </div>
-      <div style="padding:14px 18px 4px">${gauges.map(([k, v, c]) => `<div class="pd-gauge"><span class="pd-g-l">${k}</span>${C.microGauge(v, c)}<span class="pd-g-v mono">${Math.round(v)}</span></div>`).join('')}</div>
+      <div style="padding:14px 18px 4px">${gauges.map(([k, v, c]) => (v == null || Number.isNaN(v))
+        ? `<div class="pd-gauge"><span class="pd-g-l">${k}</span><span class="pd-g-v mono" style="color:var(--text-tertiary);margin-left:auto">${Sh.lang === 'fr' ? 'non mesuré' : 'n/a'}</span></div>`
+        : `<div class="pd-gauge"><span class="pd-g-l">${k}</span>${C.microGauge(v, c)}<span class="pd-g-v mono">${Math.round(v)}</span></div>`).join('')}</div>
       <div style="padding:8px 18px 6px"><p style="font-size:12px;color:var(--text-secondary);line-height:1.55">${p.reason[Sh.lang]}</p></div>
       <div style="padding:12px 18px 16px"><button class="btn-pri" style="width:100%" id="rdOpen">${ic('eye')}${s.open}</button></div>`;
     $('#rdOpen').addEventListener('click', () => Sh.openProduct(p));
+  }
+
+  /* ============================================================
+     Radar matrix — rendu LOCAL (page-radar). Bulles positionnées
+     par maturity (x) × momentum (y), TAILLE = marge brute (p.gross),
+     halo = confiance réelle (p.confidence). Données = T.PRODUCTS.
+     ------------------------------------------------------------
+     Correctif lisibilité : l'ancienne échelle (rayon 6→18px, halo
+     +4px) produisait des bulles géantes qui se chevauchaient. Ici
+     rayon 4→14px avec mise à l'échelle √(marge) pour limiter les
+     écarts, halo discret (+3px max) atténué quand la confiance est
+     faible — on n'invente aucun signal.
+     ============================================================ */
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  const R_MIN = 4, R_MAX = 14; // rayon lisible, non chevauchant
+
+  function radarTip(p) {
+    const s = L();
+    const marginLbl = Sh.lang === 'fr' ? 'Marge brute' : 'Gross margin';
+    return `<div class="tip-h"><b>${p.name}</b><span class="tip-score">${p.tandor}</span></div>
+      <div class="tip-rows">
+        <div><span>${s.momentum}</span><b>${Math.round(p.momentum)}</b></div>
+        <div><span>${s.maturity}</span><b>${Math.round(p.maturity)}</b></div>
+        <div><span>${marginLbl}</span><b>+${(p.gross || 0).toFixed(0)}€</b></div>
+        <div><span>${s.conf}</span><b>${Math.round((p.confidence || 0) * 100)}%</b></div>
+      </div>`;
+  }
+
+  function renderRadarBox(box, arr, onSelect) {
+    const s = L();
+    box.innerHTML = '';
+    // Empty-state honnête : aucun produit pour ce filtre.
+    if (!arr || !arr.length) {
+      box.innerHTML = `<div class="rd-empty" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:24px">
+        <div class="e-art" style="margin:0 auto 14px">${ic('radar')}</div>
+        <div class="e-t">${Sh.lang === 'fr' ? 'Aucun produit à afficher' : 'No product to display'}</div>
+        <div class="e-s">${Sh.lang === 'fr' ? 'Aucun signal pour ce filtre.' : 'No signal for this filter.'}</div></div>`;
+      return;
+    }
+    const W = box.clientWidth || 360, H = box.clientHeight || 420;
+    const m = { t: 14, r: 14, b: 26, l: 30 };
+    const pw = W - m.l - m.r, ph = H - m.t - m.b;
+    const x = (v) => m.l + (clamp(v, 0, 100) / 100) * pw;
+    const y = (v) => m.t + (1 - clamp(v, 0, 100) / 100) * ph;
+
+    const root = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, class: 'radar-svg', width: W, height: H }, box);
+
+    // target quadrant tint (haut-gauche = faible maturité, fort momentum)
+    svgEl('rect', { x: m.l, y: m.t, width: pw / 2, height: ph / 2, fill: 'var(--signal)', 'fill-opacity': '.06', rx: 6 }, root);
+    // grille
+    [25, 50, 75].forEach((g) => {
+      svgEl('line', { x1: x(g), y1: m.t, x2: x(g), y2: m.t + ph, stroke: 'var(--border-subtle)', 'stroke-width': 1 }, root);
+      svgEl('line', { x1: m.l, y1: y(g), x2: m.l + pw, y2: y(g), stroke: 'var(--border-subtle)', 'stroke-width': 1 }, root);
+    });
+    // croix médiane
+    svgEl('line', { x1: x(50), y1: m.t, x2: x(50), y2: m.t + ph, stroke: 'var(--border-strong)', 'stroke-width': 1, 'stroke-dasharray': '3 3' }, root);
+    svgEl('line', { x1: m.l, y1: y(50), x2: m.l + pw, y2: y(50), stroke: 'var(--border-strong)', 'stroke-width': 1, 'stroke-dasharray': '3 3' }, root);
+    // labels de quadrant
+    const qlab = (tx, ty, text, strong) => { const t = svgEl('text', { x: tx, y: ty, class: 'radar-q' + (strong ? ' strong' : ''), 'text-anchor': 'middle' }, root); t.textContent = text; };
+    qlab(m.l + pw * 0.25, m.t + 12, s.q_emerg, true);
+    qlab(m.l + pw * 0.75, m.t + 12, s.q_growth);
+    qlab(m.l + pw * 0.75, m.t + ph - 6, s.q_sat);
+    qlab(m.l + pw * 0.25, m.t + ph - 6, s.q_avoid);
+    // axes
+    const ax = svgEl('text', { x: m.l + pw / 2, y: H - 6, class: 'radar-axis', 'text-anchor': 'middle' }, root); ax.textContent = s.maturity + ' →';
+    const ay = svgEl('text', { x: 9, y: m.t + ph / 2, class: 'radar-axis', 'text-anchor': 'middle', transform: `rotate(-90 9 ${m.t + ph / 2})` }, root); ay.textContent = s.momentum + ' →';
+
+    // bulles — 20 meilleurs par score, taille = marge brute, halo = confiance
+    const top = arr.slice().sort((a, b) => b.tandor - a.tandor).slice(0, 20);
+    const maxMargin = Math.max(1, ...top.map((p) => p.gross || 0));
+    top.forEach((p, i) => {
+      const cx = x(p.maturity), cy = y(p.momentum);
+      // √-échelle : conserve « taille = marge » mais resserre l'écart min/max.
+      const frac = Math.sqrt(Math.max(0, p.gross || 0) / maxMargin);
+      const r = R_MIN + frac * (R_MAX - R_MIN);
+      const conf = clamp(p.confidence || 0, 0, 1);
+      const col = `var(--${T.PHASES[p.phase].v})`;
+      const g = svgEl('g', { class: 'radar-bub', 'data-id': p.id, style: `--d:${i * 35}ms` }, root);
+      g.style.cursor = 'pointer';
+      // halo = confiance (discret quand la confiance est faible)
+      svgEl('circle', { cx, cy, r: r + 3 * conf, fill: col, 'fill-opacity': (0.07 + 0.10 * conf).toFixed(2) }, g);
+      const dot = svgEl('circle', { cx, cy, r, fill: col, 'fill-opacity': '.7', stroke: col, 'stroke-width': 1.5 }, g);
+      g.addEventListener('mouseenter', (e) => { dot.setAttribute('fill-opacity', '.95'); window.Tip && window.Tip.show(radarTip(p), e); });
+      g.addEventListener('mousemove', (e) => window.Tip && window.Tip.move(e));
+      g.addEventListener('mouseleave', () => { dot.setAttribute('fill-opacity', '.7'); window.Tip && window.Tip.hide(); });
+      g.addEventListener('click', () => onSelect && onSelect(p));
+    });
   }
 
   Sh.start({ active: 'n_radar', render });

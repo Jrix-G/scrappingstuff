@@ -19,9 +19,10 @@ import json
 import re
 import time
 import urllib.parse
-import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
+
+from utils import http  # transport partagé curl_cffi chrome131 (→ urllib de repli)
 
 _CACHE_DIR = Path(__file__).resolve().parent.parent / ".trends_cache"
 _SNAP_TTL = 20 * 3600          # 1 snapshot / ~jour max (évite de re-taper l'endpoint)
@@ -41,15 +42,11 @@ class SuggestError(Exception):
 
 
 def _http_json(url: str) -> object:
-    req = urllib.request.Request(url, headers={
-        "User-Agent": _UA,
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "en-US,en;q=0.9",
-    })
-    with urllib.request.urlopen(req, timeout=_TIMEOUT) as r:
-        if r.status != 200:
-            raise SuggestError(f"HTTP {r.status}")
-        body = r.read().decode("utf-8", "replace")
+    res = http.get_text(url, headers={"Accept": "application/json, text/plain, */*"},
+                        timeout=_TIMEOUT)
+    if res.status != 200:
+        raise SuggestError(f"HTTP {res.status}")
+    body = res.text
     # Détection blocage/captcha sommaire.
     low = body[:400].lower()
     if "captcha" in low or "unusual traffic" in low or body.strip().startswith("<"):

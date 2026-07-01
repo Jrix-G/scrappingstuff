@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './auth/AuthContext';
+import type { Plan } from './auth/AuthContext';
 import Home from './Pages/Home';
 import Home_by from './Pages/Home_by';
 import Dashboard from './Pages/Dashboard';
@@ -29,10 +30,16 @@ const settings = () => import('./dashboard/page-settings').then((m) => ({ mount:
 const billing = () => import('./dashboard/page-billing').then((m) => ({ mount: m.mountBilling }));
 const account = () => import('./dashboard/page-account').then((m) => ({ mount: m.mountAccount }));
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+function ProtectedRoute({ children, requirePlan }:
+    { children: React.ReactNode; requirePlan?: Plan[] }) {
+  const { user, profile, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
+  // Fail-CLOSED : si aucun plan résolu, on ne suppose JAMAIS un accès payant.
+  if (requirePlan) {
+    const plan = profile?.plan ?? 'free';
+    if (!requirePlan.includes(plan)) return <Navigate to="/pricing" replace />;
+  }
   return <>{children}</>;
 }
 
@@ -44,7 +51,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/homeby" element={<Home_by />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/validate" element={<ProtectedRoute><Validate /></ProtectedRoute>} />
+        <Route path="/validate" element={<ProtectedRoute requirePlan={['starter', 'pro']}><Validate /></ProtectedRoute>} />
 
         {/* 12 pages internes du dashboard (shell partagé, protégées) */}
         <Route path="/discovery"  element={<ProtectedRoute><DashPage loader={discovery} /></ProtectedRoute>} />

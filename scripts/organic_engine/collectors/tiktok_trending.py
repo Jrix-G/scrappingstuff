@@ -17,16 +17,16 @@ Rate-limit : ≥ 2 s entre requêtes réseau (endpoint testé à 100 req/min san
 
 from __future__ import annotations
 
-import gzip
 import hashlib
 import json
+import random
 import re
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
+
+from utils import http  # transport partagé curl_cffi chrome131 (→ urllib de repli)
 
 _UA_DESKTOP = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -122,32 +122,45 @@ def _to_hashtag(keyword: str) -> str:
 
 def _fetch_page(hashtag: str) -> str:
     global _last_req_ts
-    wait = _MIN_INTERVAL - (time.time() - _last_req_ts)
+    # Cadence polie + jitter : drainer ~4000 mots-clés/nuit est plus de volume que
+    # l'ancien batch unique de 400, donc on désynchronise les requêtes pour ne pas
+    # présenter un métronome parfait à l'anti-bot (le pacing reste ≥ _MIN_INTERVAL).
+    wait = _MIN_INTERVAL + random.uniform(0.3, 1.2) - (time.time() - _last_req_ts)
     if wait > 0:
         time.sleep(wait)
 
     url = _API_URL.format(tag=urllib.parse.quote(hashtag))
-    req = urllib.request.Request(url, headers={
-        "User-Agent": _UA_MOBILE,
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate",
-        "Referer": "https://www.tiktok.com/",
-        "Connection": "keep-alive",
-    })
     try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            raw = resp.read()
-            if "gzip" in (resp.headers.get("Content-Encoding") or ""):
-                raw = gzip.decompress(raw)
-            body = raw.decode("utf-8", "replace")
-    except urllib.error.HTTPError as exc:
-        if exc.code == 404:
-            raise TikTokNoData(f"Hashtag #{hashtag} introuvable (HTTP 404)")
-        # 4xx/5xx (429, 403…) = l'IP/endpoint est rejeté → vrai blocage
-        raise TikTokBlocked(f"HTTP {exc.code} sur l'API challenge (#{hashtag})")
+        res = http.get_text(url, headers={
+            "Accept": "application/json, text/plain, */*",
+            "Referer": "https://www.tiktok.com/",
+        }, timeout=20)
     finally:
         _last_req_ts = time.time()
+
+    if res.status == 404:
+        raise TikTokNoData(f"Hashtag #{hashtag} introuvable (HTTP 404)")
+    if res.status == 0 or res.status in (403, 429) or res.status >= 500:
+        # échec transport / 4xx-5xx = l'IP/endpoint est rejeté → vrai blocage
+        raise TikTokBlocked(f"HTTP {res.status} sur l'API challenge (#{hashtag})")
+
+    body = res.text
+    # SOFT-BLOCK : TikTok renvoie de plus en plus un HTTP 200 avec un corps vide ou
+    # altéré (challengeInfo absent, statusCode ≠ 0, HTML de challenge) au lieu d'un
+    # 4xx franc. Avant, ce cas était parsé en (None, None) puis MIS EN CACHE 24 h
+    # comme « no data » → faux négatif persistant sur un mot-clé peut-être viral.
+    # On le traite désormais comme un blocage : pas de cache, réessai ultérieur.
+    # Un hashtag réellement inconnu, lui, renvoie un JSON valide (challengeInfo
+    # présent + statusCode 0) avec des stats vides → reste un « no data » légitime.
+    try:
+        data = json.loads(body)
+        valid = (isinstance(data, dict) and "challengeInfo" in data
+                 and data.get("statusCode", -1) == 0)
+    except Exception:
+        valid = False
+    if not valid:
+        raise TikTokBlocked(
+            f"Soft-block TikTok (HTTP 200 sans réponse API valide, #{hashtag})")
 
     return body
 
@@ -217,7 +230,8 @@ def fetch_hashtag(keyword: str) -> TikTokHashtagStats:
         result = TikTokHashtagStats(keyword=keyword, hashtag=hashtag)
         _cache_put(hashtag, result.as_dict())
         return result
-    except (urllib.error.URLError, TimeoutError):
+    except Exception:
+        # Le transport (utils.http) ne lève pas ; tout imprévu = blocage (non caché).
         result = TikTokHashtagStats(keyword=keyword, hashtag=hashtag, blocked=True)
         return result
 

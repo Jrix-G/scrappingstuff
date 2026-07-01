@@ -26,7 +26,12 @@ export function mountAlerts() {
       decline: 'In decline', trap: 'Money trap', open: 'Open',
       empty_t: 'No active alerts', empty_s: 'When a watched product slides into proven decline, it shows up here. Pin products from Discovery to start monitoring.',
       explore: 'Explore Discovery',
-      log_empty_t: 'No alerts fired yet', log_empty_s: 'The trigger log fills as your rules fire on real nightly collections.' },
+      log_empty_t: 'No alerts fired yet', log_empty_s: 'The trigger log fills as your rules fire on real nightly collections.',
+      recent: 'Recent alerts', recent_s: 'real triggered alerts from the latest collections',
+      recent_empty_t: 'No alert triggered yet', recent_empty_s: 'Your rules are active. As soon as a real collection trips one, it shows up here — nothing is shown until then.',
+      recent_loading: 'Loading alerts…', recent_err: 'Could not load alerts right now.',
+      sev_info: 'info', sev_warn: 'watch', sev_high: 'critical',
+      del: 'Delete', deleted: 'Rule deleted', bad_val: 'Enter a value first' },
     fr: { title: 'Alertes', sub: 'alertes de déclin en direct · règles · journal',
       builder: 'Nouvelle règle', when: 'Quand', then: 'alors notifier', create: 'Créer la règle',
       m_score: 'Score Tandor', m_growth: 'Croissance mensuelle', m_phase: 'Changement de phase', m_new: 'Nouveau produit en',
@@ -40,9 +45,54 @@ export function mountAlerts() {
       decline: 'En déclin', trap: 'Piège à fric', open: 'Ouvrir',
       empty_t: 'Aucune alerte active', empty_s: 'Quand un produit surveillé bascule en déclin prouvé, il apparaît ici. Épingle des produits depuis la Découverte pour les surveiller.',
       explore: 'Explorer la Découverte',
-      log_empty_t: 'Aucune alerte déclenchée', log_empty_s: 'Le journal se remplit au fur et à mesure que tes règles se déclenchent sur les collectes nocturnes réelles.' },
+      log_empty_t: 'Aucune alerte déclenchée', log_empty_s: 'Le journal se remplit au fur et à mesure que tes règles se déclenchent sur les collectes nocturnes réelles.',
+      recent: 'Alertes récentes', recent_s: 'alertes réellement déclenchées par les dernières collectes',
+      recent_empty_t: 'Aucune alerte déclenchée pour l’instant', recent_empty_s: 'Tes règles sont actives. Dès qu’une collecte réelle en déclenche une, elle apparaît ici — rien n’est affiché tant que ce n’est pas le cas.',
+      recent_loading: 'Chargement des alertes…', recent_err: 'Impossible de charger les alertes pour le moment.',
+      sev_info: 'info', sev_warn: 'à surveiller', sev_high: 'critique',
+      del: 'Supprimer', deleted: 'Règle supprimée', bad_val: 'Saisis d’abord une valeur' },
   };
   const L = () => STR[Sh.lang];
+
+  /* ---- helpers (API data is untrusted → always escape before innerHTML) ---- */
+  function esc(v) {
+    return String(v == null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  function relTime(iso) {
+    const t = Date.parse(iso);
+    if (isNaN(t)) return '';
+    const sec = Math.max(0, Math.round((Date.now() - t) / 1000));
+    const fr = Sh.lang === 'fr';
+    if (sec < 60) return fr ? "à l'instant" : 'just now';
+    const min = Math.round(sec / 60);
+    if (min < 60) return fr ? `il y a ${min} min` : `${min} min ago`;
+    const hr = Math.round(min / 60);
+    if (hr < 24) return fr ? `il y a ${hr} h` : `${hr} h ago`;
+    const day = Math.round(hr / 24);
+    return fr ? `il y a ${day} j` : `${day} d ago`;
+  }
+  const SEV = {
+    info: { col: 'var(--signal)', icon: 'bell', key: 'sev_info' },
+    warn: { col: 'var(--amber)', icon: 'activity', key: 'sev_warn' },
+    high: { col: 'var(--red)', icon: 'flame', key: 'sev_high' },
+  };
+  function sevMeta(s) { return SEV[s] || SEV.info; }
+
+  // Triggered-alert feed. Codes against the backend contract:
+  // GET /api/alerts -> { alerts: [...] }. May be {"alerts":[]} or 404 while the
+  // endpoint is being built — both resolve to an honest empty/error state.
+  async function fetchAlerts() {
+    if (T && typeof T.fetchAlerts === 'function') {
+      const a = await T.fetchAlerts();
+      return Array.isArray(a) ? a : [];
+    }
+    const r = await fetch('/api/alerts', { headers: { Accept: 'application/json' } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    return Array.isArray(j && j.alerts) ? j.alerts : [];
+  }
 
   /* ---- live decline alerts derived from the watchlist ---- */
   let watchedIds = [];
@@ -70,8 +120,36 @@ export function mountAlerts() {
     { metric: 'm_phase', op: 'o_enters', val: 'EMERGENT', chans: { app: true }, freq: 0, hrs: null, on: true },
     { metric: 'm_new', op: 'o_appears', val: 'WELLNESS', chans: { app: true, email: true }, freq: 0, hrs: null, on: false },
   ];
-  function getRules() { try { const v = Sh.LS.get('alert_rules', null); return v ? JSON.parse(v) : RULES.slice(); } catch (e) { return RULES.slice(); } }
-  function setRules(a) { Sh.LS.set('alert_rules', JSON.stringify(a)); }
+  // Normalise a stored/created rule, dropping anything malformed so no phantom
+  // rule (missing metric/op/value, wrong shape) ever reaches the list.
+  function sanitizeRule(r) {
+    if (!r || typeof r !== 'object') return null;
+    if (METRICS.indexOf(r.metric) === -1) return null;
+    if (opsFor(r.metric).indexOf(r.op) === -1) return null;
+    const val = (r.val == null ? '' : String(r.val)).trim();
+    if (!val) return null;
+    const c = r.chans && typeof r.chans === 'object' ? r.chans : {};
+    const chans = { app: !!c.app, email: !!c.email, webhook: !!c.webhook };
+    if (!chans.app && !chans.email && !chans.webhook) chans.app = true;
+    return {
+      metric: r.metric, op: r.op, val,
+      chans,
+      freq: Number.isFinite(+r.freq) ? Math.max(0, +r.freq) : 0,
+      hrs: (r.hrs == null || isNaN(+r.hrs)) ? null : +r.hrs,
+      on: r.on !== false,
+    };
+  }
+  function sanitizeList(arr) { return (Array.isArray(arr) ? arr : []).map(sanitizeRule).filter(Boolean); }
+  function getRules() {
+    try {
+      const v = Sh.LS.get('alert_rules', null);
+      if (v == null) return sanitizeList(RULES);
+      return sanitizeList(JSON.parse(v));
+    } catch (e) { return sanitizeList(RULES); }
+  }
+  function setRules(a) {
+    try { Sh.LS.set('alert_rules', JSON.stringify(sanitizeList(a))); } catch (e) {}
+  }
 
   function valDisplay(m, v) { if (m === 'm_phase') return T.PHASES[v] ? T.PHASES[v][Sh.lang] : v; if (m === 'm_new') return T.CATS[v] ? T.CATS[v][Sh.lang] : v; return v; }
   function nl(r) {
@@ -92,6 +170,10 @@ export function mountAlerts() {
       <section class="panel rv" style="margin-bottom:18px">
         <div class="panel-h"><div><div class="ttl">${s.live}</div><div class="sub">${s.live_s}</div></div></div>
         <div id="liveAlerts"></div>
+      </section>
+      <section class="panel rv" style="margin-bottom:18px">
+        <div class="panel-h"><div><div class="ttl">${s.recent}</div><div class="sub">${s.recent_s}</div></div></div>
+        <div id="recentAlerts"></div>
       </section>
       <section class="panel rv" style="margin-bottom:18px">
         <div class="panel-h"><div><div class="ttl">${s.builder}</div></div></div>

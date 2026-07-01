@@ -10,6 +10,8 @@ export function mountTrends() {
   const Sh = window.Shell, T = window.TANDOR, C = window.Charts, X = window.ChartsX, P = T.PRODUCTS;
   const $ = Sh.$, $$ = Sh.$$, ic = Sh.ic, clamp = Sh.clamp;
 
+  const isOffline = !((window as any).__TANDOR_PAGE__?.apiBase);
+
   const STR = {
     en: { title: 'Trend Analysis', sub: 'real demand curve · velocity · Trends score',
       compare: 'Compare keywords', add: 'Add product', win_3m: '3m', win_12m: '12m', win_5y: '5y',
@@ -21,7 +23,7 @@ export function mountTrends() {
       c_prod: 'Product', c_trends: 'Trends score', c_vel: 'Velocity', c_peak: 'Peak month', open: 'Open in Discovery',
       pick: 'Add a product to compare', perday: '/day', month: 'mo',
       no_curve_t: 'No real curve yet', no_curve_s: 'No product in the selection has a real demand history yet — score numbers below are real, the curve is being built.',
-      no_data: 'no data', score_real: 'Trends score (real)', curve_pending: 'curve in progress' },
+      no_data: 'no data', score_real: 'Trends score (real)', curve_pending: 'curve in progress', nm: 'not measured' },
     fr: { title: 'Analyse de tendances', sub: 'courbe de demande réelle · vélocité · score Trends',
       compare: 'Comparer des mots-clés', add: 'Ajouter un produit', win_3m: '3m', win_12m: '12m', win_5y: '5a',
       interest: 'Courbe de demande', interest_s: 'Demande réelle collectée (Amazon/AliExpress) · normalisée 0–100',
@@ -32,13 +34,14 @@ export function mountTrends() {
       c_prod: 'Produit', c_trends: 'Score Trends', c_vel: 'Vélocité', c_peak: 'Mois de pic', open: 'Ouvrir dans Discovery',
       pick: 'Ajoutez un produit à comparer', perday: '/jour', month: 'mois',
       no_curve_t: 'Pas encore de courbe réelle', no_curve_s: 'Aucun produit de la sélection n’a encore d’historique de demande réel — les scores ci-dessous sont réels, la courbe est en cours de constitution.',
-      no_data: 'pas de données', score_real: 'Score Trends (réel)', curve_pending: 'courbe en cours' },
+      no_data: 'pas de données', score_real: 'Score Trends (réel)', curve_pending: 'courbe en cours', nm: 'non mesuré' },
   };
   const L = () => STR[Sh.lang];
   const COLORS = ['var(--azure)', 'var(--signal)', 'var(--reddit)', 'var(--buy)', 'var(--watch)'];
   const WINDOWS = { '3m': 12, '12m': 22, '5y': 30 };
 
-  let selected = P.slice().sort((a, b) => b.trendsScore - a.trendsScore).slice(0, 3).map((p) => p.id);
+  // Tri par score Trends RÉEL ; les produits non mesurés (trendsScore null) coulent en bas.
+  let selected = P.slice().sort((a, b) => (b.trendsScore ?? -1) - (a.trendsScore ?? -1)).slice(0, 3).map((p) => p.id);
   let win = '12m', hidden = new Set();
 
   function colorFor(id) { return COLORS[selected.indexOf(id) % COLORS.length]; }
@@ -52,7 +55,13 @@ export function mountTrends() {
 
   function render() {
     const s = L();
+    const offlineBanner = isOffline
+      ? `<div class="notice-bar" style="background:var(--bg-warn,#fff3cd);color:var(--text-warn,#856404);padding:8px 18px;font-size:12.5px;border-radius:8px;margin-bottom:12px">
+          ${ic('alert')} ${Sh.lang === 'fr' ? 'API Pi indisponible — données statiques (60 produits). Configurez <b>REACT_APP_API_URL_LOCAL</b> pour pointer vers votre Pi en local.' : 'Pi API unavailable — showing static data (60 products). Set <b>REACT_APP_API_URL_LOCAL</b> to your Pi local IP to get live data.'}
+         </div>`
+      : '';
     $('#canvas').innerHTML = `
+      ${offlineBanner}
       <div class="page-head rv">
         <div><h1 class="page-title">${s.title}</h1>
           <div class="page-sub"><span class="live-dot"></span><span>${s.sub}</span></div></div>
@@ -101,11 +110,11 @@ export function mountTrends() {
     if ($('#kwAdd')) $('#kwAdd').addEventListener('click', openAdd);
   }
   function openAdd() {
-    const avail = P.filter((p) => !selected.includes(p.id)).sort((a, b) => b.trendsScore - a.trendsScore);
+    const avail = P.filter((p) => !selected.includes(p.id)).sort((a, b) => (b.trendsScore ?? -1) - (a.trendsScore ?? -1));
     if (!avail.length) return;
     // lightweight inline picker via cmdk-like popover reusing market popover styling
     const pop = $('#marketPop');
-    pop.innerHTML = `<div class="pop-h">${L().add}</div>` + avail.slice(0, 10).map((p) => `<div class="pop-item" data-id="${p.id}"><span class="ci-ico" style="width:24px;height:24px;border-radius:6px;background:var(--${T.PHASES[p.phase].v});color:#fff;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;font-weight:700">${p.name[0]}</span>${p.name}<span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary)">${p.trendsScore}</span></div>`).join('');
+    pop.innerHTML = `<div class="pop-h">${L().add}</div>` + avail.slice(0, 10).map((p) => `<div class="pop-item" data-id="${p.id}"><span class="ci-ico" style="width:24px;height:24px;border-radius:6px;background:var(--${T.PHASES[p.phase].v});color:#fff;display:grid;place-items:center;font-family:var(--font-mono);font-size:11px;font-weight:700">${p.name[0]}</span>${p.name}<span style="margin-left:auto;font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary)">${p.hasTrends ? p.trendsScore : '—'}</span></div>`).join('');
     pop.classList.add('show');
     const r = $('#kwAdd').getBoundingClientRect(); pop.style.top = (r.bottom + 8) + 'px'; pop.style.left = Math.min(r.left, innerWidth - 230) + 'px';
     $$('#marketPop .pop-item').forEach((it) => it.addEventListener('click', () => { selected.push(it.dataset.id); pop.classList.remove('show'); render(); }));
@@ -137,9 +146,9 @@ export function mountTrends() {
     const s = L();
     $('#velGrid').innerHTML = selected.map((id) => {
       const p = P.find((x) => x.id === id);
-      const up = p.growth >= 0;
-      // Velocity/acceleration are derived from the REAL curve only; growth and
-      // Trends score are real scalars and always shown.
+      // Velocity/acceleration are derived from the REAL curve only ; growth and
+      // Trends score sont des scalaires affichés UNIQUEMENT s'ils sont mesurés
+      // (drapeaux hasGrowth / hasTrends). Un null backend ne devient jamais « +0% ».
       const v = realCurve(p);
       let velRow, accelRow;
       if (v && v.length > 1) {
@@ -151,19 +160,30 @@ export function mountTrends() {
         velRow = `<b style="color:var(--text-tertiary)">—</b>`;
         accelRow = `<b style="color:var(--text-tertiary)">—</b>`;
       }
+      const trendsCell = p.hasTrends
+        ? `<b>${p.trendsScore}</b>`
+        : `<b style="color:var(--text-tertiary)" title="${s.nm}">—</b>`;
+      let growthCell;
+      if (p.hasGrowth) {
+        const up = p.growth >= 0;
+        growthCell = `<b class="${up ? 'up' : 'down'}">${up ? '+' : ''}${Math.round(p.growth * 100)}% /${s.month}</b>`;
+      } else {
+        growthCell = `<b style="color:var(--text-tertiary)" title="${s.nm}">—</b>`;
+      }
       return `<div class="vel-card">
         <div class="vc-h"><span class="vc-dot" style="background:${colorFor(id)}"></span>${p.name}</div>
         <div class="vc-rows">
-          <div class="vc-row"><span>${s.score_real}</span><b>${p.trendsScore}</b></div>
+          <div class="vc-row"><span>${s.score_real}</span>${trendsCell}</div>
           <div class="vc-row"><span>${s.vel_velocity}</span>${velRow}</div>
-          <div class="vc-row"><span>${s.vel_growth}</span><b class="${up ? 'up' : 'down'}">${up ? '+' : ''}${Math.round(p.growth * 100)}% /${s.month}</b></div>
+          <div class="vc-row"><span>${s.vel_growth}</span>${growthCell}</div>
           <div class="vc-row"><span>${s.vel_accel}</span>${accelRow}</div>
         </div></div>`;
     }).join('');
   }
   function renderRelated() {
     const s = L();
-    const rows = P.slice().sort((a, b) => b.trendsScore - a.trendsScore).slice(0, 8).map((p) => {
+    // Seuls les produits réellement scorés en Trends ; tri descendant, non mesurés exclus.
+    const rows = P.filter((p) => p.hasTrends).sort((a, b) => b.trendsScore - a.trendsScore).slice(0, 8).map((p) => {
       // Velocity only from the real demand curve; "—" when there's none yet.
       const v = realCurve(p);
       let velCell;
@@ -174,9 +194,9 @@ export function mountTrends() {
         <td class="num">${p.trendsScore}</td>
         <td class="num">${velCell}</td>
         <td>${T.MONTHS[Sh.lang][p.seasonPeak - 1]}</td>
-        <td class="num"><a class="panel-link" href="Tandor Discovery.html">${s.open} ${ic('arrowUR')}</a></td></tr>`;
+        <td class="num"><a class="panel-link" href="/discovery">${s.open} ${ic('arrowUR')}</a></td></tr>`;
     }).join('');
-    $('#relBody').innerHTML = rows;
+    $('#relBody').innerHTML = rows || `<tr><td colspan="5"><div class="empty" style="padding:36px 0"><div class="e-art">${ic('trend')}</div><div class="e-t">${s.no_curve_t}</div><div class="e-s">${s.nm}</div></div></td></tr>`;
     $$('#relBody tr').forEach((r) => r.addEventListener('click', (e) => { if (e.target.closest('a')) return; Sh.openProduct(P.find((p) => p.id === r.dataset.id)); }));
     $$('#relBody .panel-link svg').forEach((sv) => sv.style.width = '12px');
   }

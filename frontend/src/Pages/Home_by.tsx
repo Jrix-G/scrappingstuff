@@ -50,6 +50,9 @@ const Home = () => {
   
   return (
     <div style={{ padding: 20 }}>
+      {/* React 19 hoiste ces balises dans <head> : titre/desc uniques à cette page */}
+      <title>Tendances produits en direct — Tandor</title>
+      <meta name="description" content="Graphiques de tendances en temps réel : demande, ventes et déclin des produits suivis par Tandor." />
       <h1 style={{ textAlign: 'center' }}>Graphiques dynamiques</h1>
       {datasets.map(({ title, data, valueKey }) => (
         <TrendGraph key={title} title={title} data={data} valueKey={valueKey} />

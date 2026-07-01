@@ -66,7 +66,7 @@ log "=== Job quotidien terminé ==="
 
 # 5. Purge du cache HTML > 48h (le signal est déjà en base, le HTML ne sert plus)
 #    Plafonne .amazon_cache pour ne pas saturer les 16 Go libres du Pi.
-find "$ENGINE/.amazon_cache" -name '*.html' -mtime +2 -delete 2>/dev/null
+find "$ENGINE/.amazon_cache" -name '*.html' -mtime +1 -delete 2>/dev/null
 find "$ENGINE/.aliexpress_cache" -name '*.html' -mtime +2 -delete 2>/dev/null
 log "Purge cache HTML > 48h effectuée."
 
@@ -95,4 +95,33 @@ msg = (f"📊 **Rapport quotidien Tandor** — {collected:,} produits CJ "
        f"(+{new_today:,} aujourd'hui) · runner {'✅' if demand_ok else '❌'} · {free} dispo"
        + (f" · ⚠ {err}" if err else ""))
 notify.send(msg, ping=True)   # rapport quotidien = notifiant
+PYEOF
+
+# 7. Backup DB quotidien (snapshot atomique + intégrité + rotation). Aucun filet
+#    avant ça : Pi mort = données perdues.
+log "Backup DB..."
+bash "$ENGINE/deploy/backup_db.sh" >> "$LOG" 2>&1 && log "Backup DB OK." || log "⚠ Backup DB échoué."
+
+# 8. Santé des parseurs (détecteur de collecte morte) : alerte si un markup a
+#    cassé silencieusement (page lisible mais 0 extraction sur la fenêtre 24h).
+cd "$ENGINE" && python3 - >> "$LOG" 2>&1 <<'PYEOF'
+import sqlite3
+from pathlib import Path
+import notify_discord as notify
+from collectors import parse_health as ph
+
+db = Path.home() / "scrappingstuff/scripts/organic_engine/data/cj.db"
+try:
+    c = sqlite3.connect(db, timeout=10)
+    dead = ph.check(c)
+    c.close()
+    for d in dead:
+        notify.send(
+            f"🟠 **PARSEUR MORT — {d['source']}** : seulement {d['with_signal']}/{d['readable']} "
+            f"pages lisibles ont rendu un signal ({d['yield']*100:.0f}%). "
+            f"Markup probablement changé — vérifier les regex du collecteur.", ping=True)
+    if not dead:
+        print("Parse-health OK (toutes sources au-dessus du plancher).", flush=True)
+except Exception as e:
+    print(f"Parse-health check échoué : {e}", flush=True)
 PYEOF

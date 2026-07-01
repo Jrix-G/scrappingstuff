@@ -16,7 +16,8 @@ volume et sans rate-limit par IP agressif.
     - `ebay_browse.py` utilise l'API officielle Browse (OAuth) qui ne renvoie QUE les annonces
       ACTIVES, jamais les ventes (sold = Marketplace Insights API, refusée aux indés ; Finding
       API retirée en 2025). On NE s'en inspire PAS.
-    - Ici on SCRAPE la page web publique. stdlib pure : urllib + gzip + re + http.cookiejar.
+    - Ici on SCRAPE la page web publique via curl (subprocess) : Akamai 503 l'empreinte
+      TLS de urllib, curl (HTTP/2 + empreinte navigateur) passe. Parsing en re pur.
 
 Anti-bot eBay (Akamai Bot Manager + interstitiel « Pardon Our Interruption ») :
     - Une requête directe sur /sch/i.html à froid → 403 / 503 / interstitiel.
@@ -49,17 +50,18 @@ l'ignorer, pas la compter comme nulle).
 
 from __future__ import annotations
 
-import gzip
 import hashlib
-import http.cookiejar
+import os
 import re
 import statistics
+import subprocess
+import tempfile
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
+
+from utils import http  # transport partagé curl_cffi chrome131 (→ urllib de repli)
 
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
@@ -77,14 +79,6 @@ _SEARCH = ("https://www.ebay.com/sch/i.html?_nkw={kw}"
            "&LH_Sold=1&LH_Complete=1")
 # Même recherche SANS les filtres sold/complete = annonces ACTIVES (numérateur du glut).
 _SEARCH_ACTIVE = "https://www.ebay.com/sch/i.html?_nkw={kw}"
-
-_BASE_HEADERS = {
-    "User-Agent": _UA,
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "en-US,en;q=0.9",
-    "Accept-Encoding": "gzip, deflate",
-    "Upgrade-Insecure-Requests": "1",
-}
 
 # Interstitiel anti-bot eBay (Akamai / « Pardon Our Interruption »).
 _BLOCK_MARKERS = ("Pardon Our Interruption", "Checking your browser",
@@ -184,17 +178,39 @@ def _cache_put(kw: str, text: str, kind: str = "sold") -> None:
 
 
 # --- Récupération HTML (session + warm-up home, polie) ---------------------
+#
+# ⚠️  Transport = curl (subprocess), PAS urllib. Mesuré en live (2026-06-26) : Akamai
+# Bot Manager 503 systématiquement l'empreinte TLS/HTTP-1.1 de urllib dès le warm-up
+# home (0 succès, le cache n'avait jamais été créé). curl (HTTP/2 + empreinte navigateur)
+# passe en 200 sur la MÊME IP, même UA. On reste 100 % scraping de la page publique, zéro API.
 
-def _open(opener, url: str, referer: str | None = None) -> str:
-    headers = dict(_BASE_HEADERS)
+_CURL = "curl"
+
+
+def _curl_get(url: str, jar: str, referer: str | None = None) -> str:
+    """GET via curl, cookies persistés dans ``jar``. Lève EbaySoldBlocked sur échec/HTTP≥400."""
+    cmd = [
+        _CURL, "-s", "--compressed", "--max-time", "25",
+        "-c", jar, "-b", jar,
+        "-A", _UA,
+        "-H", "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "-H", "Accept-Language: en-US,en;q=0.9",
+        "-H", "Upgrade-Insecure-Requests: 1",
+    ]
     if referer:
-        headers["Referer"] = referer
-    req = urllib.request.Request(url, headers=headers)
-    with opener.open(req, timeout=25) as resp:
-        raw = resp.read()
-        if "gzip" in (resp.headers.get("Content-Encoding") or ""):
-            raw = gzip.decompress(raw)
-        return raw.decode("utf-8", "replace")
+        cmd += ["-H", f"Referer: {referer}"]
+    cmd += ["-w", "\n%{http_code}", url]
+    try:
+        proc = subprocess.run(cmd, capture_output=True, timeout=40)
+    except (subprocess.TimeoutExpired, OSError) as exc:
+        raise EbaySoldBlocked(f"curl error: {exc}") from exc
+    raw = proc.stdout
+    nl = raw.rfind(b"\n")
+    code = raw[nl + 1:].decode("ascii", "replace").strip() if nl >= 0 else ""
+    body = raw[:nl].decode("utf-8", "replace") if nl >= 0 else ""
+    if proc.returncode != 0 or not code.isdigit() or int(code) >= 400:
+        raise EbaySoldBlocked(f"curl rc={proc.returncode} http={code or '?'}")
+    return body
 
 
 def _fetch_once(keyword: str, search_tmpl: str = _SEARCH) -> str:
@@ -207,16 +223,26 @@ def _fetch_once(keyword: str, search_tmpl: str = _SEARCH) -> str:
     wait = _MIN_REQUEST_INTERVAL - (time.time() - _last_request_ts)
     if wait > 0:
         time.sleep(wait)
-    cj = http.cookiejar.CookieJar()
-    opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+    # Session FRAÎCHE par tentative (cookies bm_*/__uzm* posés par la home), désormais
+    # via curl_cffi impersonate chrome131 : empreinte TLS/JA3 + HTTP/2 d'un VRAI Chrome,
+    # strictement meilleure que le curl-subprocess générique (mesuré live : home 200,
+    # recherche sold 200 / 1,4 Mo, Akamai passé) — et sans subprocess ni cookie jar temp.
+    sess = http.Session()
     try:
-        _open(opener, _HOME)                       # pose les cookies bm_*/__uzm*
+        home = sess.get_text(_HOME, headers={"Upgrade-Insecure-Requests": "1"}, timeout=25)
+        if home.status == 0 or home.status >= 400:
+            raise EbaySoldBlocked(f"home http={home.status}")
         url = search_tmpl.format(kw=urllib.parse.quote(keyword))
-        body = _open(opener, url, referer=_HOME)
-    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
-        raise EbaySoldBlocked(str(exc)) from exc
+        res = sess.get_text(url, headers={
+            "Upgrade-Insecure-Requests": "1",
+            "Referer": _HOME,
+        }, timeout=25)
+        if res.status == 0 or res.status >= 400:
+            raise EbaySoldBlocked(f"search http={res.status}")
+        body = res.text
     finally:
         _last_request_ts = time.time()
+        sess.close()
     if any(m in body for m in _BLOCK_MARKERS) or len(body) < 100_000:
         raise EbaySoldBlocked("Interstitiel anti-bot eBay (Akamai).")
     return body

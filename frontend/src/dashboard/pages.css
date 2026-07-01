@@ -102,7 +102,7 @@
 /* ============================================================
    FILTER RAIL  (Discovery left rail)
    ============================================================ */
-.tandor-dash .layout-rail { display: grid; grid-template-columns: 248px 1fr; gap: 20px; align-items: start; }
+.tandor-dash .layout-rail { display: grid; grid-template-columns: 248px minmax(0, 1fr); gap: 20px; align-items: start; }
 .tandor-dash .flt-rail { position: sticky; top: 14px; }
 .tandor-dash .flt-card { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-lg); box-shadow: var(--elev-1); overflow: hidden; }
 .tandor-dash .flt-sec { padding: 14px 16px; border-top: 1px solid var(--border-subtle); }
@@ -137,7 +137,11 @@
    DATA GRID  (Discovery table)
    ============================================================ */
 .tandor-dash .dg-wrap { background: var(--surface-1); border: 1px solid var(--border-subtle); border-radius: var(--r-lg); box-shadow: var(--elev-1); overflow: hidden; }
-.tandor-dash .dg { width: 100%; border-collapse: collapse; font-size: 13px; }
+/* Le tableau (9 colonnes en nowrap, noms produits longs) scrolle horizontalement
+   à TOUTES les largeurs, sinon il déborde et est clippé (dg-wrap/body overflow
+   hidden) → colonnes de droite et pager hors de portée. */
+.tandor-dash .dg-scroll { overflow-x: auto; }
+.tandor-dash .dg { width: 100%; min-width: 720px; border-collapse: collapse; font-size: 13px; }
 .tandor-dash .dg thead th { position: sticky; top: 0; background: var(--bg-sunken); z-index: 2; text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 600; padding: 11px 14px; border-bottom: 1px solid var(--border-subtle); white-space: nowrap; cursor: pointer; user-select: none; }
 .tandor-dash .dg thead th.num { text-align: right; }
 .tandor-dash .dg thead th .sort-ar { display: inline-block; margin-left: 4px; opacity: 0; transition: opacity .14s; }
@@ -481,8 +485,6 @@
   .tandor-dash .cpa-impact { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
-  .tandor-dash .dg-scroll { overflow-x: auto; }
-  .tandor-dash .dg { min-width: 720px; }
   .tandor-dash .tbar .search-inp { max-width: none; }
   .pd-drawer { width: 100vw; }
   .tandor-dash .radar-page-box { height: 360px; }

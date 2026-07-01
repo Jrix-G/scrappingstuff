@@ -1,2 +1,0 @@
-[["timestamp","statuscode","digest"],
-["20170509170153","200","IJF67WWCXIPQV7LKXKHCA3SDL5MDWVFZ"]]

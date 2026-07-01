@@ -18,22 +18,40 @@ ENGINE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PY="$ENGINE/.venv/bin/python3"
 LOG="$HOME/tandor-ali.log"
 
+# Valeurs de repli (utilisées seulement si le pacer AIMD est indisponible).
 DRIP=360          # 6 min entre requêtes : pacing soutenable prouvé (1 req/5-6min)
 HEAL=2100         # 35 min de silence après un punish (ou au démarrage) — l'IP guérit
 EMPTY=3600        # 1 h si la file Ali est à jour (rien à faire)
 
 log() { echo "[$(date '+%F %T')] $*" >> "$LOG"; }
 
-log "=== Démarrage boucle Ali single-IP (goutte-à-goutte 1 req/${DRIP}s, extraction-max) — repos initial ${HEAL}s pour laisser l'IP guérir ==="
-sleep "$HEAL"
+# La cadence n'est plus figée : ali_pacer.py apprend en AIMD la cadence sûre par IP
+# (succès → on accélère un peu ; punish → on recule fort + on guérit plus longtemps).
+# pace_get renvoie la valeur du pacer, ou le repli fourni si le pacer échoue.
+pace_get() {  # $1=interval|cooldown  $2=valeur de repli
+    local v
+    v="$("$PY" "$ENGINE/ali_pacer.py" get "$1" 2>/dev/null)"
+    case "$v" in
+        ''|*[!0-9]*) echo "$2" ;;   # vide ou non-numérique → repli
+        *)           echo "$v"  ;;
+    esac
+}
+
+INIT_HEAL="$(pace_get cooldown "$HEAL")"
+log "=== Démarrage boucle Ali single-IP (cadence AIMD adaptative, extraction-max) — repos initial ${INIT_HEAL}s pour laisser l'IP guérir ==="
+sleep "$INIT_HEAL"
 
 while true; do
     # --budget 1 : UNE requête extraction-max par réveil (pas de burst).
+    # Le worker appelle ali_pacer.observe(success|punish) → l'état de cadence est
+    # à jour AVANT qu'on lise la recommandation ci-dessous.
     "$PY" "$ENGINE/ali_burst_worker.py" --budget 1 --batch 60 >> "$LOG" 2>&1
     rc=$?
     case "$rc" in
         0) log "file Ali à jour → repos $((EMPTY/60)) min"; sleep "$EMPTY" ;;
-        2) log "punish → silence $((HEAL/60)) min (ne pas réarmer le timer)"; sleep "$HEAL" ;;
-        *) sleep "$DRIP" ;;
+        2) c="$(pace_get cooldown "$HEAL")"
+           log "punish → silence $((c/60)) min AIMD (ne pas réarmer le timer)"; sleep "$c" ;;
+        *) d="$(pace_get interval "$DRIP")"
+           log "succès → prochaine requête dans $((d/60)) min AIMD"; sleep "$d" ;;
     esac
 done

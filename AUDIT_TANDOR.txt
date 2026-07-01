@@ -1,0 +1,201 @@
+================================================================================
+AUDIT COMPLET DU PROJET TANDOR (scrappingstuff)
+Date : 2026-06-26
+Méthode : 5 sous-agents spécialisés (sécurité, architecture, data/maths,
+          commercial, juridique) ayant inspecté le code et les données réelles.
+================================================================================
+
+--------------------------------------------------------------------------------
+VERDICT GLOBAL (lecture rapide)
+--------------------------------------------------------------------------------
+Le CONCEPT est bon (angle anti-perte différenciant, moteur de scoring de qualité
+production) mais l'EXÉCUTION ACTUELLE N'EST PAS VENDABLE et expose juridiquement.
+Le blocage réel n'est PAS Stripe — c'est la DONNÉE : la feature phare (détection
+de déclin) ne se déclenche jamais, deux signaux sur trois affichés au client
+sont des placeholders codés en dur, et le produit payant est entièrement
+téléchargeable gratuitement (API du Pi sans aucune authentification).
+
+Priorité de remédiation :
+  1. URGENCE SÉCURITÉ : roter les secrets commités + auth serveur sur l'API.
+  2. URGENCE JURIDIQUE : supprimer le crack mtop + purger les données perso.
+  3. FOND PRODUIT : obtenir du vrai volume de données longitudinales, sinon
+     brancher Stripe ne fait que monétiser une démo trompeuse.
+
+================================================================================
+1. SÉCURITÉ — Posture FAIBLE
+================================================================================
+
+CRITIQUE
+- Secrets réels dans l'historique git (scripts/.env, commits ff7459f/36ee0e0/
+  aeb561a) : clé API Groq active, identifiants + MOT DE PASSE Proton en clair.
+  -> Roter immédiatement, purger l'historique (git filter-repo), considérer
+     compromis.
+- Clé privée WireGuard commitée en clair (scripts/uza-NL-FREE-65.conf:7).
+  -> Régénérer la paire, retirer du repo + .gitignore *.conf.
+- API produit SANS AUCUNE AUTH (scripts/organic_engine/api/server.py).
+  /api/products, /api/product/{id}, /api/meta exposés via tunnel Cloudflare
+  public (URL dans le bundle React). TOUT le dataset payant (~6100 produits +
+  scores) est téléchargeable par n'importe qui via ?limit=1000&offset=...
+  Le gating React est purement cosmétique. C'est le cœur du produit, gratuit.
+  -> Exiger un Firebase ID token vérifié côté serveur + gating par plan.
+
+HAUTE
+- Auto-élévation de plan (firestore.rules:19-24) : un user peut écrire
+  {plan:'pro', subscription_active:true} dans son propre doc et se débloquer
+  "pro" sans payer. Seul le webhook Stripe devrait écrire ces champs.
+- /api/validate non authentifié (server.py:586) : POST public déclenchant du
+  scraping live -> abus de ressources / DoS / bannissement de l'IP du Pi.
+- Gating fail-open (App.tsx:32-37) : ProtectedRoute ne vérifie que user!=null,
+  jamais le plan ; si Firestore échoue, fallback permissif.
+
+POINTS POSITIFS
+- SQL paramétré (pas d'injection), signature webhook Stripe vérifiée,
+  rules par-uid, config Firebase web publique par design (pas une fuite).
+
+================================================================================
+2. ARCHITECTURE & ROBUSTESSE — Pas prêt pour un produit payant
+================================================================================
+
+- Tout repose sur des REGEX contre du HTML/JSON embarqué (ali_page_parser,
+  ebay_sold, dhgate_sold, amazon_demand). Un changement de markup -> le signal
+  s'arrête SILENCIEUSEMENT. Aucun test sur les parseurs, aucune alerte de
+  collecte morte. Le code robuste (maths) protège la partie déterministe ;
+  le code fragile (regex) est exposé au monde extérieur. Mauvais profil de
+  risque.
+
+- VOLUME RÉEL (DB cj.db) :
+    CJ catalog ......... 1000-4600/j (offre, plafonné offset 6000)
+    Amazon "bought" .... ~2000 snapshots/j (meilleur signal, le plus solide)
+    AliExpress ......... 1000-2900/j (rate-limité, 1 seule IP)
+    eBay+DHgate SOLD ... 30-91/j  -> TOTAL = 483 lignes
+  Le détecteur de déclin (le différenciateur) dépend de sales_snapshots
+  (eBay/DHgate), qui est quasi inexistant. La landing annonce "2400+ scorés/j"
+  et "71% de précision à 30j" : NON ÉTAYÉ.
+
+- POINT DE DÉFAILLANCE UNIQUE : tout vit sur un seul Raspberry Pi (cron, SQLite
+  mono-fichier, API uvicorn). AUCUN BACKUP DB visible. Pi down = produit mort.
+- Chemin de données schizophrène : un JSON statique de 60 produits écrit dans
+  le source React (périmé par construction) ET une API live divergente.
+- Supabase présent mais mort ; Firebase = auth uniquement.
+- Hygiène : .gitignore oublie les caches -> 3000+ HTML Amazon committés,
+  .git = 391 Mo, .amazon_cache = 5,3 Go sur disque.
+
+================================================================================
+3. VALIDITÉ DES DONNÉES & MATHS — Méthode honnête, donnée fictive, sortie TROMPEUSE
+================================================================================
+
+- Le code statistique (loss_risk.py, timeseries.py) est RIGOUREUX : OLS sur
+  log(1+v), erreur-type de pente correcte, test de Student tabulé, filtre de
+  volatilité, fenêtre minimale 10j. Sur le papier, défendable.
+
+- MAIS la donnée est du bruit :
+    * Médiane = 3 points temporels par mot-clé ; seuls 2 mots-clés atteignent
+      les 10 jours requis.
+    * La "demande" = max_sold du 1er listing AliExpress = buckets d'affichage
+      grossiers (44, 95, 2000, 10000...) où le listing en tête change chaque
+      jour. Séries absurdes : acne patch [50000,44,50000,50000,44,50000].
+    * Volatilité médiane 2,37 (seuil 1,0) : 13/63 séries seulement passent.
+
+- LE "FPR 47%->0%" EST UN TROMPE-L'OEIL : en faisant tourner le vrai pipeline,
+  0 pente significative et 0 flag de déclin sur TOUT le dataset. La feature
+  phare ne se déclenche JAMAIS. FPR 0% = sensibilité 0% (un détecteur qui ne
+  détecte rien). C'est de la prudence statistique habillée en performance.
+
+- CHIFFRES AFFICHÉS AU CLIENT = PLACEHOLDERS (products.json, 60 produits) :
+    * redditScore = 50 pour les 60.  trendsScore = 50 pour les 60.
+      (aucune table reddit ni trends n'existe -> faux, affichés comme mesurés)
+    * verdict = "BUY" pour les 60 (un outil "anti-perte" qui dit acheter à 100%)
+    * 38/60 sans aucun historique de ventes ; history = 2 points.
+    * "growth" jusqu'à +881%/mois = artefacts de bruit présentés comme
+      croissance ("demande en forte hausse").
+    * La corrélation 0,08 revendiquée n'existe nulle part dans le code
+      (recalcul sur les 60 produits = -0,03).
+
+  => Cela VIOLE FRONTALEMENT le moat revendiqué de "transparence vérifiable".
+
+================================================================================
+4. VIABILITÉ COMMERCIALE — Concept valable, exécution non vendable
+================================================================================
+
+- Pricing : 0EUR (50/j) -> Pro 49EUR/mo (2000/j) -> Agence 149EUR/mo. Cohérent
+  avec le marché (Sell The Trend, Ecomhunt, Minea, Dropispy) SI la valeur
+  suivait. Elle ne suit pas : on livre un screener de 60 lignes, 2 signaux sur
+  3 bidon. Personne d'informé ne paie 49EUR/mo pour ça.
+
+- Angle "anti-perte" (aversion à la perte vs FOMO) = vraie différenciation de
+  MESSAGE, tenable en copywriting. Mais aujourd'hui c'est une NARRATION, pas une
+  capacité produit. Le moat "transparence vérifiable" se retourne contre le
+  produit dès qu'un client compare les "+240%" au fichier de placeholders
+  (risque réputationnel ET juridique).
+
+- Faux social proof codé en dur ("2400+ e-commerçants", "412 produits suivis,
+  maj il y a 2 min") : à retirer (risque pratique commerciale trompeuse).
+
+- SEO programmatique : implémentation propre (JSON-LD), mais seulement 60 pages
+  (il en faut des milliers), templates quasi-identiques (risque thin-content
+  / Helpful Content de Google). Réaliste à 6-12 mois SI le volume scale.
+
+- Marché : existe et paie, mais saturé, churn élevé, audience débutante/radine
+  (LTV faible, CAC pub brutal).
+
+MAKE-OR-BREAK = LA DONNÉE, pas Stripe. Brancher le paiement aujourd'hui ne fait
+que monétiser une démo.
+
+================================================================================
+5. JURIDIQUE — Exposition ÉLEVÉE mais largement réductible
+================================================================================
+
+CRITIQUE
+- Crack de signature mtop AliExpress (_mtop_search_test.py, browser.py) :
+  fait basculer de "scraping public toléré" (cf. hiQ v. LinkedIn) vers
+  "contournement de mesure technique / intrusion" (CFAA US, art. 6 dir.
+  2001/29 EU). C'est ce qui motive une poursuite plutôt qu'un simple blocage.
+  -> SUPPRIMER ce code (le pipeline live n'en a pas besoin).
+- Revente de données scrapées derrière paywall : viole les CGU de toutes les
+  plateformes + aggravant commercial (concurrence déloyale). Amazon/eBay ont
+  des services juridiques actifs sur le sujet. Cache Amazon 5,3 Go = copiage
+  massif matérialisé.
+  -> Ne revendre que des SCORES dérivés (déjà le cas), jamais la donnée brute
+     ni le product_url ni la mention de source. Purger les caches bruts.
+
+ÉLEVÉ
+- RGPD : les caches bruts stockent des données personnelles (usernames Reddit
+  confirmés, avis clients Amazon) sans base légale ni information. "Public"
+  n'exonère pas (cf. CNIL/Clearview).
+  -> Ne stocker que des agrégats (le besoin métier est 100% agrégat) ; purger
+     .reddit_cache et les sections review du cache Amazon. Techniquement facile,
+     juridiquement décisif.
+- IP résidentielle (Pi maison) = exploitant identifiable nominativement ; C&D
+  et responsabilité arrivent sur la personne physique.
+  -> Interposer une société (SASU/LLC) + proxy/CDN devant le service.
+
+MODÉRÉ
+- Droit sui generis des bases de données (EU) : extraction substantielle
+  répétée. Atténué par la transformation en scores.
+- Marques tiers affichées : usage descriptif licite ; risque seulement avec
+  logos/suggestion de partenariat. Pas de marque dans le SEO/marketing.
+
+================================================================================
+SYNTHÈSE DES ACTIONS PRIORITAIRES
+================================================================================
+  [SÉCU]  Roter Groq/Proton/WireGuard + purger l'historique git.
+  [SÉCU]  Authentifier l'API du Pi (token Firebase vérifié serveur + gating
+          par plan). Sans ça, le produit payant est gratuit.
+  [SÉCU]  Verrouiller plan/subscription_active dans firestore.rules.
+  [JURI]  Supprimer le code de signature mtop.
+  [JURI]  Purger les caches bruts ; ne persister que des agrégats (RGPD).
+  [JURI]  Société + proxy pour retirer l'IP maison.
+  [DATA]  Retirer/cesser d'afficher les scores placeholders (reddit/trends=50,
+          growth de bruit, verdict 100% BUY) tant qu'ils ne sont pas réels.
+  [DATA]  Construire un vrai volume longitudinal multi-IP (le verrou produit).
+  [BIZ]   Ne brancher Stripe qu'APRÈS que la donnée tienne la promesse.
+
+================================================================================
+CONCLUSION
+Le projet a de vrais atouts (moteur de scoring sérieux, angle marketing malin,
+SEO propre) mais, en l'état, il vend une capacité qui n'existe pas dans la
+donnée, laisse son produit payant en accès libre, et s'expose juridiquement de
+façon identifiable. Ce n'est pas un projet à jeter — c'est un projet dont le
+fond (la collecte de données réelle, à volume) reste à construire avant toute
+monétisation.
+================================================================================

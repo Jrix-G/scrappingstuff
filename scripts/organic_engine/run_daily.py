@@ -38,6 +38,9 @@ def main() -> int:
     ap.add_argument("--page-size", type=int, default=50)
     ap.add_argument("--keyword", type=str, default=None, help="Filtre mot-clé CJ")
     ap.add_argument("--limit", type=int, default=40, help="Top N enrichi Trends/Reddit")
+    ap.add_argument("--export-limit", type=int, default=2000,
+                    help="Nb de fiches exportées (verdict+pièges+demande DB pure). "
+                         "Défaut 2000 ; l'enrichissement live Trends/Reddit reste sur --limit.")
     ap.add_argument("--geo", type=str, default="", help="Code pays Trends (ex. FR)")
     ap.add_argument("--no-collect", action="store_true", help="Sauter la découverte CJ")
     ap.add_argument("--no-refresh", action="store_true", help="Sauter le re-snapshot de l'univers")
@@ -99,8 +102,10 @@ def main() -> int:
     # --- Étape 3 : rebuild du cache produit ---------------------------------
     from export_dashboard import build_records, OUT, CACHE
 
-    _log(f"Export : top {args.limit} (enrich={not args.no_enrich}) …")
-    out, total_in_db = build_records(args.limit, args.geo, args.no_enrich)
+    _log(f"Export : top {args.limit} enrichi / jusqu'à {args.export_limit} fiches "
+         f"(enrich={not args.no_enrich}) …")
+    out, total_in_db = build_records(args.limit, args.geo, args.no_enrich,
+                                     export_limit=args.export_limit)
     if not out:
         _log("✗ Aucune donnée à exporter (cj.db vide ?). Échec.")
         return 1
